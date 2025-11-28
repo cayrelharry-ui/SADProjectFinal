@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNSC Navigation Bar</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Use Inter Font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+
+            background-image: url('banner.png');
+            /* Your specified background image */
+            background-size: cover;
+            background-attachment: fixed;
+            background-color: #f8fafc;
+            /* Very light fallback background color */
+            position: relative;
+            /* Needed for ::before pseudo-element positioning */
+            z-index: 0;
+            /* Establishes a stacking context */
+        }
+
+        /* NEW: Darkening Overlay for the Background Image */
+        body::before {
+            content: '';
+            position: fixed;
+            /* Covers the entire viewport */
+            inset: 0;
+            /* Shorthand for top, right, bottom, left: 0 */
+            background-color: rgb(255, 255, 255);
+            /* Semi-transparent black overlay (adjust 0.5 for darker/lighter) */
+            z-index: -1;
+            /* Puts the overlay behind the body content */
+        }
+
+
+        /* Custom Violet color for the logo/accents */
+        .violet-accent {
+            color: #5A2C9D;
+            /* Deep Indigo Violet */
+        }
+
+        .bg-violet {
+            background-color: #5A2C9D;
+        }
+
+
+
+        .bg-violet-hover:hover {
+            background-color: #4C2684;
+            /* Slightly darker violet on hover */
+            color: white;
+        }
+
+        .group:hover>.dropdown-content,
+        .group:focus>.dropdown-content,
+        .group>.dropdown-content:not(.opacity-0) {
+            /* targets the JS open state */
+            visibility: visible !important;
+            opacity: 1 !important;
+            display: block !important;
+            /* Block any Bootstrap display: none */
+        }
+
+
+        /* --- HERO BANNER CONTAINER --- */
+        .hero-banner {
+            position: relative;
+            /* Essential for positioning the text overlay */
+            width: 90%;
+            /* Adjust to match the main content width of your page */
+            max-width: 1200px;
+            /* Optional: Sets a maximum width for large screens */
+            margin: 30px auto 40px auto;
+            /* Centers the banner and adds vertical space */
+            overflow: hidden;
+            /* Ensures image corners don't stick out */
+            border-radius: 12px;
+            /* Adds subtle rounded corners */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            /* Adds a slight shadow */
+        }
+
+        /* --- IMAGE STYLING --- */
+        .hero-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: brightness(0.7);
+            /* Slightly darkens the image to make white text easier to read */
+        }
+
+        /* --- TEXT CONTENT OVERLAY --- */
+        .banner-content {
+            position: absolute;
+            bottom: 0;
+            /* Positions the text at the bottom of the banner */
+            left: 0;
+            padding: 25px 40px;
+            color: white;
+            /* Sets the text color to white */
+            /* Add a subtle gradient background for better text contrast */
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* --- TEXT STYLING --- */
+        .banner-title {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            line-height: 1.2;
+        }
+
+        .banner-tagline {
+            font-size: 1.2em;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        /* --- RESPONSIVENESS (Optional) --- */
+        @media (max-width: 768px) {
+            .banner-content {
+                padding: 15px 20px;
+            }
+
+            .banner-title {
+                font-size: 1.5em;
+            }
+
+            .banner-tagline {
+                font-size: 1em;
+            }
+        }
+
+        .hero-banner {
+            /* Ensures the banner scales up to a maximum width to match your site's content area */
+            max-width: 1200px;
+            /* Adjust this value to match your main content area's width */
+            width: 90%;
+            margin: 30px auto;
+            /* Centers the banner and adds vertical breathing room */
+        }
+
+        .hero-banner img {
+            /* This makes the image stretch to fill the width of its container */
+            width: 100%;
+            height: auto;
+            /* Ensures the image doesn't get stretched vertically */
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center space-x-3 h-full">
+                <div class="h-10 w-10 rounded-full flex items-center justify-center text-xl font-bold">
+                    <img src="image.png" alt="CNSC Logo">
+                </div>
+                <div class="leading-none hidden sm:block">
+                    <p class="text-xs font-bold text-gray-800 tracking-wider">CCMS Extension Services</p>
+                    <h1 class="text-xl font-extrabold violet-accent">CNSC</h1>
+                </div>
+            </a>
+
+            <div class="flex items-center space-x-6">
+                <ul id="desktop-menu" class="hidden lg:flex items-center space-x-6 text-sm font-semibold text-gray-700">
+
+                    <!-- Home: Links to index.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="Home.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            Home
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="history.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">History</a>
+                            <a href="mission-vision.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Mission &
+                                Vision</a>
+                            <a href="quality-policy.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Quality
+                                Policy</a>
+                        </div>
+                    </li>
+
+                    <!-- Programs: Links to programs.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="programs.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            Programs
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="executive-office.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Executive
+                                Office</a>
+                            <a href="governing-board.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Governing
+                                Board</a>
+                            <a href="org-chart.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Organizational
+                                Chart</a>
+                        </div>
+                    </li>
+
+                    <!-- News & Events: Links to news-events.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="News&Events.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            News & Events
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="news-engineering.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Engineering</a>
+                            <a href="news-arts-sciences.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Arts &
+                                Sciences</a>
+                            <a href="news-agriculture.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Agriculture</a>
+                        </div>
+                    </li>
+
+                    <!-- Partnerships: Links to partnerships.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="Partnership.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            Partnerships
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="requirements.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Requirements</a>
+                            <a href="application-form.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Application
+                                Form</a>
+                            <a href="scholarships.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Scholarships</a>
+                        </div>
+                    </li>
+
+                    <!-- Resources: Links to resources.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="Reports.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            Resources
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="journals.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Journals</a>
+                            <a href="call-for-papers.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Call for
+                                Papers</a>
+                            <a href="ethics-board.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Ethics
+                                Board</a>
+                        </div>
+                    </li>
+
+                    <!-- Contact Us: Links to contact.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="Contact.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            Contact Us
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="contact-projects.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Projects</a>
+                            <a href="contact-partnerships.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Partnerships</a>
+                            <a href="contact-forms.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Forms</a>
+                        </div>
+                    </li>
+
+                </ul>
+                <!-- Search and Mobile Menu (Unchanged) -->
+                <button
+                    class="maroon-accent hover:text-red-900 p-2 rounded-full transition duration-150 focus:outline-none"
+                    aria-label="Search">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+                <button id="mobile-menu-button"
+                    class="lg:hidden p-2 text-gray-700 hover:text-[#5A2C9D] rounded-md focus:outline-none"
+                    aria-label="Toggle menu">
+                    <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                    <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- Mobile Menu (Drops down when toggled) -->
+    <div id="mobile-menu"
+        class="hidden fixed top-20 left-0 w-full bg-white lg:hidden shadow-lg z-40 border-t border-gray-200">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+
+            <!-- Mobile Item with Dropdown -->
+            <div class="border-b border-gray-100 pb-2">
+                <button data-target="about-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    ABOUT CNSC
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="about-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">History</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Mission
+                        & Vision</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Quality
+                        Policy</a>
+                </div>
+            </div>
+
+            <!-- Repeated structure for other links -->
+            <div class="border-b border-gray-100 pb-2">
+                <button data-target="admin-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    ADMINISTRATION
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="admin-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Executive
+                        Office</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Governing
+                        Board</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Organizational
+                        Chart</a>
+                </div>
+            </div>
+
+            <div class="border-b border-gray-100 pb-2">
+                <button data-target="college-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    COLLEGES
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="college-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Engineering</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Arts
+                        & Sciences</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Agriculture</a>
+                </div>
+            </div>
+
+            <div class="border-b border-gray-100 pb-2">
+                <button data-target="admission-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    ADMISSION
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="admission-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Requirements</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Application
+                        Form</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Scholarships</a>
+                </div>
+            </div>
+
+            <div class="border-b border-gray-100 pb-2">
+                <button data-target="research-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    RESEARCH
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="research-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Journals</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Call
+                        for Papers</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Ethics
+                        Board</a>
+                </div>
+            </div>
+
+            <div class="pb-2">
+                <button data-target="extension-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    EXTENSION
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="extension-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Projects</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Partnerships</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Forms</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- 1. FULL WIDTH HERO CAROUSEL (Height 300px + Dimmed Photos) -->
+    <div id="mainPageCarousel" class="carousel slide fade-carousel mt-20 relative w-full" data-bs-ride="carousel">
+
+        <!-- Indicators -->
+        <div class="carousel-indicators mb-4">
+            <button type="button" data-bs-target="#mainPageCarousel" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#mainPageCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#mainPageCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+
+        <div class="carousel-inner w-full">
+
+            <!-- Slide 1 -->
+            <div class="carousel-item active">
+                <!-- UPDATED HEIGHT: 300px mobile, 400px desktop -->
+                <div class="relative w-full h-[300px] lg:h-[400px]">
+                    <!-- Added 'brightness-50' to dim the image significantly so text colors pop -->
+                    <img src="img1.jpg" class="d-block w-full h-full object-cover brightness-50"
+                        alt="Community Outreach">
+
+                    <!-- Caption -->
+                    <div
+                        class="absolute bottom-0 left-0 w-full p-6 md:p-10 text-white text-center md:text-left flex flex-col justify-center h-full">
+                        <div class="max-w-4xl mx-auto md:mx-0 mt-auto">
+                            <span
+                                class="uppercase tracking-widest text-xs font-bold text-yellow-400 mb-1 block">Featured
+                                Project</span>
+                            <h1 class="text-2xl md:text-4xl font-extrabold mb-2 leading-tight">Empowering Barangays
+                                through <br> Digital Literacy</h1>
+                            <p class="text-sm md:text-base text-gray-200 mb-4 max-w-2xl line-clamp-2">A success story of
+                                bridging the digital divide in coastal communities.</p>
+                            <a href="#"
+                                class="inline-block px-5 py-2 bg-[#5A2C9D] hover:bg-[#4a2482] text-white font-semibold rounded-full transition duration-300 text-xs md:text-sm">Read
+                                Story</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item">
+                <div class="relative w-full h-[300px] lg:h-[400px]">
+                    <!-- Added 'brightness-50' -->
+                    <img src="event4.jpg" class="d-block w-full h-full object-cover brightness-50"
+                        alt="Leadership Training">
+
+                    <div
+                        class="absolute bottom-0 left-0 w-full p-6 md:p-10 text-white text-center md:text-left flex flex-col justify-center h-full">
+                        <div class="max-w-4xl mx-auto md:mx-0 mt-auto">
+                            <span class="uppercase tracking-widest text-xs font-bold text-blue-400 mb-1 block">Event
+                                Highlight</span>
+                            <h1 class="text-2xl md:text-4xl font-extrabold mb-2 leading-tight">BURUGKUSAN 2025: <br>
+                                Quarterly Leadership Training</h1>
+                            <p class="text-sm md:text-base text-gray-200 mb-4 max-w-2xl line-clamp-2">"Forging Leaders,
+                                Strengthening Bonds: Leadership and Governance in Action."</p>
+                            <a href="#"
+                                class="inline-block px-5 py-2 bg-white text-[#5A2C9D] hover:bg-gray-100 font-semibold rounded-full transition duration-300 text-xs md:text-sm">View
+                                Gallery</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-item">
+                <div class="relative w-full h-[300px] lg:h-[400px]">
+                    <!-- Added 'brightness-50' -->
+                    <img src="event3.jpg" class="d-block w-full h-full object-cover brightness-50" alt="Seminar">
+
+                    <div
+                        class="absolute bottom-0 left-0 w-full p-6 md:p-10 text-white text-center md:text-left flex flex-col justify-center h-full">
+                        <div class="max-w-4xl mx-auto md:mx-0 mt-auto">
+                            <span class="uppercase tracking-widest text-xs font-bold text-green-400 mb-1 block">Upcoming
+                                Seminar</span>
+                            <h1 class="text-2xl md:text-4xl font-extrabold mb-2 leading-tight">GAD Mainstreaming & <br>
+                                Student Re-Orientation</h1>
+                            <p class="text-sm md:text-base text-gray-200 mb-4 max-w-2xl line-clamp-2">Highlighting our
+                                commitment to gender and development in all extension activities.</p>
+                            <a href="#"
+                                class="inline-block px-5 py-2 bg-[#5A2C9D] hover:bg-[#4a2482] text-white font-semibold rounded-full transition duration-300 text-xs md:text-sm">Register
+                                Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#mainPageCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mainPageCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+
+    <!-- MAIN CONTENT CONTAINER (Starts after the full-width carousel) -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen pt-12" style="padding-bottom:1rem;">
+
+        <!-- 2. INTRODUCTION SECTION -->
+        <section class="py-8 text-center max-w-4xl mx-auto mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Bridging Technology & Community</h1>
+            <div class="h-1.5 w-24 bg-[#5A2C9D] mx-auto rounded-full mb-6"></div>
+            <p class="text-lg text-gray-600 leading-relaxed">
+                Welcome to the <strong>CCMS Extension Services</strong>. We are the community engagement arm of the
+                College of Computer & Multimedia Studies, dedicated to transferring technological expertise, promoting
+                digital literacy, and fostering sustainable development through collaborative partnerships.
+            </p>
+        </section>
+
+        <!-- 3. MISSION, VISION, AND CORE OBJECTIVES -->
+        <section class="pb-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Vision Card -->
+                <div
+                    class="bg-white rounded-2xl p-8 border-t-4 border-[#5A2C9D] shadow-lg hover:-translate-y-2 transition transform duration-300">
+                    <div class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center text-[#5A2C9D] mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Vision</h3>
+                    <p class="text-gray-600 leading-relaxed italic">
+                        "CNSC as a premier higher education institution in the Bicol Region providing excellent services
+                        and developing graduates with highest ethical standards."
+                    </p>
+                </div>
+
+                <!-- Mission Card -->
+                <div
+                    class="bg-white rounded-2xl p-8 border-t-4 border-[#5A2C9D] shadow-lg hover:-translate-y-2 transition transform duration-300">
+                    <div class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center text-[#5A2C9D] mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Mission</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        The Camarines Norte State College shall provide higher and advanced studies in the fields of
+                        education, arts and science, economics, health, engineering, and management.
+                    </p>
+                </div>
+
+                <!-- Core Objectives Card -->
+                <div
+                    class="bg-white rounded-2xl p-8 border-t-4 border-[#5A2C9D] shadow-lg hover:-translate-y-2 transition transform duration-300">
+                    <div class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center text-[#5A2C9D] mb-6">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Core Objectives</h3>
+                    <ul class="text-gray-600 space-y-3 list-none">
+                        <li class="flex items-start"><span class="text-[#5A2C9D] mr-2">✔</span> Deliver relevant
+                            technical skills training.</li>
+                        <li class="flex items-start"><span class="text-[#5A2C9D] mr-2">✔</span> Promote sustainable
+                            community development.</li>
+                        <li class="flex items-start"><span class="text-[#5A2C9D] mr-2">✔</span> Establish strong
+                            linkages with LGUs.</li>
+                        <li class="flex items-start"><span class="text-[#5A2C9D] mr-2">✔</span> Empower stakeholders
+                            through ICT.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. QUICK STATS BAR -->
+        <section
+            class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#5A2C9D] to-[#4C2684] text-white shadow-2xl mb-20 transform hover:scale-[1.01] transition duration-500">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                <div class="absolute -top-24 -left-24 w-64 h-64 bg-white rounded-full mix-blend-overlay"></div>
+                <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-white rounded-full mix-blend-overlay"></div>
+            </div>
+            <div class="relative z-10 px-6 py-16">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="p-2">
+                        <div class="text-6xl font-black mb-2 tracking-tight">120+</div>
+                        <div class="text-purple-200 font-bold uppercase tracking-widest text-sm">Total Projects</div>
+                    </div>
+                    <div class="p-2 md:border-l md:border-r border-purple-400/30">
+                        <div class="text-6xl font-black mb-2 tracking-tight">15k+</div>
+                        <div class="text-purple-200 font-bold uppercase tracking-widest text-sm">Beneficiaries Reached
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <div class="text-6xl font-black mb-2 tracking-tight">50+</div>
+                        <div class="text-purple-200 font-bold uppercase tracking-widest text-sm">Partner Institutions
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="pb-16">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+                <!-- LEFT COLUMN: News (75%) -->
+                <div class="lg:col-span-3">
+                    <section>
+                        <div class="flex justify-between items-end mb-8 border-b-2 border-violet-100 pb-4">
+                            <div>
+                                <span class="text-[#5A2C9D] font-bold tracking-wider uppercase text-xs">What's
+                                    New</span>
+                                <h2 class="text-3xl font-bold text-gray-900">Upcoming Events & News</h2>
+                            </div>
+                            <a href="#"
+                                class="text-sm font-bold text-[#5A2C9D] hover:text-[#4a2482] flex items-center group">
+                                View All
+                                <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </a>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                            <!-- News Card 1 -->
+                            <div
+                                class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100">
+                                <div class="relative h-48 overflow-hidden">
+                                    <img src="event1.jpg" alt="CCMS Event"
+                                        class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
+                                    <div
+                                        class="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                        ANNOUNCEMENT</div>
+                                </div>
+                                <div class="p-6">
+                                    <div class="text-gray-400 text-xs mb-2 flex items-center"><svg class="w-3 h-3 mr-1"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg> Nov 15, 2025</div>
+                                    <h3
+                                        class="text-xl font-bold mt-1 mb-3 text-gray-900 group-hover:text-[#5A2C9D] transition">
+                                        Final Exam Schedule Released</h3>
+                                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">Check the official college
+                                        bulletin for the complete schedule of final examinations this semester.</p>
+                                    <a href="#"
+                                        class="inline-block text-[#5A2C9D] font-bold text-sm hover:underline">Read Full
+                                        Story</a>
+                                </div>
+                            </div>
+
+                            <!-- News Card 2 -->
+                            <div
+                                class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100">
+                                <div class="relative h-48 overflow-hidden">
+                                    <img src="event3.jpg" alt="Seminar"
+                                        class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
+                                    <div
+                                        class="absolute top-4 left-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                        EVENT</div>
+                                </div>
+                                <div class="p-6">
+                                    <div class="text-gray-400 text-xs mb-2 flex items-center"><svg class="w-3 h-3 mr-1"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg> Nov 20, 2025</div>
+                                    <h3
+                                        class="text-xl font-bold mt-1 mb-3 text-gray-900 group-hover:text-[#5A2C9D] transition">
+                                        Cybersecurity Workshop</h3>
+                                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">Join our free workshop on ethical
+                                        hacking and network security this Saturday at the Main Hall.</p>
+                                    <a href="#"
+                                        class="inline-block text-[#5A2C9D] font-bold text-sm hover:underline">Read Full
+                                        Story</a>
+                                </div>
+                            </div>
+
+                            <!-- News Card 3 -->
+                            <div
+                                class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100">
+                                <div class="relative h-48 overflow-hidden">
+                                    <img src="event4.jpg" alt="Alumni"
+                                        class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
+                                    <div
+                                        class="absolute top-4 left-4 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                        SUCCESS STORY</div>
+                                </div>
+                                <div class="p-6">
+                                    <div class="text-gray-400 text-xs mb-2 flex items-center"><svg class="w-3 h-3 mr-1"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg> Oct 05, 2025</div>
+                                    <h3
+                                        class="text-xl font-bold mt-1 mb-3 text-gray-900 group-hover:text-[#5A2C9D] transition">
+                                        Alumnus Lands Role at Google</h3>
+                                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">BSIT graduate, Jane Doe, shares
+                                        her journey from CNSC to a global tech company.</p>
+                                    <a href="#"
+                                        class="inline-block text-[#5A2C9D] font-bold text-sm hover:underline">Read Full
+                                        Story</a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+
+                <!-- RIGHT COLUMN: Sidebar (25%) -->
+                <aside class="lg:col-span-1">
+                    <div class="sticky top-24 space-y-8">
+
+                        <!-- Announcements Widget -->
+                        <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+                            <div class="bg-gradient-to-r from-[#5A2C9D] to-[#4C2684] px-5 py-4">
+                                <h3 class="text-white font-bold text-lg flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                                        </path>
+                                    </svg>
+                                    Announcements
+                                </h3>
+                            </div>
+                            <div class="divide-y divide-gray-100">
+                                <a href="#" class="block p-4 hover:bg-purple-50 transition group">
+                                    <p class="text-xs text-gray-400 mb-1 group-hover:text-[#5A2C9D]">Nov 10, 2025</p>
+                                    <h4 class="text-sm font-bold text-gray-800 group-hover:text-[#5A2C9D] leading-snug">
+                                        Suspension of Classes due to Typhoon</h4>
+                                </a>
+                                <a href="#" class="block p-4 hover:bg-purple-50 transition group">
+                                    <p class="text-xs text-gray-400 mb-1 group-hover:text-[#5A2C9D]">Nov 08, 2025</p>
+                                    <h4 class="text-sm font-bold text-gray-800 group-hover:text-[#5A2C9D] leading-snug">
+                                        Deadline for Scholarship Renewal</h4>
+                                </a>
+                                <a href="#" class="block p-4 hover:bg-purple-50 transition group">
+                                    <p class="text-xs text-gray-400 mb-1 group-hover:text-[#5A2C9D]">Nov 01, 2025</p>
+                                    <h4 class="text-sm font-bold text-gray-800 group-hover:text-[#5A2C9D] leading-snug">
+                                        Library System Maintenance Schedule</h4>
+                                </a>
+                            </div>
+                            <div class="bg-gray-50 p-3 text-center border-t border-gray-100">
+                                <a href="#"
+                                    class="text-xs font-bold text-[#5A2C9D] hover:text-[#4a2482] uppercase tracking-wide">View
+                                    Archive</a>
+                            </div>
+                        </div>
+
+                        <!-- Quick Links Widget -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                            <h4 class="font-bold text-gray-900 mb-4 uppercase tracking-wider text-xs">Quick Links</h4>
+                            <ul class="space-y-3">
+                                <li><a href="#"
+                                        class="flex items-center text-gray-600 hover:text-[#5A2C9D] text-sm font-medium transition"><span
+                                            class="w-2 h-2 bg-gray-300 rounded-full mr-3 group-hover:bg-[#5A2C9D]"></span>
+                                        Student Portal</a></li>
+                                <li><a href="#"
+                                        class="flex items-center text-gray-600 hover:text-[#5A2C9D] text-sm font-medium transition"><span
+                                            class="w-2 h-2 bg-gray-300 rounded-full mr-3 group-hover:bg-[#5A2C9D]"></span>
+                                        Faculty Login</a></li>
+                                <li><a href="#"
+                                        class="flex items-center text-gray-600 hover:text-[#5A2C9D] text-sm font-medium transition"><span
+                                            class="w-2 h-2 bg-gray-300 rounded-full mr-3 group-hover:bg-[#5A2C9D]"></span>
+                                        Download Forms</a></li>
+                                <li><a href="#"
+                                        class="flex items-center text-gray-600 hover:text-[#5A2C9D] text-sm font-medium transition"><span
+                                            class="w-2 h-2 bg-gray-300 rounded-full mr-3 group-hover:bg-[#5A2C9D]"></span>
+                                        Extension Manual</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </aside>
+
+            </div>
+        </div>
+
+
+        <!-- 4.5 FEATURED PROJECTS SECTION -->
+        <section class="py-16 bg-slate-50 mb-16 rounded-3xl">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-12">
+                    <span class="text-[#5A2C9D] font-bold tracking-wider uppercase text-sm">Our Impact</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2">Featured Extension Projects</h2>
+                    <div class="h-1.5 w-24 bg-[#5A2C9D] mx-auto rounded-full mt-4"></div>
+                    <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Highlighting our ongoing commitment to community
+                        development through technology and innovation.</p>
+                </div>
+
+                <!-- Projects Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                    <!-- Project Card 1 (Ongoing) -->
+                    <div
+                        class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 flex flex-col border border-gray-100">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="pro1.avif" alt="Digital Literacy"
+                                class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                            <!-- Status Badge -->
+                            <div
+                                class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm flex items-center">
+                                <span class="w-2 h-2 bg-white rounded-full animate-pulse mr-2"></span> Ongoing
+                            </div>
+                            <!-- Hover Gradient -->
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-[#5A2C9D]/80 to-transparent opacity-0 group-hover:opacity-100 transition duration-300">
+                            </div>
+                        </div>
+                        <div class="p-8 flex-1 flex flex-col relative">
+                            <!-- Decorative Line -->
+                            <div
+                                class="absolute top-0 left-8 right-0 h-1 bg-gradient-to-r from-[#5A2C9D] to-transparent transform scale-x-0 group-hover:scale-x-100 transition duration-500 origin-left">
+                            </div>
+
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#5A2C9D] transition">
+                                Barangay Digital Literacy</h3>
+                            <p class="text-gray-600 text-sm mb-6 flex-1 leading-relaxed">Empowering 500+ residents in
+                                coastal barangays with essential computer skills, internet safety knowledge, and access
+                                to digital government services.</p>
+
+                            <a href="#"
+                                class="inline-flex items-center text-[#5A2C9D] font-bold text-sm hover:translate-x-2 transition duration-300 uppercase tracking-wide">
+                                View Project Details
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Project Card 2 (Completed) -->
+                    <div
+                        class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 flex flex-col border border-gray-100">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="pro2.webp" alt="Eco-Tech Waste Management"
+                                class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                            <div
+                                class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm">
+                                Completed
+                            </div>
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-[#5A2C9D]/80 to-transparent opacity-0 group-hover:opacity-100 transition duration-300">
+                            </div>
+                        </div>
+                        <div class="p-8 flex-1 flex flex-col relative">
+                            <div
+                                class="absolute top-0 left-8 right-0 h-1 bg-gradient-to-r from-[#5A2C9D] to-transparent transform scale-x-0 group-hover:scale-x-100 transition duration-500 origin-left">
+                            </div>
+
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#5A2C9D] transition">
+                                Eco-Tech Waste Drive</h3>
+                            <p class="text-gray-600 text-sm mb-6 flex-1 leading-relaxed">Successfully deployed IoT-based
+                                waste segregation bins and conducted environmental awareness seminars in partnership
+                                with the Municipality of Daet.</p>
+
+                            <a href="#"
+                                class="inline-flex items-center text-[#5A2C9D] font-bold text-sm hover:translate-x-2 transition duration-300 uppercase tracking-wide">
+                                View Project Details
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Project Card 3 (Ongoing) -->
+                    <div
+                        class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 flex flex-col border border-gray-100">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="pro3.webp" alt="SME Tech Up"
+                                class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
+                            <div
+                                class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm flex items-center">
+                                <span class="w-2 h-2 bg-white rounded-full animate-pulse mr-2"></span> Ongoing
+                            </div>
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-[#5A2C9D]/80 to-transparent opacity-0 group-hover:opacity-100 transition duration-300">
+                            </div>
+                        </div>
+                        <div class="p-8 flex-1 flex flex-col relative">
+                            <div
+                                class="absolute top-0 left-8 right-0 h-1 bg-gradient-to-r from-[#5A2C9D] to-transparent transform scale-x-0 group-hover:scale-x-100 transition duration-500 origin-left">
+                            </div>
+
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#5A2C9D] transition">SME
+                                Tech Enablement</h3>
+                            <p class="text-gray-600 text-sm mb-6 flex-1 leading-relaxed">Providing local MSMEs with free
+                                Point-of-Sale (POS) system development, digital marketing training, and financial
+                                management workshops.</p>
+
+                            <a href="#"
+                                class="inline-flex items-center text-[#5A2C9D] font-bold text-sm hover:translate-x-2 transition duration-300 uppercase tracking-wide">
+                                View Project Details
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- View All Button -->
+                <div class="text-center mt-12">
+                    <a href="#"
+                        class="group inline-flex items-center px-8 py-3 border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold rounded-full hover:bg-[#5A2C9D] hover:text-white transition duration-300">
+                        Explore All Projects
+                        <svg class="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition duration-300"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- 5. CONTENT GRID: NEWS & SIDEBAR -->
+
+
+    </main>
+
+
+
+
+
+    <footer class="bg-white border-t border-purple-100 mt-12 w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 text-sm border-b pb-8 mb-6">
+
+                <div class="col-span-2 lg:col-span-1 space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="h-8 w-8 flex items-center justify-center text-lg font-bold "><img src="image.png"
+                                alt="">
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-800 tracking-wider">CCMS Extension</p>
+                            <h2 class="text-lg font-extrabold violet-accent">CNSC</h2>
+                        </div>
+                    </div>
+                    <p class="text-gray-500 text-xs mt-2">
+                        Dedicated to extending knowledge and service to the community.
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wider mb-2">Features</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Programs</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Training
+                                Modules</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Events
+                                Calendar</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Media
+                                Kit</a></li>
+                    </ul>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wider mb-2">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Downloadable
+                                Forms</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Research
+                                Papers</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">University
+                                Manual</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Contact
+                                Directory</a></li>
+                    </ul>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wider mb-2">About</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Our
+                                History</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Mission,
+                                Vision</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Quality
+                                Policy</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Partners</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="space-y-3 col-span-2 md:col-span-1">
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wider mb-2">Connect</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Alumni
+                                Network</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Career
+                                Opportunities</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Feedback</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500">
+
+                <p class="order-2 sm:order-1 mt-4 sm:mt-0">&copy; <span id="current-year"></span> College of Computer &
+                    Multimedia Studies - CNSC <br> All rights
+                    reserved.</p>
+
+                <div class="flex space-x-4 order-1 sm:order-2">
+                    <a href="#" class="violet-accent hover:text-[#4C2684]" aria-label="Facebook">
+                        <svg fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16">
+                            <path
+                                d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z" />
+                        </svg>
+                    </a>
+                    <a href="#" class="violet-accent hover:text-[#4C2684]" aria-label="Twitter">
+                        <svg fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16">
+                            <path
+                                d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.28-.006-.42a6.685 6.685 0 0 0 1.625-1.763 6.7 6.7 0 0 1-1.875.514 3.3 3.3 0 0 0 1.345-1.897 6.7 6.7 0 0 1-2.087.793A3.3 3.3 0 0 0 7.846 3.05a3.298 3.298 0 0 0-3.374 3.037c0 .19 0 .37.006.55A9.324 9.324 0 0 1 .49 2.583a3.3 3.3 0 0 0 1.03 4.437 3.29 3.29 0 0 1-1.487-.407v.03a3.3 3.3 0 0 0 2.646 3.255 3.3 3.3 0 0 1-.84.103 3.33 3.33 0 0 1-.606-.055 3.3 3.3 0 0 0 3.05 2.28 6.69 6.69 0 0 1-4.394 1.23A6.874 6.874 0 0 1 0 14.856a9.42 9.42 0 0 0 5.026.144z" />
+                        </svg>
+                    </a>
+                    <a href="#" class="violet-accent hover:text-[#4C2684]" aria-label="Instagram">
+                        <svg fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16">
+                            <path
+                                d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.429a3.29 3.29 0 0 0-1.025.794A3.29 3.29 0 0 0 .429 2.76C.222 3.269.087 3.85.048 4.703.01 5.556 0 5.829 0 8s.01 2.444.048 3.297c.04.853.174 1.434.381 1.943.206.51.488.963.928 1.403.44.44.893.722 1.403.928.51.206 1.091.341 1.943.381C5.556 15.99 5.829 16 8 16s2.444-.01 3.297-.048c.853-.04 1.434-.174 1.943-.381.51-.206.963-.488 1.403-.928.44-.44.722-.893.928-1.403.206-.51.34-1.091.381-1.943.038-.853.048-1.126.048-3.297s-.01-2.444-.048-3.297c-.04-.853-.174-1.434-.381-1.943a3.29 3.29 0 0 0-.928-1.403 3.29 3.29 0 0 0-1.403-.928C13.269.222 12.688.087 11.835.048 10.982.01 10.709 0 8 0zm0 2.163c4.444 0 5.268.017 5.766.04a1.8 1.8 0 0 1 1.154.441 1.8 1.8 0 0 1 .441 1.154c.023.497.04 1.32.04 5.766s-.017 5.268-.04 5.766a1.8 1.8 0 0 1-.441 1.154 1.8 1.8 0 0 1-1.154.441c-.497.023-1.32.04-5.766.04s-5.268-.017-5.766-.04a1.8 1.8 0 0 1-1.154-.441 1.8 1.8 0 0 1-.441-1.154c-.023-.497-.04-1.32-.04-5.766s.017-5.268.04-5.766a1.8 1.8 0 0 1 .441-1.154 1.8 1.8 0 0 1 1.154-.441c.497-.023 1.32-.04 5.766-.04zm0 1.635a4.195 4.195 0 1 0 0 8.39 4.195 4.195 0 0 0 0-8.39zm0 6.848a2.653 2.653 0 1 1 0-5.306 2.653 2.653 0 0 1 0 5.306zM13.438 4.438a.938.938 0 1 0 0-1.876.938.938 0 0 0 0 1.876z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIconOpen = document.getElementById('menu-icon-open');
+            const menuIconClose = document.getElementById('menu-icon-close');
+            const mobileDropdownButtons = document.querySelectorAll('.mobile-menu-item');
+
+            // 1. Mobile Menu Toggle Logic
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                menuIconOpen.classList.toggle('hidden');
+                menuIconClose.classList.toggle('hidden');
+            });
+
+            // 2. Mobile Dropdown Toggle Logic
+            mobileDropdownButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.getAttribute('data-target');
+                    const targetDropdown = document.getElementById(targetId);
+                    const svgIcon = button.querySelector('svg');
+
+                    if (targetDropdown.classList.contains('hidden')) {
+                        // Close all other dropdowns
+                        document.querySelectorAll('.mobile-dropdown-content').forEach(dd => dd.classList.add('hidden'));
+                        document.querySelectorAll('.mobile-menu-item svg').forEach(svg => svg.classList.remove('rotate-180'));
+
+                        // Open the clicked one
+                        targetDropdown.classList.remove('hidden');
+                        svgIcon.classList.add('rotate-180');
+                    } else {
+                        // Close the clicked one
+                        targetDropdown.classList.add('hidden');
+                        svgIcon.classList.remove('rotate-180');
+                    }
+                });
+            });
+
+            // 3. Desktop Dropdown Logic (for touch/click fallbacks on group-based hover)
+            // This ensures the dropdown opens on click for touch devices, in addition to hover for mouse users.
+            const desktopDropdowns = document.querySelectorAll('#desktop-menu > li');
+
+            desktopDropdowns.forEach(li => {
+                li.addEventListener('click', (event) => {
+                    // Check if the current device is likely a touch device (or small screen)
+                    if (window.innerWidth < 1024 || 'ontouchstart' in window) {
+                        event.stopPropagation(); // Stop propagation to prevent document click listener from firing immediately
+
+                        const dropdownContent = li.querySelector('.dropdown-content');
+
+                        if (dropdownContent.classList.contains('opacity-0')) {
+                            // Close all others
+                            desktopDropdowns.forEach(otherLi => {
+                                if (otherLi !== li) {
+                                    otherLi.querySelector('.dropdown-content').classList.add('opacity-0', 'invisible');
+                                }
+                            });
+                            // Open current
+                            dropdownContent.classList.remove('opacity-0', 'invisible');
+                        } else {
+                            // Close current
+                            dropdownContent.classList.add('opacity-0', 'invisible');
+                        }
+                    }
+                });
+            });
+
+            // Close desktop dropdowns when clicking outside (for touch/click)
+            document.addEventListener('click', (event) => {
+                if (window.innerWidth >= 1024 && 'ontouchstart' in window) {
+                    // Only relevant for touch/click on desktop view
+                    desktopDropdowns.forEach(li => {
+                        if (!li.contains(event.target)) {
+                            li.querySelector('.dropdown-content').classList.add('opacity-0', 'invisible');
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        </script>
+
+</body>
+
+</html>

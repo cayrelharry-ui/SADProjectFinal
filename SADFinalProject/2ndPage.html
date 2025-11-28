@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Programs & Projects - CCMS Extension</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles carried over from the index page for consistency */
+        .violet-accent {
+            color: #5A2C9D;
+        }
+        /* Custom style for smooth dropdown transition on desktop hover */
+        .dropdown-content {
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+
+            <div class="flex-shrink-0 flex items-center">
+                <div class="h-10 w-10 flex items-center justify-center mr-2">
+                    <img src="image.png" alt="CNSC Logo" class="h-full w-full object-contain">
+                </div>
+                <span class="text-xl font-extrabold text-[#5A2C9D]">CCMS Extension</span>
+            </div>
+
+            <nav class="lg:block">
+                <ul id="desktop-menu" class="flex space-x-8">
+                    <li class="relative group">
+                        <a href="Example.html"
+                            class="text-gray-700 hover:text-[#5A2C9D] font-medium transition duration-150 py-5 flex items-center">
+                            Home
+                        </a>
+                    </li>
+                    <li class="relative group">
+                        <a href="#"
+                            class="text-gray-700 hover:text-[#5A2C9D] font-medium transition duration-150 py-5 flex items-center">
+                            About Us
+                            <svg class="ml-1 w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-300 transform translate-y-2 group-hover:translate-y-0">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Our Mission</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Partnerships</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Faculty</a>
+                        </div>
+                    </li>
+                    <li class="relative group">
+                        <a href="#"
+                            class="text-gray-700 hover:text-[#5A2C9D] font-medium transition duration-150 py-5 flex items-center">
+                            Services
+                            <svg class="ml-1 w-4 h-4 transition-transform group-hover:rotate-180" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-300 transform translate-y-2 group-hover:translate-y-0">
+                            <a href="2ndPage.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Programs & Projects</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Training Modules</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Beneficiary Portal</a>
+                        </div>
+                    </li>
+                    <li class="relative group">
+                        <a href="#"
+                            class="text-gray-700 hover:text-[#5A2C9D] font-medium transition duration-150 py-5 flex items-center">
+                            News
+                        </a>
+                    </li>
+                    <li class="relative group">
+                        <a href="#"
+                            class="text-gray-700 hover:text-[#5A2C9D] font-medium transition duration-150 py-5 flex items-center">
+                            Contact
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    
+    <section class="mb-8">
+        <h1 class="text-4xl font-extrabold text-[#961c1c] border-b-2 border-[#961c1c] pb-3 mb-2">
+            Extension Programs & Projects
+        </h1>
+        <p class="text-gray-500 text-sm">
+            <a href="Example.html" class="hover:text-[#5A2C9D] transition duration-200">Home</a> / Programs & Projects
+        </p>
+    </section>
+
+    <section class="bg-white p-6 rounded-lg shadow-md mb-10">
+        <h2 class="text-2xl font-bold text-[#5A2C9D] mb-4">Our Commitment to Community Empowerment</h2>
+        <p class="text-gray-700 leading-relaxed">
+            The CCMS Extension Office is dedicated to translating academic knowledge into tangible community development through practical and impactful projects. Our programs focus on bridging the digital divide, promoting technological literacy, and fostering sustainable growth in our partner communities.
+        </p>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Comprehensive List of Extension Projects</h2>
+
+        <div class="flex border-b border-gray-200 mb-6">
+            <button id="tab-ongoing" data-tab="ongoing" class="tab-button py-2 px-4 text-sm font-medium text-white bg-[#961c1c] border-r border-white focus:outline-none transition duration-150">
+                Ongoing (4)
+            </button>
+            <button id="tab-completed" data-tab="completed" class="tab-button py-2 px-4 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none transition duration-150 border-r border-white">
+                Completed (29)
+            </button>
+            <button id="tab-not-implemented" data-tab="not-implemented" class="tab-button py-2 px-4 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none transition duration-150">
+                Undeployed/Cancelled (9)
+            </button>
+        </div>
+
+        <div id="program-list-content">
+            
+            <div id="tab-content-ongoing" class="tab-content space-y-4">
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-green-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">CREEP (CEAP Phase 1)</h4>
+                        <span class="text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded">Ongoing</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER / DISKARTE – PEACE (2023–2025)</p>
+                    <p class="text-xs text-gray-500">Building audit reports submitted; community rollout being prepared.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-green-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Project Tell 2.0 Extension Communication Platform</h4>
+                        <span class="text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded">Ongoing</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER / DISKARTE – KKK (2024)</p>
+                    <p class="text-xs text-gray-500">Setup phase ongoing; proposal and partner MOAs completed.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-green-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">2025 Camarines Norte Provincial Creative and Tourism Business Summit - DTI</h4>
+                        <span class="text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded">Ongoing</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy (2025)</p>
+                    <p class="text-xs text-gray-500">Photo documentation and Narrative reports stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-green-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">PRESS ENTER 2.0 (MOA with 6 LGU/agencies)</h4>
+                        <span class="text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded">Ongoing</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER / DISKARTE – KKK/LINGAP (2024–2025)</p>
+                    <p class="text-xs text-gray-500">MOAs with Mercedes, Basud, Brgy V, Brgy Gahonon, BFP, and DTI-CNPO.</p>
+                </div>
+            </div>
+
+            <div id="tab-content-completed" class="tab-content space-y-4 hidden">
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">TOS System – Anita V Romero Elementary School</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed and Used (2019)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – System Development</p>
+                    <p class="text-xs text-gray-500">Implemented by teachers; screenshots and user feedback documented.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Website Development Training</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2020)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – System Development</p>
+                    <p class="text-xs text-gray-500">Implemented in partnership with DICT screenshots and narrative reports.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Learning Management System</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2021)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – System Development</p>
+                    <p class="text-xs text-gray-500">Implemented to partner schools.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Virtual Jobs/ Project T.E.L.L</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2021)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER / DISKARTE – KKK</p>
+                    <p class="text-xs text-gray-500">Successfully implemented and benefited the selected barangay beneficiaries, as well as online listeners and viewers.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">IT Consultation on Digital Marketing - DTI</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2021)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Training reports and photos stored; request documentation available.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Basic to Advance Training on Adobe Photoshop for Business Counselors</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2021)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Training reports and photos stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Industry Consultation and Planning Session for ICT and Tourism Support</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2021)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Training reports and photos stored; request documentation available.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">PRESS ENTER 1.0</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2021-2024)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER / DISKARTE – KKK</p>
+                    <p class="text-xs text-gray-500">System development and skills training implemented; proposal, MOA, with terminal report.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">ICT Skills Enrichment Workshop towards an inclusive LGU Talisay’s techie workforce</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2022)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Training reports and photos stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Financial Literacy Seminar for ICT Stakeholder</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2022)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Training reports and photos stored; request documentation available.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">ASLATRA Mobile App for PWDs – PDAO</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed and Deployed (2022)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER / DISKARTE – PEACE</p>
+                    <p class="text-xs text-gray-500">Deployed to Google Play; completed launching.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">PPCRV Election Counting System</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed and Used (2022)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – System Development</p>
+                    <p class="text-xs text-gray-500">Used in national elections; technical documentation stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Consultation with ICT Sector</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2023)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Training reports and photos stored; request documentation available.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">IT Audit</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2023)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Audit reports and photos stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Drop Shipping/ Project T.E.L.L</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2023)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER / DISKARTE – KKK</p>
+                    <p class="text-xs text-gray-500">Successfully implemented and benefited the selected barangay beneficiaries, as well as online listeners and viewers.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Enhancement Training – LGU Talisay</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2023)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER / DISKARTE – KKK</p>
+                    <p class="text-xs text-gray-500">Training reports filed; request filed under LGU-Talisay folder.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">IT Audit – LGU San Vicente</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2023)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Results submitted and presented to LGU; audit reports archived, Audit findings used for planning.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">12 Systems for E Governance – LGUs</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2023–2024, Ready for Rollout)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER / DISKARTE – KKK</p>
+                    <p class="text-xs text-gray-500">Systems ready; LGUs in budgeting phase; full paper with user manual and softwares completed.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Benchmarking Visit of Information Technology and Community Extension Best Practices among State Universities and Private Universities in the Philippines</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2023)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Photo documentation and Narrative reports stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">1st Annual Gender Responsive Research and Extension FebFest</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2024)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Photo documentation and Narrative reports stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Coaching Session on Digital Marketing: Unleash the Buying Power: Coaching on Market Trends and Strategies</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2024)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Photo documentation and Narrative reports stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Ignite your MSMEs Digital Potential: A Comprehensive Master Class in Online Marketing</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2024)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Photo documentation and Narrative reports stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Product Logo Consultation and Coaching</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2024)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Outputs stored; DTI coordination letters archived, completed and used by MSME’s, Branding support for MSME’s.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">2021 National Women’s Month Celebration</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2025)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** [Not Specified]</p>
+                    <p class="text-xs text-gray-500">Photo documentation and Narrative reports stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Creative Seminar in Portfolio Making</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2025)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Photo documentation and Narrative reports stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Behind the Screen: Digital Marketing Seminar</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2025)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Photo documentation and Narrative reports stored.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">System Development (2 units) – LGU Talisay</h4>
+                        <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">Completed (2025, Deployed)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – System Development</p>
+                    <p class="text-xs text-gray-500">Fully developed and deployed.</p>
+                </div>
+                </div>
+
+            <div id="tab-content-not-implemented" class="tab-content space-y-4 hidden">
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Development of Automated Barangay Record Management System with Data Analytics</h4>
+                        <span class="text-xs font-medium text-red-700 bg-red-100 px-2 py-0.5 rounded">Completed but Undeployed (2021)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – System Development</p>
+                    <p class="text-xs text-gray-500">The project was not deployed in 2021 due to barangay scheduling conflicts and budget constraints. A MOA is already in place, and with the budget now available, deployment is scheduled for this year.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">School Online Success (SOS)</h4>
+                        <span class="text-xs font-medium text-red-700 bg-red-100 px-2 py-0.5 rounded">Not Implemented (2021)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – System Development</p>
+                    <p class="text-xs text-gray-500">The beneficiary school does not have an allocated budget for implementation.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Grabsikel</h4>
+                        <span class="text-xs font-medium text-red-700 bg-red-100 px-2 py-0.5 rounded">Not Implemented (2021)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER / DISKARTE – KKK</p>
+                    <p class="text-xs text-gray-500">Rejected by the funding agency as it does not support technology-based research.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Project VIBES</h4>
+                        <span class="text-xs font-medium text-red-700 bg-red-100 px-2 py-0.5 rounded">Not Implemented (2023)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER / DISKARTE – KKK</p>
+                    <p class="text-xs text-gray-500">Proposal created but put on hold due to lack of funds.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Extension Linkages in NCR</h4>
+                        <span class="text-xs font-medium text-red-700 bg-red-100 px-2 py-0.5 rounded">Not Implemented (2023)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">Proposal folder with communication record; not approved due to budget issue and travel constraint.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">IT Policy Formation – LGU San Vicente</h4>
+                        <span class="text-xs font-medium text-red-700 bg-red-100 px-2 py-0.5 rounded">Not Implemented (2023)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Consultancy</p>
+                    <p class="text-xs text-gray-500">No MOA due to rescheduling by LGU partner.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">File Management Training – LGU Talisay</h4>
+                        <span class="text-xs font-medium text-red-700 bg-red-100 px-2 py-0.5 rounded">Cancelled (2023)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – Skills Training</p>
+                    <p class="text-xs text-gray-500">Cancelled due to schedule conflicts.</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="text-lg font-semibold text-gray-800">Filing System – DTI Camarines Norte</h4>
+                        <span class="text-xs font-medium text-red-700 bg-red-100 px-2 py-0.5 rounded">Completed but Undeployed (2023)</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">**Aligned Agenda:** PRESS ENTER – System Development</p>
+                    <p class="text-xs text-gray-500">Awaiting budget for deployment.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    
+    <section class="bg-[#5A2C9D] p-8 rounded-xl shadow-xl text-center text-white">
+        <h3 class="text-2xl font-bold mb-3">Have a Project Idea?</h3>
+        <p class="mb-5">Faculty, students, and community partners are encouraged to submit proposals for new extension activities.</p>
+        <a href="#" class="inline-block bg-white text-[#5A2C9D] font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100 transition duration-300">
+            Submit Your Proposal →
+        </a>
+    </section>
+
+</main>
+
+<footer>[Footer Placeholder]</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const currentYearSpan = document.getElementById('current-year');
+
+        // 0. Set Current Year in Footer (Requires Footer Placeholder to be filled later)
+        if (currentYearSpan) {
+            currentYearSpan.textContent = new Date().getFullYear();
+        }
+
+        // --- Tab Functionality for Project List ---
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.getAttribute('data-tab');
+
+                // 1. Hide all tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+
+                // 2. Reset all tab buttons to inactive style
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('bg-[#961c1c]', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                });
+
+                // 3. Show the active content and set the active button style
+                document.getElementById(`tab-content-${targetTab}`).classList.remove('hidden');
+                button.classList.add('bg-[#961c1c]', 'text-white');
+                button.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+            });
+        });
+        
+        
+    });
+</script>
+
+</body>
+</html>
