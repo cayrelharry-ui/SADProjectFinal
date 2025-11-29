@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check if user is logged in
     const userRole = localStorage.getItem('userRole');
     if (!userRole) {
-        window.location.href = 'LogIn.html';
+        window.location.href = '../HTML/LogIn.html';
         return;
     }
     
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Logout handler
     document.getElementById('logoutBtn').addEventListener('click', function() {
         localStorage.removeItem('userRole');
-        window.location.href = 'LogIn.html';
+        window.location.href = '../HTML/LogIn.html';
     });
     
     // Button handlers

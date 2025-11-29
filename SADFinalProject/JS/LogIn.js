@@ -22,8 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const username = this.getAttribute('data-username');
             usernameInput.value = username;
             passwordInput.value = 'password123';
-            
-            // Highlight the selected credential
+          
             credentialItems.forEach(i => i.style.backgroundColor = '');
             this.style.backgroundColor = '#e9ecef';
         });
@@ -70,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Redirect to admin panel after a short delay
                 setTimeout(() => {
-                    window.location.href = 'Admin_Panel.html';
+                    window.location.href = '../HTML/Admin_Panel.html';
                 }, 1000);
             } else {
                 // Failed login
