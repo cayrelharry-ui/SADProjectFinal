@@ -17,18 +17,24 @@
                     <h5 class="text-white text-center mb-4">Admin Panel</h5>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#" data-section="user">
-                                <i class="bi bi-person"></i> User Management
+                            <a class="nav-link active" href="#" data-section="dashboard">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="user-management">
+                                <i class="bi bi-people"></i> User Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="approvals">
+                                <i class="bi bi-person-check"></i> Pending Approvals
+                                <span class="badge bg-danger ms-1 d-none" id="pendingCountBadge">0</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#" data-section="content">
                                 <i class="bi bi-file-text"></i> Content Management
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-section="groups">
-                                <i class="bi bi-people"></i> Groups
                             </a>
                         </li>
                         <li class="nav-item">
@@ -48,7 +54,7 @@
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Admin Dashboard</h1>
+                    <h1 class="h2" id="sectionTitle">Admin Dashboard</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
                             <button type="button" class="btn btn-sm btn-outline-secondary" id="logoutBtn">
@@ -58,66 +64,191 @@
                     </div>
                 </div>
 
-                <!-- User Info Card -->
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Welcome, <span id="currentUserRole">User</span>!</h5>
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="section-content">
+                    <!-- User Info Card -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Welcome, <span id="currentUserRole">User</span>!</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>You are logged in as: <span id="userRoleDisplay" class="badge bg-secondary"></span></p>
+                            <p>Your access level allows you to: <span id="userPermissions"></span></p>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p>You are logged in as: <span id="userRoleDisplay" class="badge bg-secondary"></span></p>
-                        <p>Your access level allows you to: <span id="userPermissions"></span></p>
+
+                    <!-- Quick Stats -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card text-white bg-success">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="activeUsersCount">0</h4>
+                                            <p>Active Users</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="bi bi-people fs-1"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-white bg-warning">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="pendingUsersCount">0</h4>
+                                            <p>Pending Approvals</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="bi bi-clock fs-1"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-white bg-info">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="totalUsersCount">0</h4>
+                                            <p>Total Users</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="bi bi-person-check fs-1"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-white bg-secondary">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="inactiveUsersCount">0</h4>
+                                            <p>Inactive Users</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="bi bi-person-x fs-1"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0">Recent Activity</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="recentActivity" class="list-group list-group-flush">
+                                <div class="list-group-item text-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Loading recent activity...</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-
-                <!-- Manage Section -->
-                <div class="card">
-                    <div class="card-header bg-secondary text-white">
-                        <h5 class="mb-0">Management Panel</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <i class="bi bi-folder"></i> Projects, events, and proposals
-                                    </li>
-                                    <li class="list-group-item">
-                                        <i class="bi bi-person-check"></i> Users and permissions
-                                    </li>
-                                    <li class="list-group-item">
-                                        <i class="bi bi-file-earmark-text"></i> Reports and content
-                                    </li>
-                                    <li class="list-group-item">
-                                        <i class="bi bi-speedometer2"></i> Real-time analytics dashboard
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <i class="bi bi-eye"></i> Visitor stats
-                                    </li>
-                                    <li class="list-group-item">
-                                        <i class="bi bi-envelope"></i> Proposal submissions
-                                    </li>
-                                    <li class="list-group-item">
-                                        <i class="bi bi-bar-chart"></i> Project engagement metrics
-                                    </li>
-                                </ul>
+                <!-- User Management Section -->
+                <div id="user-management-section" class="section-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">User Management</h5>
+                            <button class="btn btn-light btn-sm" onclick="refreshUserData()">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Full Name</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th>Status</th>
+                                            <th>Created</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersTableBody">
+                                        <tr>
+                                            <td colspan="7" class="text-center">
+                                                <div class="spinner-border" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <p class="mt-2">Loading users...</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="mt-4">
-                            <button class="btn btn-primary me-2" id="manageBtn">
-                                <i class="bi bi-gear"></i> Manage Settings
-                            </button>
-                            <button class="btn btn-success me-2" id="viewDashboardBtn">
-                                <i class="bi bi-graph-up"></i> View Dashboard
-                            </button>
-                            <button class="btn btn-info" id="exportBtn">
-                                <i class="bi bi-download"></i> Export Data
-                            </button>
+                <!-- Pending Approvals Section -->
+                <div id="approvals-section" class="section-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">Pending Account Approvals</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="pendingApprovals">
+                                <div class="text-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Loading pending approvals...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Management Section -->
+                <div id="content-section" class="section-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">Content Management</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Content management features will be implemented here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Section -->
+                <div id="analytics-section" class="section-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Analytics Dashboard</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Analytics and reporting features will be implemented here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="settings-section" class="section-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0">System Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>System configuration and settings will be implemented here.</p>
                         </div>
                     </div>
                 </div>

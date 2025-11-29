@@ -18,16 +18,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Get user
-    $stmt = $conn->prepare("SELECT user_id, full_name, email, password, role, status FROM users WHERE full_name = ? AND status = 'active' LIMIT 1");
-    $stmt->bind_param("s", $input);
+    // Get user - check both email and full_name
+    $stmt = $conn->prepare("SELECT user_id, full_name, email, password, role, status FROM users WHERE (email = ? OR full_name = ?) LIMIT 1");
+    $stmt->bind_param("ss", $input, $input);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
         
-        // Verify password with the fresh hash
+        // Check if account is active
+        if ($user['status'] !== 'active') {
+            echo json_encode(['status' => 'error', 'message' => 'Account pending approval. Please wait for administrator approval.']);
+            $stmt->close();
+            $conn->close();
+            exit;
+        }
+        
+        // Verify password
         if (password_verify($password, $user['password'])) {
             // Login successful
             $_SESSION['user_id'] = $user['user_id'];
@@ -42,10 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'role' => $user['role']
             ]);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid password. Please use "password123"']);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid password.']);
         }
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'User not found. Try: admin, faculty, coordinator, or public']);
+        echo json_encode(['status' => 'error', 'message' => 'User not found.']);
     }
 
     $stmt->close();
