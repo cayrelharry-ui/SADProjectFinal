@@ -9,30 +9,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set user role in the UI
     document.getElementById('currentUserRole').textContent = userRole;
     document.getElementById('userRoleDisplay').textContent = userRole;
-    document.getElementById('roleSelect').value = userRole;
     
     // Set user permissions based on role
     setUserPermissions(userRole);
     
     // Update UI based on user role
     updateUIForRole(userRole);
-    
-    // Role change handler
-    document.getElementById('roleSelect').addEventListener('change', function() {
-        const newRole = this.value;
-        localStorage.setItem('userRole', newRole);
-        document.getElementById('currentUserRole').textContent = newRole;
-        document.getElementById('userRoleDisplay').textContent = newRole;
-        setUserPermissions(newRole);
-        updateUIForRole(newRole);
-        
-        // Show role change alert
-        const alert = document.getElementById('roleChangeAlert');
-        alert.style.display = 'block';
-        setTimeout(() => {
-            alert.style.display = 'none';
-        }, 3000);
-    });
     
     // Logout handler
     document.getElementById('logoutBtn').addEventListener('click', function() {
