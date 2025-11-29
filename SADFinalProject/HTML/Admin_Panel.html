@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel (Back-end)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../CSS/Admin_Panel.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
+                <div class="position-sticky pt-3">
+                    <h5 class="text-white text-center mb-4">Admin Panel</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" data-section="user">
+                                <i class="bi bi-person"></i> User Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="content">
+                                <i class="bi bi-file-text"></i> Content Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="groups">
+                                <i class="bi bi-people"></i> Groups
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="analytics">
+                                <i class="bi bi-graph-up"></i> Analytics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="settings">
+                                <i class="bi bi-gear"></i> Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Admin Dashboard</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="logoutBtn">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Info Card -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Welcome, <span id="currentUserRole">User</span>!</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>You are logged in as: <span id="userRoleDisplay" class="badge bg-secondary"></span></p>
+                        <p>Your access level allows you to: <span id="userPermissions"></span></p>
+                    </div>
+                </div>
+
+                <!-- Role-based Access Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Role-based Access Control</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="roleSelect" class="form-label fw-bold">Current Role:</label>
+                            <select class="form-select" id="roleSelect">
+                                <option value="admin">Admin</option>
+                                <option value="faculty">Faculty</option>
+                                <option value="coordinator">Coordinator</option>
+                                <option value="public">Public User</option>
+                            </select>
+                        </div>
+                        <div class="alert alert-warning" id="roleChangeAlert" style="display: none;">
+                            <i class="bi bi-exclamation-triangle"></i> Role change simulated for demo purposes only.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manage Section -->
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">Management Panel</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <i class="bi bi-folder"></i> Projects, events, and proposals
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="bi bi-person-check"></i> Users and permissions
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="bi bi-file-earmark-text"></i> Reports and content
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="bi bi-speedometer2"></i> Real-time analytics dashboard
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <i class="bi bi-eye"></i> Visitor stats
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="bi bi-envelope"></i> Proposal submissions
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="bi bi-bar-chart"></i> Project engagement metrics
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button class="btn btn-primary me-2" id="manageBtn">
+                                <i class="bi bi-gear"></i> Manage Settings
+                            </button>
+                            <button class="btn btn-success me-2" id="viewDashboardBtn">
+                                <i class="bi bi-graph-up"></i> View Dashboard
+                            </button>
+                            <button class="btn btn-info" id="exportBtn">
+                                <i class="bi bi-download"></i> Export Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Alert -->
+                <div class="alert alert-info mt-4" id="statusAlert" role="alert">
+                    <strong>Status:</strong> <span id="statusMessage">Ready</span>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../JS/Admin_Panel.js"></script>
+</body>
+</html>
