@@ -18,7 +18,7 @@
 
 .sidebar .nav-link.active {
     color: #fff;
-    background-color: #007bff;
+    background-color: #7a39c9;
 }
 
 .sidebar .nav-link i {
@@ -37,5 +37,5 @@
 
 .list-group-item i {
     margin-right: 10px;
-    color: #6c757d;
+    color: #7a39c9;
 }
