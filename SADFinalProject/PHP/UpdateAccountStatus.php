@@ -2,12 +2,6 @@
 session_start();
 header('Content-Type: application/json');
 
-// Check if user is admin (you should add proper authentication)
-// if (!isset($_SESSION['logged_in']) || $_SESSION['role'] !== 'admin') {
-//     echo json_encode(['status' => 'error', 'message' => 'Unauthorized access.']);
-//     exit;
-// }
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_POST['user_id'];
     $status = $_POST['status'];
