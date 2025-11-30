@@ -164,80 +164,156 @@
 <body>
 
 
-    <!-- WELCOME / LOGIN MODAL OVERLAY -->
-    <!-- This defaults to visible. JS will hide it when "Guest" is clicked. -->
+    <!-- WELCOME / LOGIN / REGISTER MODAL -->
     <div id="welcome-modal"
         class="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity duration-500 opacity-100">
 
         <!-- Modal Card -->
         <div
-            class="bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row max-w-4xl w-[90%] md:w-[800px] overflow-hidden transform transition-all duration-500 scale-100">
+            class="bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row max-w-4xl w-[90%] md:w-[800px] overflow-hidden transform transition-all duration-500 scale-100 h-auto">
 
-            <!-- LEFT SIDE: Branding (Purple Background) -->
+            <!-- LEFT SIDE: Branding (Purple) -->
             <div
                 class="w-full md:w-5/12 bg-[#5A2C9D] p-8 flex flex-col justify-center items-center text-center relative overflow-hidden">
-                <!-- Decorative Circle -->
                 <div class="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
                 <div class="absolute bottom-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
 
-                <!-- Logo Placeholder -->
-                <div class="  mb-6 relative z-10">
-                    <img src="image.png" alt="CNSC Logo"
-                        class="w-30 h-20 object-contain">
-                    <!-- Note: Make sure the path above matches your actual logo path -->
+                <div class="bg-white p-4 rounded-full shadow-lg mb-6 relative z-10">
+                    <img src="image.png" alt="CNSC Logo" class="w-16 h-16 object-contain">
                 </div>
 
                 <h2 class="text-2xl font-extrabold text-white mb-2 relative z-10">CCMS Extension</h2>
                 <p class="text-purple-200 text-sm relative z-10">Bridging Technology & Community</p>
             </div>
 
-            <!-- RIGHT SIDE: Login Form -->
-            <div class="w-full md:w-7/12 p-8 md:p-12 bg-white relative">
+            <!-- RIGHT SIDE: Forms -->
+            <div class="w-full md:w-7/12 p-8 md:p-12 bg-white relative transition-all duration-300">
 
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl font-bold text-gray-900">Welcome Back!</h3>
-                    <p class="text-sm text-gray-500">Please enter your details to access your account.</p>
+                <!-- ============================== -->
+                <!-- VIEW 1: LOGIN FORM (Default)   -->
+                <!-- ============================== -->
+                <div id="login-view" class="transition-opacity duration-300 block">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold text-gray-900">Welcome Back!</h3>
+                        <p class="text-sm text-gray-500">Log in to your institutional account.</p>
+                    </div>
+
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email Address</label>
+                            <input type="email"
+                                class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] focus:bg-white focus:ring-0 text-sm transition duration-200"
+                                placeholder="student@cnsc.edu.ph">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Password</label>
+                            <input type="password"
+                                class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] focus:bg-white focus:ring-0 text-sm transition duration-200"
+                                placeholder="••••••••">
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <label class="flex items-center cursor-pointer hover:text-gray-700"><input type="checkbox"
+                                    class="mr-2 rounded text-[#5A2C9D]"> Remember me</label>
+                            <a href="#" class="hover:text-[#5A2C9D] hover:underline">Forgot Password?</a>
+                        </div>
+                        <button type="button"
+                            class="w-full py-3 bg-[#5A2C9D] hover:bg-[#4C2684] text-white font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-0.5">Sign
+                            In</button>
+                    </form>
+
+                    <div class="mt-6 text-center text-sm text-gray-600">
+                        Don't have an account?
+                        <button id="to-register-btn"
+                            class="text-[#5A2C9D] font-bold hover:underline focus:outline-none">Sign Up</button>
+                    </div>
                 </div>
 
-                <!-- Login Form -->
-                <form class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email Address</label>
-                        <input type="email"
-                            class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] focus:bg-white focus:ring-0 text-sm transition duration-200"
-                            placeholder="student@cnsc.edu.ph">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Password</label>
-                        <input type="password"
-                            class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] focus:bg-white focus:ring-0 text-sm transition duration-200"
-                            placeholder="••••••••">
+                <!-- ============================== -->
+                <!-- VIEW 2: REGISTER FORM (Hidden) -->
+                <!-- ============================== -->
+                <div id="register-view" class="hidden transition-opacity duration-300">
+                    <div class="text-center mb-4">
+                        <h3 class="text-2xl font-bold text-gray-900">Create Account</h3>
+                        <p class="text-sm text-gray-500">Join the Extension Services Portal.</p>
                     </div>
 
-                    <div class="flex items-center justify-between text-xs text-gray-500">
-                        <label class="flex items-center cursor-pointer hover:text-gray-700">
-                            <input type="checkbox" class="mr-2 rounded text-[#5A2C9D] focus:ring-[#5A2C9D]"> Remember me
-                        </label>
-                        <a href="#" class="hover:text-[#5A2C9D] hover:underline">Forgot Password?</a>
+                    <form class="space-y-3">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">First Name</label>
+                                <input type="text"
+                                    class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Last Name</label>
+                                <input type="text"
+                                    class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] text-sm">
+                            </div>
+                        </div>
+
+                        <!-- ROLE SELECTION DROPDOWN -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">I am a...</label>
+                            <select id="role-select"
+                                class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] text-sm cursor-pointer">
+                                <option value="public">Public User (Guest/Student)</option>
+                                <option value="faculty">Faculty Member</option>
+                                <option value="coordinator">Extension Coordinator</option>
+                            </select>
+                        </div>
+
+                        <!-- === RED NOTICE BOX (Hidden by default) === -->
+                        <div id="admin-notice" class="hidden bg-red-50 border-l-4 border-red-500 p-3 rounded-r-md">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-xs text-red-700 font-semibold">Approval Required</p>
+                                    <p class="text-xs text-red-600 mt-0.5">
+                                        This account type must be verified by an Administrator. You will not have access
+                                        until approved.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email Address</label>
+                            <input type="email"
+                                class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Password</label>
+                            <input type="password"
+                                class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] text-sm">
+                        </div>
+
+                        <button type="button"
+                            class="w-full py-3 bg-[#5A2C9D] hover:bg-[#4C2684] text-white font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 mt-2">Register</button>
+                    </form>
+
+                    <div class="mt-4 text-center text-sm text-gray-600">
+                        Already have an account?
+                        <button id="to-login-btn"
+                            class="text-[#5A2C9D] font-bold hover:underline focus:outline-none">Sign In</button>
                     </div>
+                </div>
 
-                    <button type="button"
-                        class="w-full py-3 bg-[#5A2C9D] hover:bg-[#4C2684] text-white font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-0.5">
-                        Sign In
-                    </button>
-                </form>
-
-                <!-- Divider -->
+                <!-- Shared: Divider -->
                 <div class="relative my-6">
                     <div class="absolute inset-0 flex items-center">
                         <div class="w-full border-t border-gray-200"></div>
                     </div>
-                    <div class="relative flex justify-center text-xs">
-                        <span class="px-2 bg-white text-gray-500">OR</span>
-                    </div>
+                    <div class="relative flex justify-center text-xs"><span
+                            class="px-2 bg-white text-gray-500">OR</span></div>
                 </div>
 
-                <!-- CONTINUE AS GUEST BUTTON -->
+                <!-- Shared: Guest Button -->
                 <button id="continue-guest-btn"
                     class="w-full py-3 border-2 border-gray-200 hover:border-[#5A2C9D] text-gray-600 hover:text-[#5A2C9D] font-bold rounded-lg transition duration-300 flex items-center justify-center group">
                     Continue as Guest
@@ -250,6 +326,7 @@
             </div>
         </div>
     </div>
+
 
     <header class="fixed top-0 left-0 w-full bg-white shadow-md z-50">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -283,13 +360,15 @@
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
                             <a href="history.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">History</a>
-                            <a href="mission-vision.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Mission &
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Mission
+                                &
                                 Vision</a>
+                            <a href="mission-vision.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Upcoming
+                                Events & News</a>
                             <a href="quality-policy.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Quality
-                                Policy</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Featured
+                                Projects</a>
                         </div>
                     </li>
 
@@ -308,14 +387,11 @@
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
                             <a href="executive-office.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Executive
-                                Office</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Projects</a>
                             <a href="governing-board.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Governing
-                                Board</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]"></a>
                             <a href="org-chart.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Organizational
-                                Chart</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg"></a>
                         </div>
                     </li>
 
@@ -334,12 +410,17 @@
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
                             <a href="news-engineering.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Engineering</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Event
+                                Calendar</a>
                             <a href="news-arts-sciences.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Arts &
-                                Sciences</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Upcoming
+                                Events</a>
                             <a href="news-agriculture.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Agriculture</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">News
+                                Articles</a>
+                            <a href="news-agriculture.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Event
+                                Gallery</a>
                         </div>
                     </li>
 
@@ -358,12 +439,13 @@
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
                             <a href="requirements.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Requirements</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Partner
+                                Organizations</a>
                             <a href="application-form.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Application
-                                Form</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">MOA</a>
                             <a href="scholarships.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Scholarships</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Partner
+                                With Us</a>
                         </div>
                     </li>
 
@@ -384,11 +466,9 @@
                             <a href="journals.html"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Journals</a>
                             <a href="call-for-papers.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Call for
-                                Papers</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Projects</a>
                             <a href="ethics-board.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Ethics
-                                Board</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Archive</a>
                         </div>
                     </li>
 
@@ -407,11 +487,12 @@
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
                             <a href="contact-projects.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Projects</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Inquiries</a>
                             <a href="contact-partnerships.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Partnerships</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Location</a>
                             <a href="contact-forms.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Forms</a>
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Directory
+                                of Extension Offices</a>
                         </div>
                     </li>
 
@@ -462,7 +543,18 @@
                             Settings
                         </a>
 
-                        <!-- Logout Link (Optional but recommended) -->
+                        <!-- Community Forum Link -->
+                        <a href="forum.html"
+                            class="block px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg flex items-center transition duration-150">
+                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                </path>
+                            </svg>
+                            Community Forum
+                        </a>
+
+
                         <a href="login.html"
                             class="block px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg flex items-center transition duration-150">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -631,8 +723,8 @@
                 <!-- UPDATED HEIGHT: 300px mobile, 400px desktop -->
                 <div class="relative w-full h-[300px] lg:h-[400px]">
                     <!-- Added 'brightness-50' to dim the image significantly so text colors pop -->
-                    <img src="img1.jpg" class="d-block w-full h-full object-cover brightness-50"
-                        alt="Community Outreach">
+                    <img src="Projects/Youth Forum/YouthForumPic1.png"
+                        class="d-block w-full h-full object-cover brightness-50" alt="Community Outreach">
 
                     <!-- Caption -->
                     <div
@@ -641,10 +733,9 @@
                             <span
                                 class="uppercase tracking-widest text-xs font-bold text-yellow-400 mb-1 block">Featured
                                 Project</span>
-                            <h1 class="text-2xl md:text-4xl font-extrabold mb-2 leading-tight">Empowering Barangays
-                                through <br> Digital Literacy</h1>
-                            <p class="text-sm md:text-base text-gray-200 mb-4 max-w-2xl line-clamp-2">A success story of
-                                bridging the digital divide in coastal communities.</p>
+                            <h1 class="text-2xl md:text-4xl font-extrabold mb-2 leading-tight">Youth Forum <br> </h1>
+                            <p class="text-sm md:text-base text-gray-200 mb-4 max-w-2xl line-clamp-2">Unity
+                                and Diversity: Empowering Youth for Inclusive Environmental Sustainability</p>
                             <a href="#"
                                 class="inline-block px-5 py-2 bg-[#5A2C9D] hover:bg-[#4a2482] text-white font-semibold rounded-full transition duration-300 text-xs md:text-sm">Read
                                 Story</a>
@@ -657,18 +748,18 @@
             <div class="carousel-item">
                 <div class="relative w-full h-[300px] lg:h-[400px]">
                     <!-- Added 'brightness-50' -->
-                    <img src="event4.jpg" class="d-block w-full h-full object-cover brightness-50"
-                        alt="Leadership Training">
+                    <img src="Projects/Industry Consultation/ICPic1.png"
+                        class="d-block w-full h-full object-cover brightness-50" alt="Leadership Training">
 
                     <div
                         class="absolute bottom-0 left-0 w-full p-6 md:p-10 text-white text-center md:text-left flex flex-col justify-center h-full">
                         <div class="max-w-4xl mx-auto md:mx-0 mt-auto">
                             <span class="uppercase tracking-widest text-xs font-bold text-blue-400 mb-1 block">Event
                                 Highlight</span>
-                            <h1 class="text-2xl md:text-4xl font-extrabold mb-2 leading-tight">BURUGKUSAN 2025: <br>
-                                Quarterly Leadership Training</h1>
-                            <p class="text-sm md:text-base text-gray-200 mb-4 max-w-2xl line-clamp-2">"Forging Leaders,
-                                Strengthening Bonds: Leadership and Governance in Action."</p>
+                            <h1 class="text-2xl md:text-4xl font-extrabold mb-2 leading-tight">Industry Consultation and
+                                Planning Session for ICT and Tourism-Support<BR></h1>
+                            <p class="text-sm md:text-base text-gray-200 mb-4 max-w-2xl line-clamp-2">ICT Tourism
+                                Integration in collaboration with the DICT</p>
                             <a href="#"
                                 class="inline-block px-5 py-2 bg-white text-[#5A2C9D] hover:bg-gray-100 font-semibold rounded-full transition duration-300 text-xs md:text-sm">View
                                 Gallery</a>
@@ -681,17 +772,18 @@
             <div class="carousel-item">
                 <div class="relative w-full h-[300px] lg:h-[400px]">
                     <!-- Added 'brightness-50' -->
-                    <img src="event3.jpg" class="d-block w-full h-full object-cover brightness-50" alt="Seminar">
+                    <img src="Projects/Skill Enhancement Workshop/image.png"
+                        class="d-block w-full h-full object-cover brightness-50" alt="Seminar">
 
                     <div
                         class="absolute bottom-0 left-0 w-full p-6 md:p-10 text-white text-center md:text-left flex flex-col justify-center h-full">
                         <div class="max-w-4xl mx-auto md:mx-0 mt-auto">
-                            <span class="uppercase tracking-widest text-xs font-bold text-green-400 mb-1 block">Upcoming
-                                Seminar</span>
-                            <h1 class="text-2xl md:text-4xl font-extrabold mb-2 leading-tight">GAD Mainstreaming & <br>
-                                Student Re-Orientation</h1>
-                            <p class="text-sm md:text-base text-gray-200 mb-4 max-w-2xl line-clamp-2">Highlighting our
-                                commitment to gender and development in all extension activities.</p>
+                            <span
+                                class="uppercase tracking-widest text-xs font-bold text-green-400 mb-1 block">Workshop</span>
+                            <h1 class="text-2xl md:text-4xl font-extrabold mb-2 leading-tight">Skills Enhancement
+                                Training Workshop</h1>
+                            <p class="text-sm md:text-base text-gray-200 mb-4 max-w-2xl line-clamp-2">ICT Enrichment
+                                Workshop Towards an Inclusive LGU Talisay Techie Workforce</p>
                             <a href="#"
                                 class="inline-block px-5 py-2 bg-[#5A2C9D] hover:bg-[#4a2482] text-white font-semibold rounded-full transition duration-300 text-xs md:text-sm">Register
                                 Now</a>
@@ -846,7 +938,7 @@
                             <div
                                 class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100">
                                 <div class="relative h-48 overflow-hidden">
-                                    <img src="event1.jpg" alt="CCMS Event"
+                                    <img src="Projects/Skill Enhancement Workshop/image.png" alt="CCMS Event"
                                         class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
                                     <div
                                         class="absolute top-4 left-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -861,9 +953,9 @@
                                         </svg> Nov 15, 2025</div>
                                     <h3
                                         class="text-xl font-bold mt-1 mb-3 text-gray-900 group-hover:text-[#5A2C9D] transition">
-                                        Final Exam Schedule Released</h3>
-                                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">Check the official college
-                                        bulletin for the complete schedule of final examinations this semester.</p>
+                                        Skill Enhancement Workshop</h3>
+                                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">Join our free workshop on MS Word
+                                        & MS Excel this Saturday at the Main Hall.</p>
                                     <a href="#"
                                         class="inline-block text-[#5A2C9D] font-bold text-sm hover:underline">Read Full
                                         Story</a>
@@ -874,7 +966,7 @@
                             <div
                                 class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100">
                                 <div class="relative h-48 overflow-hidden">
-                                    <img src="event3.jpg" alt="Seminar"
+                                    <img src="Projects/PRESS ENTER 2.0/PRESSPic1.png" alt="Seminar"
                                         class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
                                     <div
                                         class="absolute top-4 left-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -889,9 +981,12 @@
                                         </svg> Nov 20, 2025</div>
                                     <h3
                                         class="text-xl font-bold mt-1 mb-3 text-gray-900 group-hover:text-[#5A2C9D] transition">
-                                        Cybersecurity Workshop</h3>
-                                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">Join our free workshop on ethical
-                                        hacking and network security this Saturday at the Main Hall.</p>
+                                        PRESS ENTER 2.0</h3>
+                                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">Implemented from 2019 to 2023 by
+                                        CNSC-ICS, this project empowered Camarines Norte through digital literacy
+                                        training, ICT
+                                        consultancy for businesses, and e-government solutions, benefiting over 1,000
+                                        individuals and paving the way for PRESS ENTER 2.0.</p>
                                     <a href="#"
                                         class="inline-block text-[#5A2C9D] font-bold text-sm hover:underline">Read Full
                                         Story</a>
@@ -902,7 +997,7 @@
                             <div
                                 class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100">
                                 <div class="relative h-48 overflow-hidden">
-                                    <img src="event4.jpg" alt="Alumni"
+                                    <img src="Projects/Youth Forum/YouthForumPic1.png" alt="Alumni"
                                         class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
                                     <div
                                         class="absolute top-4 left-4 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -917,9 +1012,9 @@
                                         </svg> Oct 05, 2025</div>
                                     <h3
                                         class="text-xl font-bold mt-1 mb-3 text-gray-900 group-hover:text-[#5A2C9D] transition">
-                                        Alumnus Lands Role at Google</h3>
-                                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">BSIT graduate, Jane Doe, shares
-                                        her journey from CNSC to a global tech company.</p>
+                                        Youth Forum</h3>
+                                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">Unity
+                                        and Diversity: Empowering Youth for Inclusive Environmental Sustainability</p>
                                     <a href="#"
                                         class="inline-block text-[#5A2C9D] font-bold text-sm hover:underline">Read Full
                                         Story</a>
@@ -970,29 +1065,6 @@
                             </div>
                         </div>
 
-                        <!-- Quick Links Widget -->
-                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-                            <h4 class="font-bold text-gray-900 mb-4 uppercase tracking-wider text-xs">Quick Links</h4>
-                            <ul class="space-y-3">
-                                <li><a href="#"
-                                        class="flex items-center text-gray-600 hover:text-[#5A2C9D] text-sm font-medium transition"><span
-                                            class="w-2 h-2 bg-gray-300 rounded-full mr-3 group-hover:bg-[#5A2C9D]"></span>
-                                        Student Portal</a></li>
-                                <li><a href="#"
-                                        class="flex items-center text-gray-600 hover:text-[#5A2C9D] text-sm font-medium transition"><span
-                                            class="w-2 h-2 bg-gray-300 rounded-full mr-3 group-hover:bg-[#5A2C9D]"></span>
-                                        Faculty Login</a></li>
-                                <li><a href="#"
-                                        class="flex items-center text-gray-600 hover:text-[#5A2C9D] text-sm font-medium transition"><span
-                                            class="w-2 h-2 bg-gray-300 rounded-full mr-3 group-hover:bg-[#5A2C9D]"></span>
-                                        Download Forms</a></li>
-                                <li><a href="#"
-                                        class="flex items-center text-gray-600 hover:text-[#5A2C9D] text-sm font-medium transition"><span
-                                            class="w-2 h-2 bg-gray-300 rounded-full mr-3 group-hover:bg-[#5A2C9D]"></span>
-                                        Extension Manual</a></li>
-                            </ul>
-                        </div>
-
                     </div>
                 </aside>
 
@@ -1019,7 +1091,7 @@
                     <div
                         class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 flex flex-col border border-gray-100">
                         <div class="relative h-64 overflow-hidden">
-                            <img src="pro1.avif" alt="Digital Literacy"
+                            <img src="Projects/PRESS ENTER 2.0/PRESSPic1.png" alt="Digital Literacy"
                                 class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
                             <!-- Status Badge -->
                             <div
@@ -1038,10 +1110,13 @@
                             </div>
 
                             <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#5A2C9D] transition">
-                                Barangay Digital Literacy</h3>
-                            <p class="text-gray-600 text-sm mb-6 flex-1 leading-relaxed">Empowering 500+ residents in
-                                coastal barangays with essential computer skills, internet safety knowledge, and access
-                                to digital government services.</p>
+                                PRESS ENTER 2.0 (MOA with 6 LGUs)</h3>
+                            <p class="text-gray-600 text-sm mb-6 flex-1 leading-relaxed">
+                                Implemented from 2019 to 2023 by CNSC-ICS,
+                                this project empowered Camarines Norte through digital literacy training, ICT
+                                consultancy for businesses, and e-government solutions, benefiting over 1,000
+                                individuals and paving the way for PRESS ENTER 2.0.
+                            </p>
 
                             <a href="#"
                                 class="inline-flex items-center text-[#5A2C9D] font-bold text-sm hover:translate-x-2 transition duration-300 uppercase tracking-wide">
@@ -1058,7 +1133,7 @@
                     <div
                         class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 flex flex-col border border-gray-100">
                         <div class="relative h-64 overflow-hidden">
-                            <img src="pro2.webp" alt="Eco-Tech Waste Management"
+                            <img src="Projects/TOS System/SystemSS.png" alt="Eco-Tech Waste Management"
                                 class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
                             <div
                                 class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm">
@@ -1074,10 +1149,12 @@
                             </div>
 
                             <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#5A2C9D] transition">
-                                Eco-Tech Waste Drive</h3>
-                            <p class="text-gray-600 text-sm mb-6 flex-1 leading-relaxed">Successfully deployed IoT-based
-                                waste segregation bins and conducted environmental awareness seminars in partnership
-                                with the Municipality of Daet.</p>
+                                TOS System - Anita V Romero Elementary School</h3>
+                            <p class="text-gray-600 text-sm mb-6 flex-1 leading-relaxed">Automated TOS and Test Paper
+                                Generation Sytem.This system provides an intuitive interface for automated Table of
+                                Specifications (TOS)
+                                and test paper generation, ensuring accuracy and standardizing assessment formats across
+                                the institution.</p>
 
                             <a href="#"
                                 class="inline-flex items-center text-[#5A2C9D] font-bold text-sm hover:translate-x-2 transition duration-300 uppercase tracking-wide">
@@ -1094,7 +1171,7 @@
                     <div
                         class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 flex flex-col border border-gray-100">
                         <div class="relative h-64 overflow-hidden">
-                            <img src="pro3.webp" alt="SME Tech Up"
+                            <img src="Projects/Website Dev/WebDevPic.png" alt="SME Tech Up"
                                 class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700">
                             <div
                                 class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-sm flex items-center">
@@ -1109,11 +1186,12 @@
                                 class="absolute top-0 left-8 right-0 h-1 bg-gradient-to-r from-[#5A2C9D] to-transparent transform scale-x-0 group-hover:scale-x-100 transition duration-500 origin-left">
                             </div>
 
-                            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#5A2C9D] transition">SME
-                                Tech Enablement</h3>
-                            <p class="text-gray-600 text-sm mb-6 flex-1 leading-relaxed">Providing local MSMEs with free
-                                Point-of-Sale (POS) system development, digital marketing training, and financial
-                                management workshops.</p>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#5A2C9D] transition">
+                                Website Development Training</h3>
+                            <p class="text-gray-600 text-sm mb-6 flex-1 leading-relaxed"> A collaborative initiative
+                                with DICT and LGU Talisay under the Rural Impact Sourcing Program, aimed at creating
+                                ICT-enabled jobs and online freelancing opportunities in rural communities.
+                            </p>
 
                             <a href="#"
                                 class="inline-flex items-center text-[#5A2C9D] font-bold text-sm hover:translate-x-2 transition duration-300 uppercase tracking-wide">
@@ -1165,7 +1243,7 @@
                                 alt="">
                         </div>
                         <div>
-                            <p class="text-xs font-bold text-gray-800 tracking-wider">CCMS Extension</p>
+                            <p class="text-xs font-bold text-gray-800 tracking-wider">CCMS Extension Services</p>
                             <h2 class="text-lg font-extrabold violet-accent">CNSC</h2>
                         </div>
                     </div>
@@ -1186,9 +1264,6 @@
                         <li><a href="#"
                                 class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Events
                                 Calendar</a></li>
-                        <li><a href="#"
-                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Media
-                                Kit</a></li>
                     </ul>
                 </div>
 
@@ -1201,9 +1276,6 @@
                         <li><a href="#"
                                 class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Research
                                 Papers</a></li>
-                        <li><a href="#"
-                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">University
-                                Manual</a></li>
                         <li><a href="#"
                                 class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Contact
                                 Directory</a></li>
@@ -1220,8 +1292,8 @@
                                 class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Mission,
                                 Vision</a></li>
                         <li><a href="#"
-                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Quality
-                                Policy</a></li>
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Core
+                                Values</a></li>
                         <li><a href="#"
                                 class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Partners</a>
                         </li>
@@ -1229,16 +1301,16 @@
                 </div>
 
                 <div class="space-y-3 col-span-2 md:col-span-1">
-                    <h3 class="font-bold text-gray-800 uppercase tracking-wider mb-2">Connect</h3>
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wider mb-2">Contact Us</h3>
                     <ul class="space-y-2">
                         <li><a href="#"
-                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Alumni
-                                Network</a></li>
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Inquiries</a>
+                        </li>
                         <li><a href="#"
-                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Career
-                                Opportunities</a></li>
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Google
+                                Map</a></li>
                         <li><a href="#"
-                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Feedback</a>
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block"></a>
                         </li>
                     </ul>
                 </div>
@@ -1364,22 +1436,55 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Elements ---
             const modal = document.getElementById('welcome-modal');
             const guestBtn = document.getElementById('continue-guest-btn');
 
-            // Function to close modal
+            const loginView = document.getElementById('login-view');
+            const registerView = document.getElementById('register-view');
+
+            const toRegisterBtn = document.getElementById('to-register-btn');
+            const toLoginBtn = document.getElementById('to-login-btn');
+
+            const roleSelect = document.getElementById('role-select');
+            const adminNotice = document.getElementById('admin-notice');
+
+            // --- 1. Guest Mode (Close Modal) ---
             guestBtn.addEventListener('click', () => {
-                // 1. Fade out opacity
                 modal.classList.remove('opacity-100');
                 modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 500);
+            });
 
-                // 2. Wait for transition (500ms) then hide display
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                }, 500);
+            // --- 2. Switch Views (Login <-> Register) ---
+            toRegisterBtn.addEventListener('click', () => {
+                loginView.classList.add('hidden');
+                registerView.classList.remove('hidden');
+            });
+
+            toLoginBtn.addEventListener('click', () => {
+                registerView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+            });
+
+            // --- 3. ROLE CHECK LOGIC ---
+            roleSelect.addEventListener('change', function () {
+                const selectedRole = this.value;
+
+                // Check if role is "faculty" or "coordinator"
+                if (selectedRole === 'faculty' || selectedRole === 'coordinator') {
+                    // Show Red Notice
+                    adminNotice.classList.remove('hidden');
+                    adminNotice.classList.add('block', 'animate-pulse'); // Optional pulse animation
+                } else {
+                    // Hide Red Notice
+                    adminNotice.classList.add('hidden');
+                    adminNotice.classList.remove('block', 'animate-pulse');
+                }
             });
         });
     </script>
+
 </body>
 
 
