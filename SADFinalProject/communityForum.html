@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CNSC Community Portal</title>
+
+  <!-- TAILWIND -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- DAISYUI -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.css" rel="stylesheet" />
+</head>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc;
+  }
+
+  .violet-accent {
+    color: #5A2C9D;
+  }
+
+  .btn-primary {
+    background-color: #5A2C9D !important;
+    border-color: #5A2C9D !important;
+  }
+
+  .btn-primary:hover {
+    background-color: #4a237f !important;
+    border-color: #4a237f !important;
+  }
+
+  /* Hide scrollbar but allow scrolling */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+</style>
+
+<body class="bg-white">
+
+  <!-- NAVBAR -->
+  <div class="bg-white shadow-md w-full sticky top-0 z-20">
+    <div class="flex items-center justify-between h-20 px-8">
+
+      <!-- Logo -->
+      <a href="communityForum.html" class="flex items-center space-x-3">
+        <img src="image.png" alt="CNSC Logo" class="h-12 w-12 rounded-full object-cover">
+        <div class="leading-none hidden sm:block">
+          <p class="text-xs font-bold text-gray-700 tracking-wide">CCMS Extension Services</p>
+          <h1 class="text-xl font-extrabold violet-accent">CNSC Community Portal</h1>
+        </div>
+      </a>
+
+      <!-- Buttons -->
+      <div class="flex items-center space-x-4">
+        <a href="search.html" class="inline-block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#5A2C9D" stroke-width="2" class="size-7 w-8 h-7 hover:scale-110 transition-transform">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+        </a>
+        <a href="portalLogin.html" class="inline-block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#5A2C9D" stroke-width="2" class="size-6 w-8 h-8 hover:scale-110 transition-transform">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          </svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PAGE WRAPPER -->
+  <div class="flex flex-col md:flex-row mt-6 px-6 gap-6">
+
+    <!-- SIDEBAR -->
+    <aside class="w-full md:w-1/4 md:sticky md:top-20 md:h-[calc(100vh-5rem)] md:overflow-y-auto hide-scrollbar bg-white">
+      
+      <!-- MAIN NAVIGATION -->
+      <div class="p-5 rounded-xl shadow bg-white border-t-4 border-[#5A2C9D] mb-6 hide-scrollbar">
+        <h2 class="text-lg font-bold violet-accent mb-3">Navigation</h2>
+        <ul class="space-y-2 font-semibold text-gray-700">
+          <li>
+            <a class="flex items-center gap-3 p-2 rounded hover:bg-purple-100 hover:text-[#5A2C9D]">
+              <!-- Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#5A2C9D" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+              </svg>
+              <span>Home</span>
+            </a>
+          </li>
+          <li>
+            <a class="flex items-center gap-3 p-2 rounded hover:bg-purple-100 hover:text-[#5A2C9D]">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#5A2C9D" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+              </svg>
+              <span>Categories</span>
+            </a>
+          </li>
+          <li>
+            <a class="flex items-center gap-3 p-2 rounded hover:bg-purple-100 hover:text-[#5A2C9D]">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#5A2C9D" stroke-width="1.5" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941"/>
+              </svg>
+              <span>Trending</span>
+            </a>
+          </li>
+          <li>
+            <a class="flex items-center gap-3 p-2 rounded hover:bg-purple-100 hover:text-[#5A2C9D]">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#5A2C9D" stroke-width="1.5" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+              </svg>
+              <span>Chats</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- FOLLOWED THREADS -->
+      <div class="p-5 rounded-xl shadow bg-white border-t-4 border-[#5A2C9D] mb-6">
+        <h2 class="text-lg font-bold violet-accent mb-3">Followed Threads</h2>
+        <ul class="space-y-2 text-gray-700 text-sm">
+          <li><a class="block p-2 rounded hover:bg-purple-100 hover:text-[#5A2C9D]">Best laptop for programming?</a></li>
+          <li><a class="block p-2 rounded hover:bg-purple-100 hover:text-[#5A2C9D]">CNSC Enrollment Tips</a></li>
+          <li><a class="block p-2 rounded hover:bg-purple-100 hover:text-[#5A2C9D]">Tailwind CSS 101</a></li>
+        </ul>
+      </div>
+
+      <!-- CATEGORIES YOU FOLLOW -->
+      <div class="p-5 rounded-xl shadow bg-white border-t-4 border-[#5A2C9D] mb-6">
+        <h2 class="text-lg font-bold violet-accent mb-3">Followed Categories</h2>
+        <ul class="space-y-2 text-gray-700 text-sm">
+          <li><a class="block p-2 rounded hover:bg-purple-100 hover:text-[#5A2C9D]">Tech & Programming</a></li>
+          <li><a class="block p-2 rounded hover:bg-purple-100 hover:text-[#5A2C9D]">School & Academics</a></li>
+        </ul>
+      </div>
+
+      <!-- GROUPS JOINED -->
+      <div class="p-5 rounded-xl shadow bg-white border-t-4 border-[#5A2C9D]">
+        <h2 class="text-lg font-bold violet-accent mb-3">Groups Joined</h2>
+        <ul class="space-y-2 text-gray-700 text-sm">
+          <li><a class="block p-2 rounded hover:bg-purple-100 hover:text-[#5A2C9D]">CCMS Students</a></li>
+          <li><a class="block p-2 rounded hover:bg-purple-100 hover:text-[#5A2C9D]">CNSC Dev Community</a></li>
+        </ul>
+      </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1">
+
+      <!-- CATEGORIES -->
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">Categories</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- CATEGORY CARDS -->
+        <div class="bg-white shadow p-6 rounded-xl border-t-4 border-[#5A2C9D]">
+          <h3 class="text-xl font-bold text-gray-900">General Discussion</h3>
+          <p class="text-sm mt-2 text-gray-600">Talk about anything!</p>
+          <a href="threads.html?category=general">
+    <button class="btn btn-sm btn-outline mt-4 border-[#5A2C9D] text-[#5A2C9D] hover:bg-[#5A2C9D] hover:text-white">
+      View Threads
+    </button>
+  </a>
+</div>
+        <div class="bg-white shadow p-6 rounded-xl border-t-4 border-[#5A2C9D]">
+          <h3 class="text-xl font-bold text-gray-900">Tech & Programming</h3>
+          <p class="text-sm mt-2 text-gray-600">Coding, troubleshooting, tips</p>
+          <button class="btn btn-sm btn-outline mt-4 border-[#5A2C9D] text-[#5A2C9D] hover:bg-[#5A2C9D] hover:text-white">View Threads</button>
+        </div>
+        <div class="bg-white shadow p-6 rounded-xl border-t-4 border-[#5A2C9D]">
+          <h3 class="text-xl font-bold text-gray-900">School & Academics</h3>
+          <p class="text-sm mt-2 text-gray-600">Assignments, advice, projects</p>
+          <button class="btn btn-sm btn-outline mt-4 border-[#5A2C9D] text-[#5A2C9D] hover:bg-[#5A2C9D] hover:text-white">View Threads</button>
+        </div>
+      </div>
+
+      <!-- LATEST THREADS -->
+      <h2 class="text-2xl font-bold mt-10 text-gray-900 mb-4">Announcements</h2>
+      <div class="space-y-4">
+        <div class="bg-white shadow p-5 rounded-xl">
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900">
+              How to use Tailwind for my forum?
+            </h3>
+            <button class="btn btn-sm btn-primary text-white">Open Thread</button>
+          </div>
+          <p class="text-sm mt-1 text-gray-500">Posted by @angelica • 2 hours ago</p>
+        </div>
+        <div class="bg-white shadow p-5 rounded-xl">
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900">
+              What is the best laptop for programming?
+            </h3>
+            <button class="btn btn-sm btn-primary text-white">Open Thread</button>
+          </div>
+          <p class="text-sm mt-1 text-gray-500">Posted by @techguru • 5 hours ago</p>
+        </div>
+      </div>
+
+      <!-- COMMUNITY FEED -->
+      <h2 class="text-2xl font-bold mt-10 text-gray-900 mb-4">Community Feed</h2>
+      <div class="bg-white shadow p-6 rounded-xl space-y-4">
+        <div class="flex items-center gap-3">
+          <img src="https://i.pravatar.cc/50?img=15" class="w-12 h-12 rounded-full">
+          <div>
+            <p class="font-bold text-gray-900">angelica</p>
+            <p class="text-sm text-gray-500">Posted 1 hour ago</p>
+          </div>
+        </div>
+        <p>Hi everyone! I'm building a forum using Tailwind + DaisyUI. Any tips for beginners? 😊</p>
+        <div class="divider"></div>
+
+        <!-- COMMENTS -->
+        <div class="chat chat-start">
+          <div class="chat-image avatar">
+            <img src="https://i.pravatar.cc/40?img=12" class="rounded-full"/>
+          </div>
+          <div class="chat-bubble bg-purple-100 text-[#5A2C9D]">
+            Tailwind is easy! Focus on flexbox + spacing first.
+          </div>
+        </div>
+
+        <div class="chat chat-start">
+          <div class="chat-image avatar">
+            <img src="https://i.pravatar.cc/40?img=25" class="rounded-full"/>
+          </div>
+          <div class="chat-bubble bg-purple-100 text-[#5A2C9D]">
+            DaisyUI helps a LOT with components 🙌
+          </div>
+        </div>
+
+        <!-- ADD COMMENT -->
+        <textarea class="textarea textarea-bordered w-full mt-4" placeholder="Write a reply..."></textarea>
+        <button class="btn btn-primary mt-2 text-white">Post Comment</button>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>
