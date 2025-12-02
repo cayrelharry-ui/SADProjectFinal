@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 29, 2025 at 08:55 AM
+-- Generation Time: Dec 02, 2025 at 05:51 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -99,6 +99,25 @@ CREATE TABLE `proposal_submissions` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `uploaded_files`
+--
+
+CREATE TABLE `uploaded_files` (
+  `id` int(11) NOT NULL,
+  `original_name` varchar(255) NOT NULL,
+  `stored_name` varchar(255) NOT NULL,
+  `file_type` varchar(50) DEFAULT NULL,
+  `file_size` int(11) DEFAULT NULL,
+  `category` varchar(50) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `access_level` varchar(20) DEFAULT 'private',
+  `uploaded_by` int(11) DEFAULT NULL,
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -121,7 +140,9 @@ INSERT INTO `users` (`user_id`, `full_name`, `username`, `email`, `password`, `r
 (17, 'admin', NULL, 'admin@ccms.edu', '$2y$10$FrNmAKkPLNdnw6dFeh/NcOyfbqNCoLmdaTsWGKYY7vICohhHQe2O2', 'admin', 'active', '2025-11-29 07:53:06'),
 (18, 'faculty', NULL, 'faculty@ccms.edu', '$2y$10$FrNmAKkPLNdnw6dFeh/NcOyfbqNCoLmdaTsWGKYY7vICohhHQe2O2', 'faculty', 'active', '2025-11-29 07:53:06'),
 (19, 'coordinator', NULL, 'coordinator@ccms.edu', '$2y$10$FrNmAKkPLNdnw6dFeh/NcOyfbqNCoLmdaTsWGKYY7vICohhHQe2O2', 'coordinator', 'active', '2025-11-29 07:53:06'),
-(20, 'public', NULL, 'public@ccms.edu', '$2y$10$FrNmAKkPLNdnw6dFeh/NcOyfbqNCoLmdaTsWGKYY7vICohhHQe2O2', 'public', 'active', '2025-11-29 07:53:06');
+(20, 'public', NULL, 'public@ccms.edu', '$2y$10$FrNmAKkPLNdnw6dFeh/NcOyfbqNCoLmdaTsWGKYY7vICohhHQe2O2', 'public', 'active', '2025-11-29 07:53:06'),
+(23, 'Jc Elevado', NULL, 'jeypielevado@gmail.com', '$2y$10$ajM/I6uMUppwQCs5yTCK/ek5fBuUK0nqfvAIp3yvKRv373Jz.Vz.y', 'faculty', 'active', '2025-11-30 13:03:54'),
+(24, 'Jp Elevado', NULL, 'angelica@gmail.com', '$2y$10$PB63xqhgZaynO3ZqeZr/hO.UX.Og5QGYpJ/BT0ZJ7kKvfhKL0Ggpq', 'faculty', 'inactive', '2025-11-30 13:49:27');
 
 -- --------------------------------------------------------
 
@@ -177,6 +198,12 @@ ALTER TABLE `proposal_submissions`
   ADD KEY `submitted_by` (`submitted_by`);
 
 --
+-- Indexes for table `uploaded_files`
+--
+ALTER TABLE `uploaded_files`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -226,10 +253,16 @@ ALTER TABLE `proposal_submissions`
   MODIFY `submission_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `uploaded_files`
+--
+ALTER TABLE `uploaded_files`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `visitor_stats`
