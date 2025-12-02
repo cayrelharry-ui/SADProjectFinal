@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("✅ DOM Loaded - Starting login script");
+    
+    // Get all elements
     const loginForm = document.getElementById('loginForm');
     const createAccountForm = document.getElementById('createAccountForm');
     const createAccountBtn = document.getElementById('createAccountBtn');
@@ -13,87 +16,121 @@ document.addEventListener('DOMContentLoaded', function() {
     const errorMessage = document.getElementById('errorMessage');
     const successAlert = document.getElementById('successAlert');
     const successMessage = document.getElementById('successMessage');
-    const credentialItems = document.querySelectorAll('.credential-item');
-    const createAccountModal = new bootstrap.Modal(document.getElementById('createAccountModal'));
-
-    // Password toggle functionality for login form
+    
+    // Debug log
+    console.log("Elements found:", {
+        loginForm: !!loginForm,
+        usernameInput: !!usernameInput,
+        passwordInput: !!passwordInput,
+        passwordToggle: !!passwordToggle,
+        errorAlert: !!errorAlert
+    });
+    
+    // Check critical elements
+    if (!loginForm || !usernameInput || !passwordInput || !passwordToggle) {
+        console.error("❌ Critical elements missing!");
+        alert("Some page elements failed to load. Please refresh.");
+        return;
+    }
+    
+    // Initialize modal
+    let createAccountModal = null;
+    const modalElement = document.getElementById('createAccountModal');
+    if (modalElement && bootstrap) {
+        createAccountModal = new bootstrap.Modal(modalElement);
+        console.log("✅ Modal initialized");
+    }
+    
+    // 1. Password toggle functionality for login form
     passwordToggle.addEventListener('click', function() {
+        console.log("Password toggle clicked");
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
-        this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+        const icon = this.querySelector('i');
+        if (type === 'password') {
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        } else {
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        }
     });
-
-    // Password toggle for create account form
-    const newPasswordToggle = document.getElementById('newPasswordToggle');
-    const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
     
-    if (newPasswordToggle) {
-        newPasswordToggle.addEventListener('click', function() {
-            const newPasswordInput = document.getElementById('newPassword');
-            const type = newPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            newPasswordInput.setAttribute('type', type);
-            this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
-        });
+    // 2. Password toggle for create account form
+    setupPasswordToggle('newPasswordToggle', 'newPassword');
+    setupPasswordToggle('confirmPasswordToggle', 'confirmPassword');
+    
+    function setupPasswordToggle(toggleId, inputId) {
+        const toggle = document.getElementById(toggleId);
+        const input = document.getElementById(inputId);
+        
+        if (toggle && input) {
+            toggle.addEventListener('click', function() {
+                console.log(`${toggleId} clicked`);
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                const icon = this.querySelector('i');
+                if (type === 'password') {
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                } else {
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                }
+            });
+        }
     }
-
-    if (confirmPasswordToggle) {
-        confirmPasswordToggle.addEventListener('click', function() {
-            const confirmPasswordInput = document.getElementById('confirmPassword');
-            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            confirmPasswordInput.setAttribute('type', type);
-            this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
-        });
-    }
-
-    // Fill credentials when clicking demo items
-    credentialItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const username = this.getAttribute('data-username');
-            usernameInput.value = username;
-            passwordInput.value = 'password123';
-
-            credentialItems.forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-
-    // Login Form submission
+    
+    // 3. Login Form submission
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
-
+        console.log("Login form submitted");
+        
         btnText.textContent = 'Signing In...';
         btnSpinner.classList.remove('d-none');
         errorAlert.classList.add('d-none');
         if (successAlert) successAlert.classList.add('d-none');
-
+        
         const username = usernameInput.value.trim();
         const password = passwordInput.value;
-
+        
+        console.log("Login attempt:", { username, password: password ? "***" : "empty" });
+        
         if (!username || !password) {
             showError('Please enter both username/email and password.');
             resetButtonState();
             return;
         }
-
-        console.log('Attempting login for:', username);
-
+        
         const formData = new URLSearchParams();
         formData.append('username', username);
         formData.append('password', password);
-
-        fetch('../PHP/LogIn.php', {
+        
+        // TEST FIRST: Check if PHP file is accessible
+        console.log("Attempting to fetch PHP file...");
+        
+        fetch('PHP/LogIn.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: formData
+            body: formData,
+            credentials: 'same-origin' // Important for sessions
         })
         .then(response => {
-            console.log('Response status:', response.status);
+            console.log('Response status:', response.status, response.statusText);
             if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.status);
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response.json();
+            return response.text().then(text => {
+                console.log('Raw response:', text);
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    throw new Error('Invalid JSON response: ' + text.substring(0, 100));
+                }
+            });
         })
         .then(data => {
             console.log('Login response:', data);
@@ -112,83 +149,105 @@ document.addEventListener('DOMContentLoaded', function() {
                         'public': 'Public_Dashboard.html'
                     };
                     
-                    window.location.href = pages[role] || 'Admin_Panel.html';
+                    // Fallback to index.html if page doesn't exist
+                    window.location.href = pages[role] || 'index.html';
                 }, 1500);
             } else {
-                showError(data.message);
+                showError(data.message || 'Login failed.');
                 resetButtonState();
             }
         })
         .catch(err => {
-            console.error('Login error:', err);
-            showError('Connection error. Please try again.');
+            console.error('Login fetch error:', err);
+            showError('Connection error: ' + err.message + '. Check PHP file path.');
             resetButtonState();
         });
     });
-
-    // Create Account functionality
+    
+    // 4. Create Account functionality
     if (createAccountBtn) {
         createAccountBtn.addEventListener('click', function() {
-            const fullName = document.getElementById('fullName').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const role = document.getElementById('role').value;
-
+            console.log("Create account button clicked");
+            
+            const fullName = document.getElementById('fullName')?.value.trim();
+            const email = document.getElementById('email')?.value.trim();
+            const password = document.getElementById('newPassword')?.value;
+            const confirmPassword = document.getElementById('confirmPassword')?.value;
+            const role = document.getElementById('role')?.value;
+            
+            console.log("Form data:", { fullName, email, role, password: password ? "***" : "empty" });
+            
             // Validation
             if (!fullName || !email || !password || !confirmPassword || !role) {
                 showModalError('Please fill in all fields.');
                 return;
             }
-
+            
             if (password !== confirmPassword) {
                 showModalError('Passwords do not match.');
                 return;
             }
-
+            
             if (password.length < 6) {
                 showModalError('Password must be at least 6 characters long.');
                 return;
             }
-
+            
             if (!validateEmail(email)) {
                 showModalError('Please enter a valid email address.');
                 return;
             }
-
+            
             // Show loading state
             createBtnText.textContent = 'Creating...';
             createBtnSpinner.classList.remove('d-none');
             createAccountBtn.disabled = true;
-
+            
             const formData = new URLSearchParams();
             formData.append('fullName', fullName);
             formData.append('email', email);
             formData.append('password', password);
             formData.append('role', role);
-
-            fetch('../PHP/CreateAccount.php', {
+            
+            console.log("Attempting to create account...");
+            
+            fetch('PHP/CreateAccount.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: formData
+                body: formData,
+                credentials: 'same-origin'
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Create account response status:', response.status);
+                return response.text().then(text => {
+                    console.log('Raw response:', text);
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        return { status: 'error', message: 'Invalid server response' };
+                    }
+                });
+            })
             .then(data => {
                 if (data.status === 'success') {
-                    // Show success message in main form
                     showSuccess('Account created successfully! Please wait for administrator approval.');
-                    createAccountModal.hide();
-                    createAccountForm.reset();
+                    if (createAccountModal) {
+                        createAccountModal.hide();
+                    }
+                    if (createAccountForm) {
+                        createAccountForm.reset();
+                    }
                     clearModalErrors();
                 } else {
-                    showModalError('Error: ' + data.message);
+                    showModalError('Error: ' + (data.message || 'Unknown error'));
                 }
             })
             .catch(err => {
                 console.error('Create account error:', err);
-                showModalError('Error creating account. Please try again.');
+                showModalError('Error creating account: ' + err.message);
             })
             .finally(() => {
                 createBtnText.textContent = 'Create Account';
@@ -197,27 +256,45 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-
-    // Clear modal when hidden
-    if (createAccountModal) {
-        createAccountModal._element.addEventListener('hidden.bs.modal', function() {
-            createAccountForm.reset();
-            clearModalErrors();
-        });
-    }
-
+    
+   // Guest button functionality - CORRECT PATH
+const guestBtn = document.querySelector('.btn-guest');
+if (guestBtn) {
+    guestBtn.addEventListener('click', function() {
+        console.log("Guest button clicked - redirecting to Home.html");
+        
+        // Show loading state
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="bi bi-arrow-right-circle"></i> Redirecting...';
+        this.disabled = true;
+        
+        // Store guest session info
+        localStorage.setItem('userRole', 'guest');
+        localStorage.setItem('isGuest', 'true');
+        localStorage.setItem('userName', 'Guest User');
+        localStorage.setItem('lastLogin', new Date().toISOString());
+        
+        // REDIRECT TO HOME.HTML IN ROOT FOLDER
+        // Since Login.html is in HTML/ folder, we need ../ to go up one level
+        window.location.href = "../Home.html";
+    });
+}
+    
+    // Helper functions
     function validateEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
-
+    
     function showModalError(message) {
-        // Remove any existing modal alerts
+        const modalBody = document.querySelector('.modal-body');
+        if (!modalBody) return;
+        
         const existingAlert = document.querySelector('.modal .alert-danger');
         if (existingAlert) {
             existingAlert.remove();
         }
-
+        
         const alert = document.createElement('div');
         alert.className = 'alert alert-danger alert-dismissible fade show mt-3';
         alert.innerHTML = `
@@ -225,121 +302,53 @@ document.addEventListener('DOMContentLoaded', function() {
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
         
-        const modalBody = document.querySelector('.modal-body');
         modalBody.appendChild(alert);
-        
-        // Scroll to alert
         alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-
+    
     function clearModalErrors() {
         const modalAlerts = document.querySelectorAll('.modal .alert');
         modalAlerts.forEach(alert => alert.remove());
     }
-
+    
     function showError(message) {
+        if (!errorAlert || !errorMessage) return;
         errorMessage.textContent = message;
         errorAlert.classList.remove('d-none');
         errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
         
-        // Auto-hide after 5 seconds
         setTimeout(() => {
             errorAlert.classList.add('d-none');
         }, 5000);
     }
-
+    
     function showSuccess(message) {
-        if (successAlert && successMessage) {
-            successMessage.textContent = message;
-            successAlert.classList.remove('d-none');
-            successAlert.scrollIntoView({ behavior: 'smooth', block: 'center'} );
-            
-            // Auto-hide after 3 seconds
-            setTimeout(() => {
-                successAlert.classList.add('d-none');
-            }, 3000);
-        }
+        if (!successAlert || !successMessage) return;
+        successMessage.textContent = message;
+        successAlert.classList.remove('d-none');
+        successAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        setTimeout(() => {
+            successAlert.classList.add('d-none');
+        }, 3000);
     }
-
+    
     function resetButtonState() {
+        if (!btnText || !btnSpinner) return;
         btnText.textContent = 'Sign In';
         btnSpinner.classList.add('d-none');
     }
-
+    
     // Clear alerts on input
     usernameInput.addEventListener('input', () => {
-        errorAlert.classList.add('d-none');
+        if (errorAlert) errorAlert.classList.add('d-none');
         if (successAlert) successAlert.classList.add('d-none');
     });
     
     passwordInput.addEventListener('input', () => {
-        errorAlert.classList.add('d-none');
+        if (errorAlert) errorAlert.classList.add('d-none');
         if (successAlert) successAlert.classList.add('d-none');
     });
-
-    // Real-time password validation for create account form
-    const newPasswordInput = document.getElementById('newPassword');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
     
-    if (newPasswordInput && confirmPasswordInput) {
-        confirmPasswordInput.addEventListener('input', function() {
-            const password = newPasswordInput.value;
-            const confirmPassword = this.value;
-            
-            if (confirmPassword && password !== confirmPassword) {
-                this.classList.add('is-invalid');
-                this.classList.remove('is-valid');
-            } else if (confirmPassword) {
-                this.classList.add('is-valid');
-                this.classList.remove('is-invalid');
-            } else {
-                this.classList.remove('is-valid', 'is-invalid');
-            }
-        });
-
-        newPasswordInput.addEventListener('input', function() {
-            const password = this.value;
-            const confirmPassword = confirmPasswordInput.value;
-            
-            if (password.length < 6 && password.length > 0) {
-                this.classList.add('is-invalid');
-                this.classList.remove('is-valid');
-            } else if (password.length >= 6) {
-                this.classList.add('is-valid');
-                this.classList.remove('is-invalid');
-                
-                // Update confirm password validation
-                if (confirmPassword) {
-                    if (password === confirmPassword) {
-                        confirmPasswordInput.classList.add('is-valid');
-                        confirmPasswordInput.classList.remove('is-invalid');
-                    } else {
-                        confirmPasswordInput.classList.add('is-invalid');
-                        confirmPasswordInput.classList.remove('is-valid');
-                    }
-                }
-            } else {
-                this.classList.remove('is-valid', 'is-invalid');
-                confirmPasswordInput.classList.remove('is-valid', 'is-invalid');
-            }
-        });
-    }
-
-    // Email validation for create account form
-    const emailInput = document.getElementById('email');
-    if (emailInput) {
-        emailInput.addEventListener('input', function() {
-            const email = this.value;
-            
-            if (email && !validateEmail(email)) {
-                this.classList.add('is-invalid');
-                this.classList.remove('is-valid');
-            } else if (email) {
-                this.classList.add('is-valid');
-                this.classList.remove('is-invalid');
-            } else {
-                this.classList.remove('is-valid', 'is-invalid');
-            }
-        });
-    }
+    console.log("✅ Login script initialization complete");
 });
