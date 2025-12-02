@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             console.log("Attempting to create account...");
             
-            fetch('PHP/CreateAccount.php', {
+            fetch('../PHP/CreateAccount.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

@@ -39,3 +39,57 @@
     margin-right: 10px;
     color: #7a39c9;
 }
+/* File Management Styles */
+#filesTableBody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+.file-icon {
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+.storage-progress {
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.storage-progress .progress-bar {
+    transition: width 0.5s ease;
+}
+
+.file-actions .btn {
+    border-radius: 4px !important;
+    margin: 0 2px;
+}
+
+.file-actions .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Modal styles */
+.modal-header.bg-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 15px;
+}
+
+/* File type badges */
+.badge.bg-info {
+    background-color: #17a2b8 !important;
+}
+
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529;
+}
