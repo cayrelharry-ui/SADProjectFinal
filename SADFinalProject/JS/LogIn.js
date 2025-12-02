@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // TEST FIRST: Check if PHP file is accessible
         console.log("Attempting to fetch PHP file...");
         
-        fetch('PHP/LogIn.php', {
+        fetch('../PHP/LogIn.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
