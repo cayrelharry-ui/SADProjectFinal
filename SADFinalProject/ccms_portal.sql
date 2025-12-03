@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2025 at 05:51 AM
+-- Generation Time: Dec 03, 2025 at 02:41 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -51,6 +51,22 @@ CREATE TABLE `content_reports` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `notification_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `type` enum('new_project','project_approved','project_rejected','system_alert') DEFAULT 'system_alert',
+  `message` text NOT NULL,
+  `is_read` tinyint(1) DEFAULT 0,
+  `project_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `projects`
 --
 
@@ -58,11 +74,16 @@ CREATE TABLE `projects` (
   `project_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
+  `budget` decimal(10,2) DEFAULT NULL,
+  `keywords` text DEFAULT NULL,
   `category` enum('project','event','proposal') DEFAULT 'project',
   `created_by` int(11) DEFAULT NULL,
+  `faculty_id` int(11) DEFAULT NULL,
   `status` enum('pending','approved','rejected','completed') DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `file_path` varchar(255) DEFAULT NULL
+  `reviewed_at` timestamp NULL DEFAULT NULL,
+  `file_path` varchar(255) DEFAULT NULL,
+  `template_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -94,6 +115,21 @@ CREATE TABLE `proposal_submissions` (
   `notes` text DEFAULT NULL,
   `status` enum('submitted','reviewed','approved','rejected') DEFAULT 'submitted',
   `submitted_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `templates`
+--
+
+CREATE TABLE `templates` (
+  `template_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `file_path` varchar(500) NOT NULL,
+  `category` enum('project','event','proposal') DEFAULT 'project',
+  `description` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -147,6 +183,20 @@ INSERT INTO `users` (`user_id`, `full_name`, `username`, `email`, `password`, `r
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `validation_rules`
+--
+
+CREATE TABLE `validation_rules` (
+  `rule_id` int(11) NOT NULL,
+  `rule_type` varchar(100) NOT NULL,
+  `rule_value` text DEFAULT NULL,
+  `category` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `visitor_stats`
 --
 
@@ -176,6 +226,14 @@ ALTER TABLE `content_reports`
   ADD KEY `created_by` (`created_by`);
 
 --
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`notification_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `project_id` (`project_id`);
+
+--
 -- Indexes for table `projects`
 --
 ALTER TABLE `projects`
@@ -198,6 +256,12 @@ ALTER TABLE `proposal_submissions`
   ADD KEY `submitted_by` (`submitted_by`);
 
 --
+-- Indexes for table `templates`
+--
+ALTER TABLE `templates`
+  ADD PRIMARY KEY (`template_id`);
+
+--
 -- Indexes for table `uploaded_files`
 --
 ALTER TABLE `uploaded_files`
@@ -210,6 +274,12 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `email` (`email`),
   ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Indexes for table `validation_rules`
+--
+ALTER TABLE `validation_rules`
+  ADD PRIMARY KEY (`rule_id`);
 
 --
 -- Indexes for table `visitor_stats`
@@ -235,6 +305,12 @@ ALTER TABLE `content_reports`
   MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
@@ -253,16 +329,28 @@ ALTER TABLE `proposal_submissions`
   MODIFY `submission_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `templates`
+--
+ALTER TABLE `templates`
+  MODIFY `template_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `uploaded_files`
 --
 ALTER TABLE `uploaded_files`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT for table `validation_rules`
+--
+ALTER TABLE `validation_rules`
+  MODIFY `rule_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `visitor_stats`
@@ -279,6 +367,13 @@ ALTER TABLE `visitor_stats`
 --
 ALTER TABLE `content_reports`
   ADD CONSTRAINT `content_reports_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`project_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `projects`
