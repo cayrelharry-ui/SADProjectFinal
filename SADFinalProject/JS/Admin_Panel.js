@@ -9,7 +9,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize the admin panel
     initializeAdminPanel(userRole);
+    
+    // Setup logout button
+    setupLogoutButton();
 });
+
+// ============================================
+// LOGOUT FUNCTIONALITY
+// ============================================
+
+function setupLogoutButton() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            logout();
+        });
+    }
+}
+
+function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        // Clear all localStorage items related to authentication
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userEmail');
+        
+        // If you're using sessionStorage, clear that too
+        sessionStorage.clear();
+        
+        // Show logout message
+        showStatus('Logging out...', 'info');
+        
+        // Redirect to login page after a short delay
+        setTimeout(() => {
+            window.location.href = '../HTML/LogIn.html';
+        }, 1000);
+    }
+}
 
 function initializeAdminPanel(userRole) {
     console.log("Admin Panel Initializing for:", userRole);
@@ -108,12 +146,10 @@ async function uploadFilesSimple() {
             formData.append('files[]', file);
         }
         
-        // Add other data
-        const category = document.getElementById('fileCategory').value;
+        // Add other data (REMOVED category)
         const description = document.getElementById('fileDescription').value;
         const accessLevel = document.querySelector('input[name="accessLevel"]:checked').value;
         
-        formData.append('category', category);
         formData.append('description', description);
         formData.append('access_level', accessLevel); // Note: underscore!
         
@@ -151,7 +187,6 @@ async function uploadFilesSimple() {
         }
     }
 }
-
 // ============================================
 // FILE MANAGEMENT FUNCTIONS
 // ============================================
@@ -162,22 +197,20 @@ function setupFileManagement() {
     // Setup search and filter
     const searchInput = document.getElementById('searchFiles');
     const categoryFilter = document.getElementById('filterCategory');
-    const refreshBtn = document.querySelector('#manage-panel .btn-outline-secondary');
     
+    // Setup enhanced search with debounce
+    let searchTimeout;
     if (searchInput) {
-        searchInput.addEventListener('keyup', function(e) {
-            if (e.key === 'Enter') {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
                 loadUploadedFiles();
-            }
+            }, 500);
         });
     }
     
     if (categoryFilter) {
         categoryFilter.addEventListener('change', loadUploadedFiles);
-    }
-    
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', loadUploadedFiles);
     }
     
     // Handle tab switch to load files
@@ -295,6 +328,9 @@ function renderFilesTable(files) {
         // Get appropriate icon for file type
         const fileIcon = getFileIcon(file.file_type);
         
+        // Escape filename for JavaScript string
+        const escapedFileName = file.original_name.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        
         html += `
         <tr>
             <td>
@@ -320,21 +356,18 @@ function renderFilesTable(files) {
             <td>${accessBadge}</td>
             <td>
                 <div class="btn-group btn-group-sm" role="group">
-                    <a href="../PHP/DownloadFile.php?id=${file.id}" 
-                       class="btn btn-outline-primary" 
-                       title="Download ${file.original_name}"
-                       download>
+                    <button class="btn btn-outline-primary" 
+                            onclick="downloadFile(${file.id}, '${escapedFileName}')"
+                            title="Download ${file.original_name}">
                         <i class="bi bi-download"></i>
-                    </a>
+                    </button>
                     <button class="btn btn-outline-info" 
                             onclick="viewFileInfo(${file.id})"
-                            title="View file info"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#fileInfoModal">
+                            title="View file info">
                         <i class="bi bi-info-circle"></i>
                     </button>
                     <button class="btn btn-outline-danger" 
-                            onclick="confirmDeleteFile(${file.id}, '${file.original_name.replace(/'/g, "\\'")}')"
+                            onclick="confirmDeleteFile(${file.id}, '${escapedFileName}')"
                             title="Delete file">
                         <i class="bi bi-trash"></i>
                     </button>
@@ -360,12 +393,11 @@ function updateStorageStats(stats) {
     const used = stats.total_size || 0;
     const total = stats.storage_limit || (100 * 1024 * 1024); // Default 100MB
     const percentage = Math.min(100, (used / total) * 100);
-    const remaining = total - used;
     
     // Update progress bar
     progressBar.style.width = `${percentage}%`;
     progressBar.setAttribute('aria-valuenow', percentage);
-    progressBar.innerHTML = `${percentage.toFixed(1)}% Used`;
+    progressBar.textContent = `${percentage.toFixed(1)}% Used`;
     
     // Update text displays
     usedElement.textContent = formatFileSize(used);
@@ -383,7 +415,7 @@ function updateStorageStats(stats) {
         progressBar.classList.add('bg-success');
     }
     
-    console.log(`Storage: ${formatFileSize(used)} used, ${formatFileSize(remaining)} remaining (${percentage.toFixed(1)}%)`);
+    console.log(`Storage: ${formatFileSize(used)} used of ${formatFileSize(total)} (${percentage.toFixed(1)}%)`);
 }
 
 async function deleteFile(fileId) {
@@ -468,19 +500,6 @@ function confirmDeleteFile(fileId, fileName) {
     });
 }
 
-function viewFileInfo(fileId) {
-    // This function can be expanded to show detailed file information
-    // For now, we'll just show a simple alert
-    showStatus('View file info for ID: ' + fileId, 'info');
-    
-    // You could fetch detailed file info and display it in a modal
-    // fetch(`../PHP/GetFileInfo.php?id=${fileId}`)
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         // Display file info in a modal
-    //     });
-}
-
 function getFileIcon(fileType) {
     const iconMap = {
         // Documents
@@ -522,8 +541,15 @@ function getFileIcon(fileType) {
         'gz': 'bi-file-zip-fill text-warning'
     };
     
-    const ext = (fileType || '').toLowerCase();
-    return iconMap[ext] || 'bi-file-earmark-fill';
+    // Extract file extension from file type or filename
+    let ext = '';
+    if (fileType && fileType.includes('.')) {
+        ext = fileType.split('.').pop().toLowerCase();
+    } else if (fileType) {
+        ext = fileType.toLowerCase();
+    }
+    
+    return iconMap[ext] || 'bi-file-earmark-fill text-secondary';
 }
 
 // ============================================
@@ -577,7 +603,9 @@ function setupSectionNavigation() {
         'dashboard': { title: 'Admin Dashboard', element: 'dashboard-section' },
         'user-management': { title: 'User Management', element: 'user-management-section' },
         'approvals': { title: 'Pending Approvals', element: 'approvals-section' },
-        'content': { title: 'Content Management', element: 'content-section' }
+        'content': { title: 'Content Management', element: 'content-section' },
+        'analytics': { title: 'Analytics', element: 'analytics-section' },
+        'settings': { title: 'Settings', element: 'settings-section' }
     };
 
     document.querySelectorAll('.sidebar .nav-link').forEach(link => {
@@ -807,6 +835,153 @@ function refreshUserData() {
 }
 
 // ============================================
+// FILE INFO MODAL FUNCTION
+// ============================================
+
+async function viewFileInfo(fileId) {
+    try {
+        const response = await fetch(`../PHP/GetFileInfo.php?id=${fileId}`);
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            const file = result.file;
+            showFileInfoModal(file);
+        } else {
+            throw new Error(result.message || 'Failed to get file info');
+        }
+    } catch (error) {
+        console.error('Error loading file info:', error);
+        showStatus('Error loading file info: ' + error.message, 'error');
+    }
+}
+
+function showFileInfoModal(file) {
+    // Escape filename for JavaScript string
+    const escapedFileName = file.original_name.replace(/'/g, "\\'").replace(/"/g, '\\"');
+    
+    const modalHtml = `
+        <div class="modal fade" id="fileInfoModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-info-circle"></i> File Information
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <div class="mb-3">
+                                    <i class="bi ${getFileIcon(file.file_type)} fs-1"></i>
+                                </div>
+                                <h5>${file.original_name}</h5>
+                                <div class="mt-3">
+                                    <button class="btn btn-primary btn-sm" 
+                                            onclick="downloadFile(${file.id}, '${escapedFileName}')">
+                                        <i class="bi bi-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th>File Name:</th>
+                                        <td>${file.original_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Storage Name:</th>
+                                        <td><code>${file.stored_name}</code></td>
+                                    </tr>
+                                    <tr>
+                                        <th>File Type:</th>
+                                        <td><span class="badge bg-info">${file.file_type || 'Unknown'}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Size:</th>
+                                        <td>${formatFileSize(file.file_size)}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Category:</th>
+                                        <td><span class="badge bg-secondary">${file.category}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Access Level:</th>
+                                        <td>
+                                            ${file.access_level === 'public' 
+                                                ? '<span class="badge bg-success"><i class="bi bi-globe"></i> Public</span>' 
+                                                : '<span class="badge bg-warning"><i class="bi bi-lock"></i> Private</span>'}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Uploaded:</th>
+                                        <td>${new Date(file.uploaded_at).toLocaleString()}</td>
+                                    </tr>
+                                    ${file.uploaded_by ? `
+                                    <tr>
+                                        <th>Uploaded By:</th>
+                                        <td>${file.uploaded_by}</td>
+                                    </tr>` : ''}
+                                    <tr>
+                                        <th>Description:</th>
+                                        <td>${file.description || '<em class="text-muted">No description</em>'}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle"></i> Close
+                        </button>
+                        <button type="button" class="btn btn-danger" 
+                                onclick="confirmDeleteFile(${file.id}, '${escapedFileName}')"
+                                data-bs-dismiss="modal">
+                            <i class="bi bi-trash"></i> Delete File
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('fileInfoModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add new modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('fileInfoModal'));
+    modal.show();
+    
+    // Remove modal from DOM after hiding
+    document.getElementById('fileInfoModal').addEventListener('hidden.bs.modal', function() {
+        this.remove();
+    });
+}
+
+// ============================================
+// DOWNLOAD FILE FUNCTION
+// ============================================
+
+function downloadFile(fileId, fileName) {
+    // Create a temporary link to trigger download
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    link.href = `../PHP/DownloadFile.php?id=${fileId}&name=${encodeURIComponent(fileName)}`;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showStatus(`Downloading: ${fileName}`, 'info');
+}
+
+// ============================================
 // GLOBAL EXPORTS
 // ============================================
 
@@ -815,6 +990,7 @@ window.rejectAccount = rejectAccount;
 window.activateUser = activateUser;
 window.deactivateUser = deactivateUser;
 window.deleteFile = deleteFile;
+window.downloadFile = downloadFile;
 window.loadUploadedFiles = loadUploadedFiles;
 window.refreshUserData = refreshUserData;
 window.confirmDeleteFile = confirmDeleteFile;
