@@ -139,18 +139,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 showSuccess(data.message);
                 localStorage.setItem('userRole', data.role);
                 localStorage.setItem('userName', username);
+                localStorage.setItem('userEmail', username); // Store email for partner panel
 
                 setTimeout(() => {
                     const role = data.role.toLowerCase();
                     const pages = {
-                        'admin': 'Admin_Panel.html',
+                        'admin': '../HTML/Admin_Panel.html',
+                        'partner': '../HTML/Partner_Panel.html',
                         'faculty': 'Faculty_Dashboard.html', 
                         'coordinator': 'Coordinator_Dashboard.html',
                         'public': 'Public_Dashboard.html'
                     };
                     
                     // Fallback to index.html if page doesn't exist
-                    window.location.href = pages[role] || 'index.html';
+                    window.location.href = pages[role] || '../Home.html';
                 }, 1500);
             } else {
                 showError(data.message || 'Login failed.');
