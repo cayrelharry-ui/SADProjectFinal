@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Partnership Request</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../CSS/partner-form.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .violet-accent {
+            color: #5A2C9D;
+        }
+        
+        .bg-violet {
+            background-color: #5A2C9D;
+        }
+        
+        .bg-violet-dark:hover {
+            background-color: #4C2684;
+        }
+    </style>
+</head>
+<body>
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 border-t-4 border-violet">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Partnership Request Letter Template</h2>
+                <p class="text-sm text-gray-600">Please fill out the letter template below with your organization's information.</p>
+            </div>
+
+            <form class="space-y-6" id="partnerForm" enctype="multipart/form-data">
+                <!-- Letter Template -->
+                <div class="bg-gray-50 border-2 border-gray-200 rounded-lg p-6 md:p-10 font-serif">
+                    <!-- Date -->
+                    <div class="mb-6">
+                        <label for="letterDate" class="block text-sm font-semibold text-gray-700 mb-1">Date <span class="text-red-500">*</span></label>
+                        <input type="date" id="letterDate" name="letterDate" required
+                            class="w-full md:w-64 px-4 py-2 bg-white border border-gray-300 rounded focus:outline-none focus:border-violet focus:ring-2 focus:ring-violet transition"
+                            value="">
+                    </div>
+
+                    <!-- Recipient -->
+                    <div class="mb-6">
+                        <div class="text-gray-700">
+                            <p class="font-semibold mb-1">To:</p>
+                            <p>College of Computer & Multimedia Studies Extension Services</p>
+                            <p>Camarines Norte State College</p>
+                            <p>Daet, Camarines Norte</p>
+                        </div>
+                    </div>
+
+                    <!-- Subject -->
+                    <div class="mb-6">
+                        <label for="subject" class="block text-sm font-semibold text-gray-700 mb-1">Subject: <span class="text-red-500">*</span></label>
+                        <input type="text" id="subject" name="subject" required
+                            class="w-full px-4 py-2 bg-white border border-gray-300 rounded focus:outline-none focus:border-violet focus:ring-2 focus:ring-violet transition"
+                            placeholder="Request for Partnership with CNSC Extension Services">
+                    </div>
+
+                    <!-- Salutation -->
+                    <div class="mb-4">
+                        <p class="text-gray-700">Dear Sir/Madam:</p>
+                    </div>
+
+                    <!-- Letter Body -->
+                    <div class="space-y-4 text-gray-700 leading-relaxed">
+                        <!-- Paragraph 1 -->
+                        <div>
+                            <p class="mb-2">I am writing on behalf of <span class="inline-block min-w-[200px]">
+                                <input type="text" id="orgName" name="orgName" required
+                                    class="w-full px-2 py-1 bg-white border-b-2 border-dashed border-gray-400 focus:outline-none focus:border-violet focus:border-solid transition text-center font-semibold"
+                                    placeholder="[Organization Name]">
+                            </span>, a <span class="inline-block min-w-[150px]">
+                                <select id="orgType" name="orgType" required
+                                    class="w-full px-2 py-1 bg-white border-b-2 border-dashed border-gray-400 focus:outline-none focus:border-violet focus:border-solid transition text-center font-semibold">
+                                    <option value="">[Select Type]</option>
+                                    <option value="Local Government Unit (LGU)">Local Government Unit (LGU)</option>
+                                    <option value="Industry Partner">Industry Partner</option>
+                                    <option value="Academic Institution">Academic Institution</option>
+                                    <option value="Non-Government Organization (NGO)">Non-Government Organization (NGO)</option>
+                                </select>
+                            </span> located at <span class="inline-block min-w-[250px]">
+                                <input type="text" id="address" name="address" required
+                                    class="w-full px-2 py-1 bg-white border-b-2 border-dashed border-gray-400 focus:outline-none focus:border-violet focus:border-solid transition text-center font-semibold"
+                                    placeholder="[Organization Address]">
+                            </span>.</p>
+                        </div>
+
+                        <!-- Paragraph 2 -->
+                        <div>
+                            <p class="mb-2">We are interested in establishing a partnership with the College of Computer & Multimedia Studies Extension Services to collaborate on the following areas:</p>
+                            <textarea id="collaboration" name="collaboration" rows="4" required
+                                class="w-full px-4 py-3 bg-white border-2 border-dashed border-gray-400 rounded focus:outline-none focus:border-violet focus:border-solid transition resize-none"
+                                placeholder="[Please describe the specific areas of collaboration, potential projects, or partnership goals. Include details about how your organization wishes to work with CNSC Extension Services...]"></textarea>
+                        </div>
+
+                        <!-- Paragraph 3 -->
+                        <div>
+                            <p class="mb-2">Through this partnership, we hope to achieve the following outcomes:</p>
+                            <textarea id="outcomes" name="outcomes" rows="3"
+                                class="w-full px-4 py-3 bg-white border-2 border-dashed border-gray-400 rounded focus:outline-none focus:border-violet focus:border-solid transition resize-none"
+                                placeholder="[Describe the expected outcomes, benefits, or impact of this partnership...]"></textarea>
+                        </div>
+
+                        <!-- Paragraph 4 -->
+                        <div>
+                            <p class="mb-2">We believe that this collaboration will be mutually beneficial and will contribute to the advancement of technology and community development in the Bicol Region.</p>
+                        </div>
+
+                        <!-- Paragraph 5 -->
+                        <div>
+                            <p class="mb-2">We are committed to working closely with your team to ensure the success of this partnership. We are open to discussing the terms and conditions of our collaboration at your earliest convenience.</p>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div>
+                            <p class="mb-2">Additional Information:</p>
+                            <textarea id="additionalInfo" name="additionalInfo" rows="2"
+                                class="w-full px-4 py-3 bg-white border-2 border-dashed border-gray-400 rounded focus:outline-none focus:border-violet focus:border-solid transition resize-none"
+                                placeholder="[Any additional information you would like to include...]"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Closing -->
+                    <div class="mt-8 space-y-6">
+                        <div>
+                            <p class="text-gray-700 mb-2">Thank you for considering our proposal. We look forward to your positive response.</p>
+                        </div>
+
+                        <div>
+                            <p class="text-gray-700 mb-6">Respectfully yours,</p>
+                            
+                            <!-- Signature Fields -->
+                            <div class="space-y-4">
+                                <div>
+                                    <input type="text" id="contactPerson" name="contactPerson" required
+                                        class="w-full md:w-80 px-4 py-2 bg-white border-b-2 border-gray-400 focus:outline-none focus:border-violet transition font-semibold"
+                                        placeholder="[Your Full Name]">
+                                    <p class="text-sm text-gray-600 mt-1">Signature</p>
+                                </div>
+                                
+                                <div>
+                                    <input type="text" id="position" name="position"
+                                        class="w-full md:w-80 px-4 py-2 bg-white border-b-2 border-gray-400 focus:outline-none focus:border-violet transition"
+                                        placeholder="[Your Position/Title]">
+                                    <p class="text-sm text-gray-600 mt-1">Position/Title</p>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                    <div>
+                                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email Address <span class="text-red-500">*</span></label>
+                                        <input type="email" id="email" name="email" required
+                                            class="w-full px-4 py-2 bg-white border border-gray-300 rounded focus:outline-none focus:border-violet focus:ring-2 focus:ring-violet transition"
+                                            placeholder="contact@organization.com">
+                                    </div>
+                                    <div>
+                                        <label for="phone" class="block text-sm font-semibold text-gray-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
+                                        <input type="tel" id="phone" name="phone" required
+                                            class="w-full px-4 py-2 bg-white border border-gray-300 rounded focus:outline-none focus:border-violet focus:ring-2 focus:ring-violet transition"
+                                            placeholder="+63 XXX XXX XXXX">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attachments Section -->
+                <div class="mt-8 pt-6 border-t-2 border-gray-300">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Attachments</h3>
+                    <p class="text-sm text-gray-600 mb-4">You may attach supporting documents such as organization profile, proposal documents, certificates, or other relevant files.</p>
+                    
+                    <div class="space-y-4">
+                        <!-- File Upload Area -->
+                        <label for="fileUpload" class="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 hover:border-violet hover:bg-gray-100 transition-colors cursor-pointer block" style="cursor: pointer; user-select: none;">
+                            <div class="text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <div>
+                                    <span class="mt-2 block text-sm font-semibold text-gray-900">
+                                        Click to upload files
+                                    </span>
+                                    <span class="mt-1 block text-xs text-gray-500">
+                                        PDF, DOC, DOCX, JPG, PNG (Max 10MB per file)
+                                    </span>
+                                </div>
+                            </div>
+                            <input type="file" id="fileUpload" name="attachments[]" multiple
+                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                style="display: none;"
+                                onchange="handleFileSelect(event)">
+                        </label>
+
+                        <!-- File List Display -->
+                        <div id="fileList" class="space-y-2 hidden">
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Selected Files:</p>
+                            <div id="fileItems" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" id="submitButton"
+                        class="w-full bg-violet text-white font-bold py-4 rounded-lg hover:bg-violet-dark transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span id="submitButtonText">Submit Partnership Request</span>
+                        <span id="submitButtonLoader" class="hidden">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Submitting...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Note -->
+                <p class="text-xs text-gray-500 text-center mt-4">
+                    <span class="text-red-500">*</span> Required fields. Your partnership request will be reviewed by our team and
+                    we will contact you within 5-7 business days.
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Form JavaScript (simplified version) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set default date to today
+            const letterDate = document.getElementById('letterDate');
+            if (letterDate) {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                letterDate.value = `${year}-${month}-${day}`;
+            }
+
+            // Format file size function (needed for file handler)
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+            }
+
+            // No need for manual click handler - label will handle it automatically
+
+            // File upload handler
+            window.handleFileSelect = function(event) {
+                const files = event.target.files;
+                const fileList = document.getElementById('fileList');
+                const fileItems = document.getElementById('fileItems');
+                
+                if (files.length > 0) {
+                    fileList.classList.remove('hidden');
+                    fileItems.innerHTML = '';
+                    
+                    Array.from(files).forEach((file, index) => {
+                        const maxSize = 10 * 1024 * 1024; // 10MB
+                        if (file.size > maxSize) {
+                            alert(`File "${file.name}" exceeds the 10MB size limit and will not be uploaded.`);
+                            return;
+                        }
+                        
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'flex items-center justify-between p-3 bg-white border border-gray-300 rounded-lg';
+                        fileItem.innerHTML = `
+                            <div class="flex items-center space-x-3 flex-1 min-w-0">
+                                <svg class="h-5 w-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate">${file.name}</p>
+                                    <p class="text-xs text-gray-500">${formatFileSize(file.size)}</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="removeFile(${index})" class="ml-3 text-red-600 hover:text-red-800 flex-shrink-0">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        `;
+                        fileItem.dataset.index = index;
+                        fileItems.appendChild(fileItem);
+                    });
+                } else {
+                    fileList.classList.add('hidden');
+                }
+            };
+
+            // Remove file function
+            window.removeFile = function(index) {
+                const fileInput = document.getElementById('fileUpload');
+                const dt = new DataTransfer();
+                const files = Array.from(fileInput.files);
+                
+                files.forEach((file, i) => {
+                    if (i !== index) {
+                        dt.items.add(file);
+                    }
+                });
+                
+                fileInput.files = dt.files;
+                const event = new Event('change', { bubbles: true });
+                fileInput.dispatchEvent(event);
+            };
+
+            // Format file size
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+            }
+
+            // Form submission
+            const partnerForm = document.getElementById('partnerForm');
+            partnerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Validate file sizes
+                const files = document.getElementById('fileUpload').files;
+                for (let i = 0; i < files.length; i++) {
+                    if (files[i].size > 10 * 1024 * 1024) {
+                        alert(`File "${files[i].name}" exceeds the 10MB size limit. Please remove it before submitting.`);
+                        return;
+                    }
+                }
+
+                const submitButton = document.getElementById('submitButton');
+                const submitButtonText = document.getElementById('submitButtonText');
+                const submitButtonLoader = document.getElementById('submitButtonLoader');
+                
+                submitButton.disabled = true;
+                submitButtonText.classList.add('hidden');
+                submitButtonLoader.classList.remove('hidden');
+
+                try {
+                    const formData = new FormData(partnerForm);
+                    
+                    const response = await fetch('../PHP/SubmitPartnershipRequest.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        // Notify parent window if in iframe (for modal)
+                        if (window.parent !== window) {
+                            window.parent.postMessage('partnershipSubmitted', '*');
+                        }
+                        
+                        let message = result.message;
+                        if (result.uploaded_files && result.uploaded_files.length > 0) {
+                            message += '\n\nUploaded files:\n' + result.uploaded_files.join('\n');
+                        }
+                        if (result.failed_files && result.failed_files.length > 0) {
+                            message += '\n\nFailed files:\n' + result.failed_files.join('\n');
+                        }
+                        
+                        alert(message + '\n\nOur team will contact you within 5-7 business days.');
+                        
+                        // Reset form
+                        partnerForm.reset();
+                        document.getElementById('fileList').classList.add('hidden');
+                        document.getElementById('fileItems').innerHTML = '';
+                        
+                        // Reset date to today
+                        if (letterDate) {
+                            const today = new Date();
+                            const year = today.getFullYear();
+                            const month = String(today.getMonth() + 1).padStart(2, '0');
+                            const day = String(today.getDate()).padStart(2, '0');
+                            letterDate.value = `${year}-${month}-${day}`;
+                        }
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                    alert('An error occurred while submitting your request. Please try again later.');
+                } finally {
+                    submitButton.disabled = false;
+                    submitButtonText.classList.remove('hidden');
+                    submitButtonLoader.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
