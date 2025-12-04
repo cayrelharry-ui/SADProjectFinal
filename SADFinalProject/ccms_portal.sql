@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2025 at 02:41 AM
+-- Generation Time: Dec 04, 2025 at 07:13 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -74,16 +74,11 @@ CREATE TABLE `projects` (
   `project_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
-  `budget` decimal(10,2) DEFAULT NULL,
-  `keywords` text DEFAULT NULL,
   `category` enum('project','event','proposal') DEFAULT 'project',
   `created_by` int(11) DEFAULT NULL,
-  `faculty_id` int(11) DEFAULT NULL,
   `status` enum('pending','approved','rejected','completed') DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `reviewed_at` timestamp NULL DEFAULT NULL,
-  `file_path` varchar(255) DEFAULT NULL,
-  `template_id` int(11) DEFAULT NULL
+  `file_path` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -177,8 +172,7 @@ INSERT INTO `users` (`user_id`, `full_name`, `username`, `email`, `password`, `r
 (18, 'faculty', NULL, 'faculty@ccms.edu', '$2y$10$FrNmAKkPLNdnw6dFeh/NcOyfbqNCoLmdaTsWGKYY7vICohhHQe2O2', 'faculty', 'active', '2025-11-29 07:53:06'),
 (19, 'coordinator', NULL, 'coordinator@ccms.edu', '$2y$10$FrNmAKkPLNdnw6dFeh/NcOyfbqNCoLmdaTsWGKYY7vICohhHQe2O2', 'coordinator', 'active', '2025-11-29 07:53:06'),
 (20, 'public', NULL, 'public@ccms.edu', '$2y$10$FrNmAKkPLNdnw6dFeh/NcOyfbqNCoLmdaTsWGKYY7vICohhHQe2O2', 'public', 'active', '2025-11-29 07:53:06'),
-(23, 'Jc Elevado', NULL, 'jeypielevado@gmail.com', '$2y$10$ajM/I6uMUppwQCs5yTCK/ek5fBuUK0nqfvAIp3yvKRv373Jz.Vz.y', 'faculty', 'active', '2025-11-30 13:03:54'),
-(24, 'Jp Elevado', NULL, 'angelica@gmail.com', '$2y$10$PB63xqhgZaynO3ZqeZr/hO.UX.Og5QGYpJ/BT0ZJ7kKvfhKL0Ggpq', 'faculty', 'inactive', '2025-11-30 13:49:27');
+(26, 'partner', NULL, 'partner@ccms.edu', '$2y$10$bLJGKn70pLpXZMjFBiYKweKHsYdKCeDB7jTKf22KXNVINz6YSEs0e', '', 'active', '2025-12-04 06:11:37');
 
 -- --------------------------------------------------------
 
@@ -344,7 +338,7 @@ ALTER TABLE `uploaded_files`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `validation_rules`
