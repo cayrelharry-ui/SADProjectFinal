@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 04, 2025 at 07:13 AM
+-- Generation Time: Dec 04, 2025 at 07:19 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -158,7 +158,7 @@ CREATE TABLE `users` (
   `username` varchar(50) DEFAULT NULL,
   `email` varchar(120) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','faculty','coordinator','public') NOT NULL,
+  `role` enum('admin','faculty','coordinator','partner','public') NOT NULL,
   `status` enum('active','inactive') DEFAULT 'active',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -172,7 +172,7 @@ INSERT INTO `users` (`user_id`, `full_name`, `username`, `email`, `password`, `r
 (18, 'faculty', NULL, 'faculty@ccms.edu', '$2y$10$FrNmAKkPLNdnw6dFeh/NcOyfbqNCoLmdaTsWGKYY7vICohhHQe2O2', 'faculty', 'active', '2025-11-29 07:53:06'),
 (19, 'coordinator', NULL, 'coordinator@ccms.edu', '$2y$10$FrNmAKkPLNdnw6dFeh/NcOyfbqNCoLmdaTsWGKYY7vICohhHQe2O2', 'coordinator', 'active', '2025-11-29 07:53:06'),
 (20, 'public', NULL, 'public@ccms.edu', '$2y$10$FrNmAKkPLNdnw6dFeh/NcOyfbqNCoLmdaTsWGKYY7vICohhHQe2O2', 'public', 'active', '2025-11-29 07:53:06'),
-(26, 'partner', NULL, 'partner@ccms.edu', '$2y$10$bLJGKn70pLpXZMjFBiYKweKHsYdKCeDB7jTKf22KXNVINz6YSEs0e', '', 'active', '2025-12-04 06:11:37');
+(26, 'partner', NULL, 'partner@ccms.edu', '$2y$10$bLJGKn70pLpXZMjFBiYKweKHsYdKCeDB7jTKf22KXNVINz6YSEs0e', 'partner', 'active', '2025-12-04 06:11:37');
 
 -- --------------------------------------------------------
 
