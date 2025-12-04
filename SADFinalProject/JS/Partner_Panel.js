@@ -1,27 +1,65 @@
 // Partner_Panel.js
-// Default email for testing - change this to match an email in your partnership_requests table
-const DEFAULT_EMAIL = 'test@example.com';
-
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Partner Panel Loading...');
     
-    // Initialize the partner panel
-    initializePartnerPanel(DEFAULT_EMAIL);
+    // Check if user is logged in
+    const userRole = localStorage.getItem('userRole');
+    const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName');
+    
+    if (!userRole || !userEmail) {
+        // Not logged in, redirect to login
+        window.location.href = '../HTML/LogIn.html';
+        return;
+    }
+    
+    // Initialize the partner panel with logged-in user's email
+    initializePartnerPanel(userEmail);
+    
+    // Setup logout button
+    setupLogoutButton();
 });
+
+// ============================================
+// LOGOUT FUNCTIONALITY
+// ============================================
+
+function setupLogoutButton() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.innerHTML = '<i class="bi bi-box-arrow-right"></i> Logout';
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            logout();
+        });
+    }
+}
+
+function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        // Clear all localStorage items related to authentication
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userEmail');
+        
+        // If you're using sessionStorage, clear that too
+        sessionStorage.clear();
+        
+        // Show logout message
+        showStatus('Logging out...', 'info');
+        
+        // Redirect to login page after a short delay
+        setTimeout(() => {
+            window.location.href = '../HTML/LogIn.html';
+        }, 1000);
+    }
+}
 
 function initializePartnerPanel(userEmail) {
     console.log("Partner Panel Initializing for:", userEmail);
     
     // Setup navigation
     setupSectionNavigation();
-    
-    // Setup refresh button - just reloads the page
-    const refreshBtn = document.getElementById('logoutBtn');
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', function() {
-            window.location.reload();
-        });
-    }
     
     // Setup search and filter
     setupFilters();
@@ -79,17 +117,20 @@ function setupSectionNavigation() {
                 });
                 this.classList.add('active');
                 
+                // Get user email from localStorage
+                const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName');
+                
                 // Load data if needed
                 if (sectionKey === 'requests') {
-                    loadAllRequests(DEFAULT_EMAIL);
+                    loadAllRequests(userEmail);
                 } else if (sectionKey === 'projects') {
-                    loadActiveProjects(DEFAULT_EMAIL);
+                    loadActiveProjects(userEmail);
                 } else if (sectionKey === 'documents') {
-                    loadDocuments(DEFAULT_EMAIL);
+                    loadDocuments(userEmail);
                 } else if (sectionKey === 'profile') {
-                    loadOrganizationProfile(DEFAULT_EMAIL);
+                    loadOrganizationProfile(userEmail);
                 } else if (sectionKey === 'dashboard') {
-                    loadDashboardData(DEFAULT_EMAIL);
+                    loadDashboardData(userEmail);
                 }
             }
         });
@@ -100,7 +141,10 @@ function setupSectionNavigation() {
 // DASHBOARD DATA
 // ============================================
 
-async function loadDashboardData(userEmail = DEFAULT_EMAIL) {
+async function loadDashboardData(userEmail) {
+    if (!userEmail) {
+        userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName');
+    }
     try {
         // Load partner stats
         const statsResponse = await fetch(`../PHP/PartnerDashboard.php?action=stats&email=${encodeURIComponent(userEmail)}`);
@@ -223,7 +267,10 @@ function updateRecentRequests(requests) {
 // PARTNERSHIP REQUESTS
 // ============================================
 
-async function loadAllRequests(userEmail = DEFAULT_EMAIL) {
+async function loadAllRequests(userEmail) {
+    if (!userEmail) {
+        userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName');
+    }
     const tbody = document.getElementById('requestsTableBody');
     if (!tbody) return;
     
@@ -507,7 +554,8 @@ function setupFilters() {
     
     if (statusFilter) {
         statusFilter.addEventListener('change', function() {
-            loadAllRequests(DEFAULT_EMAIL);
+            const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName');
+            loadAllRequests(userEmail);
         });
     }
     
@@ -517,7 +565,8 @@ function setupFilters() {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
                 if (e.key === 'Enter' || this.value.length >= 3 || this.value.length === 0) {
-                    loadAllRequests(DEFAULT_EMAIL);
+                    const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName');
+                    loadAllRequests(userEmail);
                 }
             }, 500);
         });
@@ -528,7 +577,10 @@ function setupFilters() {
 // OTHER SECTIONS
 // ============================================
 
-async function loadActiveProjects(userEmail = DEFAULT_EMAIL) {
+async function loadActiveProjects(userEmail) {
+    if (!userEmail) {
+        userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName');
+    }
     const container = document.getElementById('activeProjects');
     if (!container) return;
     
@@ -569,7 +621,10 @@ async function loadActiveProjects(userEmail = DEFAULT_EMAIL) {
     }
 }
 
-async function loadDocuments(userEmail = DEFAULT_EMAIL) {
+async function loadDocuments(userEmail) {
+    if (!userEmail) {
+        userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName');
+    }
     const container = document.getElementById('documentsList');
     if (!container) return;
     
@@ -617,7 +672,10 @@ async function loadDocuments(userEmail = DEFAULT_EMAIL) {
     }
 }
 
-async function loadOrganizationProfile(userEmail = DEFAULT_EMAIL) {
+async function loadOrganizationProfile(userEmail) {
+    if (!userEmail) {
+        userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName');
+    }
     const container = document.getElementById('orgProfile');
     if (!container) return;
     
@@ -757,8 +815,9 @@ function openNewRequestModal() {
         if (event.data === 'partnershipSubmitted') {
             modal.hide();
             // Refresh the requests list
-            loadAllRequests(DEFAULT_EMAIL);
-            loadDashboardData(DEFAULT_EMAIL);
+            const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('userName');
+            loadAllRequests(userEmail);
+            loadDashboardData(userEmail);
             showStatus('Partnership request submitted successfully!', 'success');
         }
     });
