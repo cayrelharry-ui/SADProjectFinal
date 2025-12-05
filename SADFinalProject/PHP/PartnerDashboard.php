@@ -1,6 +1,16 @@
 <?php
+// Suppress any output before JSON (whitespace, warnings, etc.)
+ob_start();
+
 session_start();
-header('Content-Type: application/json');
+
+// Set JSON header
+header('Content-Type: application/json; charset=utf-8');
+
+// Suppress error display but log them
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 
 // Database connection
 $host = "localhost";
@@ -10,7 +20,8 @@ $dbname = "ccms_portal";
 
 $conn = new mysqli($host, $user, $pass, $dbname);
 if ($conn->connect_error) {
-    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
+    ob_end_clean(); // Clear any output
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $conn->connect_error]);
     exit;
 }
 
@@ -21,37 +32,58 @@ $action = $_GET['action'] ?? '';
 $email = $_GET['email'] ?? '';
 
 // Route to appropriate handler
-switch ($action) {
-    case 'stats':
-        getPartnerStats($conn, $email);
-        break;
-    case 'requests':
-        getPartnerRequests($conn, $email);
-        break;
-    case 'details':
-        getRequestDetails($conn);
-        break;
-    case 'profile':
-        getPartnerProfile($conn, $email);
-        break;
-    case 'projects':
-        getPartnerProjects($conn, $email);
-        break;
-    case 'documents':
-        getPartnerDocuments($conn, $email);
-        break;
-    default:
-        echo json_encode(['status' => 'error', 'message' => 'Invalid action parameter']);
-        break;
+$output_sent = false;
+try {
+    switch ($action) {
+        case 'stats':
+            getPartnerStats($conn, $email);
+            $output_sent = true;
+            break;
+        case 'requests':
+            getPartnerRequests($conn, $email);
+            $output_sent = true;
+            break;
+        case 'details':
+            getRequestDetails($conn);
+            $output_sent = true;
+            break;
+        case 'profile':
+            getPartnerProfile($conn, $email);
+            $output_sent = true;
+            break;
+        case 'projects':
+            getPartnerProjects($conn, $email);
+            $output_sent = true;
+            break;
+        case 'documents':
+            getPartnerDocuments($conn, $email);
+            $output_sent = true;
+            break;
+        default:
+            ob_clean(); // Clear any output
+            echo json_encode(['status' => 'error', 'message' => 'Invalid action parameter']);
+            $output_sent = true;
+            break;
+    }
+} catch (Exception $e) {
+    ob_clean(); // Clear any output
+    echo json_encode(['status' => 'error', 'message' => 'Server error: ' . $e->getMessage()]);
+    $output_sent = true;
 }
 
 $conn->close();
+
+// Only flush if output wasn't already sent
+if (!$output_sent && ob_get_level() > 0) {
+    ob_end_flush();
+}
 
 // ============================================
 // FUNCTION: Get Partner Statistics
 // ============================================
 function getPartnerStats($conn, $email) {
     if (empty($email)) {
+        ob_clean(); // Clear any output
         echo json_encode(['status' => 'error', 'message' => 'Email parameter is required']);
         return;
     }
@@ -97,6 +129,7 @@ function getPartnerStats($conn, $email) {
     $organization = $result->fetch_assoc();
     $stmt->close();
 
+    ob_clean(); // Clear any output before JSON
     echo json_encode([
         'status' => 'success',
         'stats' => $stats,
@@ -109,6 +142,7 @@ function getPartnerStats($conn, $email) {
 // ============================================
 function getPartnerRequests($conn, $email) {
     if (empty($email)) {
+        ob_clean(); // Clear any output
         echo json_encode(['status' => 'error', 'message' => 'Email parameter is required']);
         return;
     }
@@ -157,6 +191,7 @@ function getPartnerRequests($conn, $email) {
     // Prepare and execute
     $stmt = $conn->prepare($query);
     if (!$stmt) {
+        ob_clean(); // Clear any output
         echo json_encode(['status' => 'error', 'message' => 'Query preparation failed: ' . $conn->error]);
         return;
     }
@@ -173,6 +208,7 @@ function getPartnerRequests($conn, $email) {
         $requests[] = $row;
     }
 
+    ob_clean(); // Clear any output before JSON
     echo json_encode([
         'status' => 'success',
         'requests' => $requests
