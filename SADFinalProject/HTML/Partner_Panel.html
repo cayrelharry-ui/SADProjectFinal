@@ -40,6 +40,16 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="moa">
+                                <i class="bi bi-handshake"></i> MOA Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="budget">
+                                <i class="bi bi-cash-stack"></i> Budget Tracking
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#" data-section="profile">
                                 <i class="bi bi-person-circle"></i> Organization Profile
                             </a>
@@ -56,7 +66,10 @@
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2" id="sectionTitle">Partner Panel</h1>
+                    <div>
+                        <h1 class="h2" id="sectionTitle">Partner Panel</h1>
+                        <p class="text-muted mb-0" id="userWelcome">Welcome back!</p>
+                    </div>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
                             <button type="button" class="btn btn-sm btn-outline-secondary" id="logoutBtn">
@@ -138,6 +151,61 @@
                                         <div class="align-self-center">
                                             <i class="bi bi-briefcase fs-1"></i>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="mb-4">
+                        <h3 class="h5 mb-3">Quick Actions</h3>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
+                                                <i class="bi bi-file-earmark-plus text-primary fs-4"></i>
+                                            </div>
+                                            <h6 class="card-title mb-0">New Partnership Request</h6>
+                                        </div>
+                                        <p class="card-text text-muted small">Submit a new partnership proposal with required documents</p>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="openNewRequestModal()">
+                                            Get Started <i class="bi bi-arrow-right ms-1"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100 border-success">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="bg-success bg-opacity-10 rounded p-2 me-3">
+                                                <i class="bi bi-handshake text-success fs-4"></i>
+                                            </div>
+                                            <h6 class="card-title mb-0">Manage MOA</h6>
+                                        </div>
+                                        <p class="card-text text-muted small">Upload or renew your Memorandum of Agreement</p>
+                                        <button class="btn btn-sm btn-outline-success" onclick="navigateToSection('moa')">
+                                            Get Started <i class="bi bi-arrow-right ms-1"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100 border-info">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="bg-info bg-opacity-10 rounded p-2 me-3">
+                                                <i class="bi bi-cash-stack text-info fs-4"></i>
+                                            </div>
+                                            <h6 class="card-title mb-0">Track Budget</h6>
+                                        </div>
+                                        <p class="card-text text-muted small">Monitor budget allocation across all active projects</p>
+                                        <button class="btn btn-sm btn-outline-info" onclick="navigateToSection('budget')">
+                                            Get Started <i class="bi bi-arrow-right ms-1"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -262,6 +330,44 @@
                     </div>
                 </div>
 
+                <!-- MOA Management Section -->
+                <div id="moa-section" class="section-content d-none">
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">MOA Management</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="moaManagementContent">
+                                <div class="text-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Loading MOA management...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Budget Tracking Section -->
+                <div id="budget-section" class="section-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">Budget Tracking</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="budgetTrackingContent">
+                                <div class="text-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Loading budget information...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Organization Profile Section -->
                 <div id="profile-section" class="section-content d-none">
                     <div class="card">
@@ -322,6 +428,21 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOA Details Modal -->
+    <div class="modal fade" id="moaDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">MOA Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="moaDetailsContent">
+                    <!-- MOA details loaded here -->
                 </div>
             </div>
         </div>
