@@ -1,4 +1,4 @@
-// Admin_Panel.js - UPDATED WITH APPROVAL SYSTEM
+// Admin_Panel.js - COMPLETE VERSION WITH STATISTICS
 import { 
     supabase, 
     logout as supabaseLogout, 
@@ -21,6 +21,14 @@ import {
     getFileAccessBadge,
     initializeFileUploadForm
 } from './UploadFile.js';
+
+// Import the Statistics module
+import {
+    loadStatistics,
+    updateStatisticsUI,
+    drawCharts,
+    refreshStatistics
+} from './Statistics.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
     console.log("👑 Admin Panel Initializing...");
@@ -113,7 +121,7 @@ function setupSectionNavigation() {
         'user-management': { title: 'User Management', element: 'user-management-section' },
         'approvals': { title: 'Pending Approvals', element: 'approvals-section' },
         'content': { title: 'Content Management', element: 'content-section' },
-        'analytics': { title: 'Analytics', element: 'analytics-section' },
+        'analytics': { title: 'Analytics & Statistics', element: 'analytics-section' },
         'settings': { title: 'Settings', element: 'settings-section' }
     };
 
@@ -148,6 +156,8 @@ function setupSectionNavigation() {
                     loadPendingApprovals();
                 } else if (sectionKey === 'dashboard') {
                     loadDashboardData();
+                } else if (sectionKey === 'analytics') {
+                    loadAnalyticsSection();
                 }
             }
         });
@@ -207,6 +217,14 @@ function setupSearchAndFilters() {
     const userSearch = document.getElementById('searchUsers');
     if (userSearch) {
         userSearch.addEventListener('input', debounce(filterUsersTable, 300));
+    }
+    
+    // Refresh statistics button
+    const refreshStatsBtn = document.getElementById('refreshStatsBtn');
+    if (refreshStatsBtn) {
+        refreshStatsBtn.addEventListener('click', async function() {
+            await loadAnalyticsSection();
+        });
     }
 }
 
@@ -314,6 +332,80 @@ async function loadPendingApprovals() {
     }
 }
 
+async function loadAnalyticsSection() {
+    console.log("📊 Loading analytics section...");
+    
+    const analyticsSection = document.getElementById('analytics-section');
+    if (!analyticsSection) {
+        console.error("Analytics section not found!");
+        return;
+    }
+    
+    // Get the card body inside analytics section
+    const cardBody = analyticsSection.querySelector('.card-body');
+    if (!cardBody) {
+        console.error("Card body not found in analytics section!");
+        return;
+    }
+    
+    // Show loading state
+    cardBody.innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading statistics...</span>
+            </div>
+            <p class="mt-3">Loading statistics...</p>
+        </div>
+    `;
+    
+    try {
+        // Load statistics
+        const result = await loadStatistics();
+        
+        if (result.success) {
+            console.log("✅ Statistics loaded:", result.data);
+            
+            // Update the UI with statistics
+            updateStatisticsUI(result.data);
+            
+            // Try to draw charts (will fail silently if Chart.js not loaded)
+            try {
+                drawCharts(result.data.users, result.data.files);
+            } catch (chartError) {
+                console.log("Charts not available:", chartError.message);
+            }
+            
+            showStatus('Statistics loaded successfully', 'success');
+        } else {
+            console.error("❌ Failed to load statistics:", result.error);
+            cardBody.innerHTML = `
+                <div class="alert alert-danger m-3">
+                    <i class="bi bi-exclamation-triangle"></i> 
+                    Failed to load statistics: ${result.error || 'Unknown error'}
+                    <br>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="loadAnalyticsSection()">
+                        Try Again
+                    </button>
+                </div>
+            `;
+            showStatus('Failed to load statistics', 'error');
+        }
+        
+    } catch (error) {
+        console.error('❌ Analytics section error:', error);
+        cardBody.innerHTML = `
+            <div class="alert alert-danger m-3">
+                <i class="bi bi-exclamation-triangle"></i> 
+                Error loading analytics: ${error.message}
+                <br>
+                <button class="btn btn-sm btn-primary mt-2" onclick="loadAnalyticsSection()">
+                    Try Again
+                </button>
+            </div>
+        `;
+        showStatus('Error loading analytics', 'error');
+    }
+}
 // Global function to load uploaded files
 window.loadUploadedFiles = async function() {
     console.log("Loading uploaded files...");
@@ -495,7 +587,9 @@ function updateUsersTable(users) {
                            <button class="btn btn-danger btn-sm" onclick="rejectUserAccount(${user.user_id})">Reject</button>`
                         : `<button class="btn btn-success btn-sm" onclick="activateUser(${user.user_id})">Activate</button>`
                     }
-                    <button class="btn btn-info btn-sm" onclick="viewUserDetails(${user.user_id})">View</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteUserAccount(${user.user_id}, '${user.full_name}')">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
                 </div>
             </td>
         </tr>
@@ -504,7 +598,6 @@ function updateUsersTable(users) {
     
     tbody.innerHTML = html;
 }
-
 function filterUsersTable() {
     const searchTerm = document.getElementById('searchUsers')?.value.toLowerCase() || '';
     const rows = document.querySelectorAll('#usersTableBody tr');
@@ -857,3 +950,45 @@ window.refreshUserData = async function() {
     await loadPendingApprovals();
     showStatus('Data refreshed', 'success');
 };
+
+// Global statistics refresh function
+window.refreshStatistics = async function() {
+    showStatus('Refreshing statistics...', 'info');
+    await loadAnalyticsSection();
+};
+
+// Add this to your global functions in Admin_Panel.js
+window.deleteUserAccount = async function(userId, userName) {
+    if (!confirm(`Are you sure you want to DELETE user "${userName}"?\n\n⚠️ This action cannot be undone!`)) {
+        return;
+    }
+    
+    try {
+        showStatus('Deleting user...', 'warning');
+        
+        // Delete user from Supabase
+        const { error } = await supabase
+            .from('users')
+            .delete()
+            .eq('user_id', userId);
+        
+        if (error) {
+            throw new Error('Failed to delete user: ' + error.message);
+        }
+        
+        showStatus(`User "${userName}" deleted successfully`, 'success');
+        
+        // Refresh data
+        await loadDashboardData();
+        await loadAllUsers();
+        await loadPendingApprovals();
+        
+    } catch (error) {
+        console.error('Delete user error:', error);
+        showStatus('Delete failed: ' + error.message, 'error');
+    }
+};
+
+window.loadAnalyticsSection = loadAnalyticsSection;
+window.refreshUserData = refreshUserData;
+window.loadUploadedFiles = loadUploadedFiles;

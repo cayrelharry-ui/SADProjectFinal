@@ -93,3 +93,82 @@
     background-color: #ffc107 !important;
     color: #212529;
 }
+
+/* Statistics CSS */
+.stat-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.stat-card .card-body {
+    padding: 1.5rem;
+}
+
+.stat-updated {
+    animation: pulse 1s;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.rank-badge {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.avatar-sm {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-title {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    background: #f8f9fa;
+    border-radius: 50%;
+    color: #495057;
+}
+
+/* Progress bar styling */
+.progress {
+    border-radius: 10px;
+}
+
+.progress-bar {
+    border-radius: 10px;
+}
+
+/* Table hover effects */
+.table-hover tbody tr:hover {
+    background-color: rgba(0,123,255,0.05);
+}
+
+/* Card header styling */
+.card-header {
+    border-bottom: 1px solid rgba(0,0,0,0.125);
+}
