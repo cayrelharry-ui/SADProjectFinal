@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard | CCMS Extension Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- UPGRADE: ADDED ANIMATIONS --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 20px, 0);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Hide scrollbar for chrome/safari/opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cnsc-violet': '#5A2C9D',
+                        'cnsc-violet-dark': '#4C2684',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-slate-100">
+
+    <!-- HEADER -->
+    <header class="absolute top-0 left-0 w-full bg-transparent z-40">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+
+            <!-- 1. LOGO LEFT SIDE (Unchanged) -->
+            <a href="#" class="flex items-center space-x-3 h-full">
+                <div class="h-10 w-10 p-1.5 bg-white/20 rounded-full backdrop-blur-sm">
+                    <div
+                        class="w-full h-full bg-white rounded-full flex items-center justify-center text-cnsc-violet font-bold text-xs">
+                        LOGO</div>
+                </div>
+                <div class="leading-none hidden sm:block">
+                    <p class="text-xs font-bold text-white tracking-wider">CCMS Extension Services</p>
+                    <h1 class="text-xl font-extrabold text-white">CNSC</h1>
+                </div>
+            </a>
+
+            <!-- 2. RIGHT SIDE CONTAINER (Holds both Bell & Profile) -->
+            <div class="flex items-center h-full gap-4">
+
+                <!-- A. NOTIFICATION BELL GROUP -->
+                <div class="relative group h-full flex items-center">
+                    <!-- Icon Trigger -->
+                    <button
+                        class="relative p-2 rounded-full text-gray-200 hover:bg-white/10 hover:text-white transition focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                            </path>
+                        </svg>
+                        <!-- Red Dot Badge -->
+                        <div id="notif-badge"
+                            class="absolute top-1 right-1 h-2.5 w-2.5 bg-red-500 border-2 border-cnsc-violet rounded-full hidden">
+                        </div>
+                    </button>
+
+                    <!-- Notification Dropdown -->
+                    <div
+                        class="absolute top-14 right-0 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 hidden group-hover:block z-50 overflow-hidden origin-top-right transform transition-all">
+                        <div class="p-3 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wide">Notifications</h3>
+                            <button onclick="markAllAsRead()"
+                                class="text-[10px] text-cnsc-violet font-bold hover:underline">Mark all read</button>
+                        </div>
+                        <!-- List Container -->
+                        <div id="notif-list" class="max-h-64 overflow-y-auto p-0">
+                            <div class="p-4 text-center text-gray-400 text-xs">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B. PROFILE DROPDOWN GROUP -->
+                <div class="relative group h-full flex items-center border-l border-white/10 pl-4">
+                    <!-- Trigger: Avatar & Name -->
+                    <button class="flex items-center gap-3 focus:outline-none transition opacity-90 hover:opacity-100">
+                        <div class="text-right hidden md:block">
+                            <p id="header-user-name" class="text-sm font-bold text-white leading-none">Loading...</p>
+                            <p class="text-[10px] text-gray-200 font-medium tracking-wide uppercase">Faculty Head</p>
+                        </div>
+                        <div class="relative">
+                            <img id="header-avatar"
+                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                class="h-10 w-10 rounded-full border-2 border-white/50 shadow-md object-cover"
+                                alt="Profile">
+                            <div
+                                class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-400 border-2 border-cnsc-violet">
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- Profile Dropdown Menu -->
+                    <div
+                        class="absolute top-16 right-0 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 hidden group-hover:block transform transition-all duration-200 origin-top-right z-50">
+                        <!-- Header -->
+                        <div class="p-4 border-b border-gray-100 bg-gray-50 rounded-t-xl flex items-center gap-3">
+                            <img id="dropdown-avatar"
+                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                class="h-10 w-10 rounded-full object-cover border border-gray-200">
+                            <div>
+                                <p class="text-sm font-bold text-gray-900">My Account</p>
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase tracking-wide">Faculty</span>
+                            </div>
+                        </div>
+                        <!-- Menu -->
+                        <div class="p-2 space-y-1">
+                            <button onclick="openProfileModal()"
+                                class="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-purple-50 hover:text-cnsc-violet transition">
+                                <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                My Profile
+                            </button>
+                            <button onclick="openProfileModal('settings')"
+                                class="w-full flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-purple-50 hover:text-cnsc-violet transition">
+                                <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Settings
+                            </button>
+                        </div>
+                        <!-- Footer -->
+                        <div class="p-2 border-t border-gray-100">
+                            <button onclick="confirm('Are you sure you want to logout?')"
+                                class="w-full flex items-center px-3 py-2 text-sm font-bold text-red-600 rounded-lg hover:bg-red-50 transition">
+                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                    </path>
+                                </svg>
+                                Sign Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </nav>
+
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- HERO SECTION -->
+        <div class="relative bg-cnsc-violet overflow-hidden">
+            <div class="h-[400px] relative overflow-hidden">
+                <!-- Background Image -->
+                <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop"
+                    alt="Handshake" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-r from-violet-900/90 to-violet-600/70"></div>
+
+                <!-- Hero Text Content -->
+                <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
+                    <span class="text-yellow-400 font-bold tracking-[0.2em] text-xs uppercase mb-3 fade-in-up"
+                        style="animation-delay: 0.1s;">REVIEW • PREPARE • SUBMIT</span>
+                    <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 fade-in-up"
+                        style="animation-delay: 0.2s;">Faculty Dashboard</h1>
+                    <p class="text-gray-200 max-w-2xl text-lg fade-in-up mb-8" style="animation-delay: 0.3s;">Track your
+                        proposals and review opportunities.</p>
+                    <!-- REMOVED FILTER BAR FROM HERE -->
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT WRAPPER (Controls the Overlap) -->
+        <!-- Changed -mt-16 to -mt-24 to create space for the bar to float over the image -->
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 -mt-10">
+
+            <!-- MOVED FILTER BAR HERE -->
+            <!-- Added 'mb-8' for spacing between bar and table -->
+            <!-- Removed '-mt-8' because the parent container (-mt-24) handles the lift -->
+            <div class="bg-white rounded-xl shadow-xl border border-gray-100 p-2 md:p-3 mb-8 fade-in-up"
+                style="animation-delay: 0.4s;">
+                <div class="flex flex-col md:flex-row gap-3 justify-between items-center">
+
+                    <!-- Filter Buttons Container -->
+                    <div class="flex gap-3 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 no-scrollbar"
+                        id="category-filters">
+
+                        <!-- 1. COMPLETED PROJECTS (Green Theme) -->
+                        <button onclick="setCategory('Completed', this)"
+                            data-active-class="bg-emerald-500 text-white shadow-md shadow-emerald-200 ring-2 ring-emerald-100 border-transparent"
+                            data-inactive-class="bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50"
+                            class="filter-btn px-4 py-2 border rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-300 flex items-center gap-2 
+                   bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Completed Projects
+                        </button>
+
+                        <!-- 2. PARTNERS PROPOSALS (Blue Theme) -->
+                        <!-- NOTE: I added the 'active' classes here by default because this is the default view -->
+                        <button onclick="setCategory('Partner', this)"
+                            data-active-class="bg-blue-500 text-white shadow-md shadow-blue-200 ring-2 ring-blue-100 border-transparent"
+                            data-inactive-class="bg-white text-blue-600 border-blue-200 hover:bg-blue-50" class="filter-btn px-4 py-2 border rounded-lg text-sm font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-2
+                   bg-blue-500 text-white shadow-md shadow-blue-200 ring-2 ring-blue-100 border-transparent">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            Partners Proposals
+                        </button>
+
+                        <!-- 3. MY PROPOSALS (Violet Theme) -->
+                        <button onclick="setCategory('My Proposals', this)"
+                            data-active-class="bg-cnsc-violet text-white shadow-md shadow-purple-200 ring-2 ring-purple-100 border-transparent"
+                            data-inactive-class="bg-white text-cnsc-violet border-purple-200 hover:bg-purple-50" class="filter-btn px-4 py-2 border rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-300 flex items-center gap-2
+                   bg-white text-cnsc-violet border-purple-200 hover:bg-purple-50">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
+                            </svg>
+                            My Proposals
+                        </button>
+
+                        <!-- 4. HANDLED PROJECTS (Orange Theme) -->
+                        <button onclick="setCategory('Handled', this)"
+                            data-active-class="bg-orange-500 text-white shadow-md shadow-orange-200 ring-2 ring-orange-100 border-transparent"
+                            data-inactive-class="bg-white text-orange-600 border-orange-200 hover:bg-orange-50" class="filter-btn px-4 py-2 border rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-300 flex items-center gap-2
+                   bg-white text-orange-600 border-orange-200 hover:bg-orange-50">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                </path>
+                            </svg>
+                            Handled Projects
+                        </button>
+
+                    </div>
+
+
+                    <!-- Search & Dropdown -->
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <select id="status-filter" onchange="applyFilters()"
+                            class="px-4 py-2 bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="All">Status: All</option>
+                            <option value="New">New</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+
+                        <div class="relative w-full md:w-64">
+                            <input type="text" id="search-input" oninput="debounceSearch()"
+                                placeholder="Search projects..."
+                                class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition">
+                            <svg class="w-4 h-4 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLES CARD -->
+            <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden min-h-[500px]">
+
+                <!-- VIEW 1: COMPLETED PROJECTS (Cards Grid) -->
+                <div id="view-completed" class="hidden p-6 md:p-8">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-emerald-700">Completed Projects</h2>
+                        <p class="text-sm text-gray-500 mt-1">Archive of all successfully finished extension projects.
+                        </p>
+                    </div>
+
+                    <!-- Cards Grid Container -->
+                    <div id="completed-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- JS will inject cards here -->
+                    </div>
+                </div>
+
+
+                <!-- VIEW 2: PARTNER PROPOSALS (Table - Default View) -->
+                <div id="view-partners" class="p-6 md:p-8"> <!-- No 'hidden' class here initially -->
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-blue-700">Partnership Opportunities</h2>
+                        <p class="text-sm text-gray-500 mt-1">Proposals from external organizations awaiting action.</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-600">
+                            <thead class="text-xs text-gray-700 uppercase bg-blue-50">
+                                <tr>
+                                    <th class="px-6 py-4">Opportunity Title</th>
+                                    <th class="px-6 py-4">Partner Organization</th>
+                                    <th class="px-6 py-4">Date Received</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="partner-opps-body">
+                                <!-- JS will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: MY PROPOSALS (Table + CRUD) -->
+                <div id="view-my-proposals" class="hidden p-6 md:p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-cnsc-violet">My Submitted Proposals</h2>
+                            <p class="text-sm text-gray-500 mt-1">Manage and track your personal submissions.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="toggle-archives-btn" onclick="toggleArchives()"
+                                class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-lg shadow-md text-sm transition">Show
+                                Archives</button>
+                            <a href="submit_proposal.html"
+                                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md text-sm flex items-center gap-2"><span>+</span>
+                                Create New</a>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-600">
+                            <thead class="text-xs text-gray-700 uppercase bg-purple-50">
+                                <tr>
+                                    <th class="px-6 py-4">Proposal Title</th>
+                                    <th class="px-6 py-4">Submission Date</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="my-proposals-body">
+                                <!-- JS will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- VIEW 4: HANDLED PROJECTS (Cards Grid) -->
+                <div id="view-handled" class="hidden p-6 md:p-8">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-orange-700">Projects I Handled</h2>
+                        <p class="text-sm text-gray-500 mt-1">Visual overview of projects you have claimed or worked on.
+                        </p>
+                    </div>
+                    <!-- Card Grid Container -->
+                    <div id="handled-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- JS will inject cards here -->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+
+    <!-- ============================================ -->
+    <!-- PROJECT DETAIL MODAL (Tailwind Version)      -->
+    <!-- ============================================ -->
+    <div id="project-modal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black/60 transition-opacity" onclick="closeProjectModal()"></div>
+
+        <!-- Modal Panel -->
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+
+                <div
+                    class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-5xl border-0">
+
+                    <!-- Modal Header / Banner -->
+                    <div class="relative h-48 md:h-64 bg-gray-900">
+                        <!-- Dynamic Image -->
+                        <img id="pm-banner"
+                            src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=2070&auto=format&fit=crop"
+                            class="w-full h-full object-cover opacity-50" alt="Cover">
+
+                        <div class="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <span id="pm-status"
+                                    class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded uppercase">Ongoing</span>
+                                <span
+                                    class="bg-[#5A2C9D] text-white text-xs font-bold px-2 py-1 rounded uppercase">Extension</span>
+                            </div>
+                            <h2 id="pm-title"
+                                class="text-2xl md:text-4xl font-bold text-white leading-tight drop-shadow-md">Project
+                                Title Here</h2>
+
+                            <!-- Close Button -->
+                            <button type="button" onclick="closeProjectModal()"
+                                class="absolute top-4 right-4 text-white/80 hover:text-white bg-black/20 hover:bg-black/40 rounded-full p-2 transition">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <div class="bg-white border-b border-gray-200 px-6 pt-2">
+                        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                            <button onclick="switchTab('overview', this)"
+                                class="tab-btn active-tab border-[#5A2C9D] text-[#5A2C9D] whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition-colors">
+                                Overview
+                            </button>
+                            <button onclick="switchTab('team', this)"
+                                class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                                Implementing Team
+                            </button>
+                            <button onclick="switchTab('impact', this)"
+                                class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                                Impact Matrix
+                            </button>
+                            <button onclick="switchTab('docs', this)"
+                                class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
+                                Gallery & Docs
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Tab Content Area -->
+                    <div class="bg-gray-50 p-6 md:p-8 min-h-[300px]">
+
+                        <!-- 1. Overview Tab -->
+                        <div id="tab-overview" class="tab-pane block">
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                <div class="lg:col-span-2 space-y-6">
+                                    <div>
+                                        <h4 class="text-lg font-bold text-gray-900 mb-2">Description / Rationale</h4>
+                                        <p id="pm-desc"
+                                            class="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">Loading...
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold text-gray-900 mb-2">Objectives</h4>
+                                        <ul class="list-disc pl-5 text-gray-600 text-sm space-y-1">
+                                            <li>To successfully implement the proposed extension activities.</li>
+                                            <li>To engage with the partner community effectively.</li>
+                                            <li>To ensure sustainable development through technology transfer.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- Sidebar Info -->
+                                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
+                                    <h5 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Project
+                                        Info</h5>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <p class="text-xs text-gray-500">Partner Organization</p>
+                                            <p id="pm-partner" class="text-sm font-bold text-gray-800">Loading...</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500">Date Started</p>
+                                            <p id="pm-date" class="text-sm font-bold text-gray-800">Loading...</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500">Lead Faculty</p>
+                                            <p id="pm-lead" class="text-sm font-bold text-[#5A2C9D]">Loading...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Implementing Team Tab -->
+                        <div id="tab-team" class="tab-pane hidden">
+                            <h4 class="text-lg font-bold text-gray-900 mb-6">Project Lead</h4>
+                            <div
+                                class="flex items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm max-w-md">
+                                <div
+                                    class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-[#5A2C9D] font-bold mr-4">
+                                    PL</div>
+                                <div>
+                                    <h5 id="pm-lead-2" class="font-bold text-gray-900 text-sm">Loading...</h5>
+                                    <p class="text-xs text-gray-500">Project Leader</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Impact Tab -->
+                        <div id="tab-impact" class="tab-pane hidden">
+                            <div class="flex flex-col items-center justify-center h-48 text-gray-400">
+                                <span class="text-4xl mb-2">📊</span>
+                                <p>Impact data visualization will appear here.</p>
+                            </div>
+                        </div>
+
+                        <!-- 4. Docs Tab -->
+                        <div id="tab-docs" class="tab-pane hidden">
+                            <h4 class="text-lg font-bold text-gray-900 mb-4">Project Attachments & Photos</h4>
+                            <div id="pm-attachments" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Links injected via JS -->
+                            </div>
+                        </div>
+
+                        <!-- 5. NEW: MANAGE PROJECT TAB (Hidden by default, Owner Only) -->
+                        <div id="tab-manage" class="tab-pane hidden">
+                            <div class="max-w-2xl mx-auto space-y-8">
+
+                                <!-- Status Update Section -->
+                                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                    <h4 class="text-lg font-bold text-gray-900 mb-4">Update Status</h4>
+                                    <div class="flex gap-4 items-center">
+                                        <select id="update-status-select"
+                                            class="flex-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5">
+                                            <option value="In Progress">In Progress</option>
+                                            <option value="Completed">Mark as Completed</option>
+                                        </select>
+                                        <button onclick="saveProjectStatus()"
+                                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm transition">Save
+                                            Status</button>
+                                    </div>
+                                </div>
+
+                                <!-- File Upload Section -->
+                                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Upload Photos & Docs</h4>
+                                    <p class="text-sm text-gray-500 mb-4">Upload event photos, attendance sheets, or
+                                        reports.</p>
+
+                                    <div class="flex items-center justify-center w-full">
+                                        <label for="dropzone-file"
+                                            class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                <svg class="w-8 h-8 mb-3 text-gray-500" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                                    </path>
+                                                </svg>
+                                                <p class="text-sm text-gray-500"><span class="font-semibold">Click to
+                                                        upload</span></p>
+                                            </div>
+                                            <input id="dropzone-file" type="file" class="hidden" multiple
+                                                onchange="handleFileUpload(this)" />
+                                        </label>
+                                    </div>
+                                    <div id="upload-status" class="mt-2 text-sm text-gray-500"></div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="bg-gray-50 px-8 py-4 border-t border-gray-200 flex justify-end gap-3">
+                        <button type="button" onclick="closeProjectModal()"
+                            class="px-6 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg hover:bg-gray-300 transition text-sm">Close</button>
+                        <!-- This button will dynamically hide/show -->
+                        <button id="btn-update-project" type="button" onclick="switchToManageTab()"
+                            class="hidden px-6 py-2 bg-[#5A2C9D] text-white font-bold rounded-lg hover:bg-[#4C2684] transition text-sm">Update
+                            Project</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL 2: DELETE OPTIONS -->
+    <div id="delete-modal"
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 hidden transition-opacity duration-300">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all m-4 scale-95 opacity-0"
+            id="delete-modal-content">
+            <div class="p-6 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Delete Proposal?</h3>
+                <p class="text-sm text-gray-500 mt-2">
+                    <strong>Archive:</strong> Hides it from the main list (Soft Delete).<br>
+                    <strong>Delete:</strong> Removes it permanently from the database.
+                </p>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+                <button type="button" onclick="confirmHardDelete()"
+                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">Delete
+                    Permanently</button>
+                <button type="button" onclick="confirmArchive()"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Archive</button>
+                <button type="button" onclick="closeDeleteModal()"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- PROFILE & SETTINGS MODAL -->
+    <div id="profile-modal" class="fixed inset-0 z-[110] hidden" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeProfileModal()"></div>
+
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4">
+                <div
+                    class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all w-full max-w-2xl">
+
+                    <!-- Modal Header -->
+                    <div class="bg-cnsc-violet h-32 relative">
+                        <button onclick="closeProfileModal()"
+                            class="absolute top-4 right-4 text-white/80 hover:text-white bg-black/20 hover:bg-black/40 rounded-full p-2 transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+
+                        <!-- Profile Picture Upload Wrapper -->
+                        <div class="absolute -bottom-10 left-8 group">
+                            <div
+                                class="relative w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+                                <img id="modal-profile-img"
+                                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                    class="w-full h-full object-cover">
+
+                                <!-- Upload Overlay -->
+                                <label for="profile-upload"
+                                    class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
+                                        </path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                </label>
+                                <input type="file" id="profile-upload" class="hidden" accept="image/*"
+                                    onchange="previewProfileImage(this)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-12 px-8 pb-8">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900">Dr. R. Magsaysay</h2>
+                                <p class="text-sm text-gray-500">Faculty Head • College of Engineering</p>
+                            </div>
+                            <span
+                                class="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide border border-red-200">
+                                Faculty Account
+                            </span>
+                        </div>
+
+                        <!-- TABS -->
+                        <div class="border-b border-gray-200 mb-6">
+                            <nav class="-mb-px flex space-x-8">
+                                <button onclick="switchProfileTab('general')"
+                                    class="profile-tab active-tab border-cnsc-violet text-cnsc-violet whitespace-nowrap pb-4 px-1 border-b-2 font-bold text-sm">
+                                    General Info
+                                </button>
+                                <button onclick="switchProfileTab('security')"
+                                    class="profile-tab border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm">
+                                    Security & Password
+                                </button>
+                            </nav>
+                        </div>
+
+                        <!-- Tab 1: General Info -->
+                        <div id="ptab-general" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Full
+                                        Name</label>
+                                    <input type="text" id="input-name" value="Dr. R. Magsaysay"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email
+                                        Address</label>
+                                    <input type="email" id="input-email" value="r.magsaysay@cnsc.edu.ph"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Professional
+                                        Bio</label>
+                                    <!-- ADDED ID HERE -->
+                                    <textarea id="input-bio" rows="3"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"></textarea>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Security -->
+                        <div id="ptab-security" class="hidden space-y-4">
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-yellow-700">Changing your password will sign you out of
+                                            all other devices.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Current
+                                    Password</label>
+                                <input type="password" placeholder="••••••••"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">New
+                                        Password</label>
+                                    <input type="password"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Confirm
+                                        Password</label>
+                                    <input type="password"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div class="mt-8 pt-4 border-t border-gray-100 flex justify-end gap-3">
+                            <button onclick="closeProfileModal()"
+                                class="px-5 py-2 text-gray-600 font-bold text-sm hover:bg-gray-100 rounded-lg transition">Cancel</button>
+                            <button onclick="saveProfileChanges()"
+                                class="px-5 py-2 bg-cnsc-violet hover:bg-cnsc-violet-dark text-white font-bold text-sm rounded-lg shadow-md transition flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+            (function () {
+                // REPLACE THIS WITH YOUR PUBLIC KEY FROM STEP 1
+                emailjs.init("qRx5WRPit73IDD8Z4");
+            })();
+    </script>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://ixupbyyoxubpylffklrf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4dXBieXlveHVicHlsZmZrbHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMTg1MzcsImV4cCI6MjA4MDU5NDUzN30.DWQdzoB1LfS9tR1Ew9IbKA93Bp-fHeb7A9GohnE1-7A';
+
+        let sbClient;
+        try {
+            sbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        } catch (e) {
+            console.error("Supabase Init Error:", e);
+            alert("Failed to initialize database. Check console.");
+        }
+
+        let selectedProposalId = null;
+        let showArchived = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (sbClient) {
+                fetchMyProposals();
+                fetchPartnerOpps();
+            }
+        });
+
+        // --- 1. UPGRADED PARTNER OPPORTUNITIES LOGIC ---
+
+        // State variables for filtering
+        let activeCategory = 'All';
+        let searchTimer;
+
+        // Function to handle Category Button Clicks
+        function setCategory(category, btn) {
+            activeCategory = category;
+
+            // Update UI: Reset all buttons to white/gray
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.className = "px-4 py-2 bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 text-sm font-medium rounded-lg whitespace-nowrap transition filter-btn";
+            });
+
+            // Highlight active button (Violet)
+            btn.className = "px-4 py-2 bg-cnsc-violet text-white text-sm font-bold rounded-lg whitespace-nowrap shadow-md transition filter-btn";
+
+            applyFilters();
+        }
+
+        // Debounce search to prevent too many database calls while typing
+        function debounceSearch() {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(applyFilters, 300);
+        }
+
+        // Main Filter Orchestrator
+        function applyFilters() {
+            fetchPartnerOpps();
+        }
+
+        async function fetchPartnerOpps() {
+            const tbody = document.getElementById('partner-opps-body');
+            const searchVal = document.getElementById('search-input').value;
+            const statusVal = document.getElementById('status-filter').value;
+
+            // Show loading state specifically for refresh
+            tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400 animate-pulse">Updating results...</td></tr>`;
+
+            try {
+                if (!sbClient) throw new Error("Database client not initialized");
+
+                // Start building the query
+                let query = sbClient
+                    .from('partner_opportunities')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                // 1. Apply Category Filter (Assuming 'type' or checking Title/Description)
+                if (activeCategory !== 'All') {
+                    // If you have a 'category' column, use: .eq('category', activeCategory)
+                    // Fallback: Search the keyword in the title
+                    query = query.ilike('title', `%${activeCategory}%`);
+                }
+
+                // 2. Apply Status Filter
+                if (statusVal !== 'All') {
+                    query = query.eq('status', statusVal);
+                }
+
+                // 3. Apply Text Search
+                if (searchVal) {
+                    // Search in Title OR Partner Organization
+                    query = query.or(`title.ilike.%${searchVal}%,partner_organization.ilike.%${searchVal}%`);
+                }
+
+                const { data, error } = await query;
+                if (error) throw error;
+
+                tbody.innerHTML = '';
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No matching opportunities found.</td></tr>`;
+                    return;
+                }
+
+                data.forEach(opp => {
+                    const dateStr = new Date(opp.created_at).toLocaleDateString();
+                    const safeData = encodeURIComponent(JSON.stringify(opp));
+
+
+                    let typeBadge = opp.partner_type === 'Existing Partner'
+                        ? `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">Partner</span>`
+                        : `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">Applicant</span>`;
+
+                    let statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">New</span>`;
+
+                    let btnHtml = '';
+
+                    if (opp.status === 'In Progress') {
+                        // GET THE NAME OF WHO IS DRAFTING
+                        const drafterName = opp.claimed_by || "Unknown Faculty";
+
+                        statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">In Progress</span>`;
+
+                        // ADDED TITLE ATTRIBUTE HERE
+                        btnHtml = `
+                            <button disabled class="px-3 py-1.5 bg-gray-100 text-gray-400 border border-gray-200 font-bold text-xs rounded cursor-not-allowed flex items-center h-8" title="Currently being drafted by: ${drafterName}">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                Being Drafted
+                            </button>
+                        `;
+                    } else if (opp.status === 'Completed') {
+                        statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Completed</span>`;
+                        btnHtml = `
+                            <button disabled class="px-3 py-1.5 bg-gray-100 text-gray-400 border border-gray-200 font-bold text-xs rounded cursor-not-allowed h-8">
+                                Completed
+                            </button>
+                        `;
+                    } else {
+                        btnHtml = `
+                            <button onclick="startDrafting('${opp.id}')" class="px-3 py-1.5 bg-cnsc-violet hover:bg-cnsc-violet-dark text-white font-bold text-xs rounded shadow-md transition whitespace-nowrap h-8">
+                                Draft Proposal
+                            </button>
+                        `;
+                    }
+
+                    const row = `
+                <tr class="border-b hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 font-bold text-gray-900 align-middle">${opp.title}</td>
+                    <td class="px-6 py-4 align-middle"><div class="flex items-center"><span class="font-medium text-gray-700">${opp.partner_organization}</span>${typeBadge}</div></td>
+                    <td class="px-6 py-4 align-middle">${dateStr}</td>
+                    <td class="px-6 py-4 align-middle">${statusBadge}</td>
+                    <td class="px-6 py-4 align-middle text-left">
+                        <div class="flex justify-start items-center gap-3">
+                            <button onclick="openModal('partner', '${safeData}')" class="py-1.5 font-bold text-gray-500 hover:text-cnsc-violet text-xs uppercase tracking-wider">Details</button>
+                            ${btnHtml}
+                        </div>
+                    </td>
+                </tr>
+            `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+
+            } catch (error) {
+                console.error("Partner Error:", error);
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500 bg-red-50"><strong>Error loading data:</strong><br>${error.message}</td></tr>`;
+            }
+        }
+
+
+        // --- 2. START DRAFTING LOGIC ---
+        async function startDrafting(oppId) {
+            // 1. Ask for name (Simulating Auth for now)
+            const facultyName = prompt("Please enter your name to claim this project:");
+
+            if (facultyName && facultyName.trim() !== "") {
+                try {
+                    // 2. Update Database with Status AND Name
+                    await sbClient
+                        .from('partner_opportunities')
+                        .update({
+                            status: 'In Progress',
+                            claimed_by: facultyName // <--- SAVING THE NAME
+                        })
+                        .eq('id', oppId);
+
+                    // 3. Go to form
+                    window.location.href = "submit_proposal.html";
+                } catch (e) {
+                    console.error(e);
+                    alert("Error starting draft.");
+                }
+            }
+        }
+
+
+
+        // --- 3. MY PROPOSALS LOGIC ---
+        function toggleArchives() {
+            showArchived = !showArchived;
+            const btn = document.getElementById('toggle-archives-btn');
+            if (showArchived) {
+                btn.textContent = "Show Active"; btn.classList.replace('bg-gray-200', 'bg-gray-800'); btn.classList.replace('text-gray-700', 'text-white');
+            } else {
+                btn.textContent = "Show Archives"; btn.classList.replace('bg-gray-800', 'bg-gray-200'); btn.classList.replace('text-white', 'text-gray-700');
+            }
+            fetchMyProposals();
+        }
+
+        // 4. MY PROPOSALS LOGIC
+        async function fetchMyProposals() {
+            const tbody = document.getElementById('my-proposals-body');
+            // Ensure we are targeting the new tbody inside the new HTML structure
+            if (!tbody) return;
+
+            try {
+                let query = sbClient.from('extension_proposals').select('*').order('created_at', { ascending: false });
+
+                if (typeof showArchived !== 'undefined' && showArchived) {
+                    query = query.eq('status', 'Archived');
+                } else {
+                    query = query.neq('status', 'Archived');
+                }
+
+                const { data, error } = await query;
+                if (error) throw error;
+
+                tbody.innerHTML = '';
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">${typeof showArchived !== 'undefined' && showArchived ? "Trash is empty." : "No active proposals found."}</td></tr>`;
+                    return;
+                }
+
+                data.forEach(proposal => {
+                    const dateStr = new Date(proposal.created_at).toLocaleDateString();
+                    let statusClass = 'bg-yellow-100 text-yellow-800';
+                    let canEdit = true, canDelete = true;
+
+                    if (proposal.status === 'Approved') { statusClass = 'bg-green-100 text-green-800'; canEdit = false; canDelete = false; }
+                    if (proposal.status === 'Revision Requested') statusClass = 'bg-red-100 text-red-800';
+
+                    const safeData = encodeURIComponent(JSON.stringify(proposal));
+                    let actionsHtml = '';
+
+                    if (typeof showArchived !== 'undefined' && showArchived) {
+                        actionsHtml = `
+                    <button onclick="restoreProposal('${proposal.id}')" class="text-green-600 hover:text-green-800 font-bold text-sm mr-2">Restore</button>
+                    <button onclick="openDeleteModal('${proposal.id}')" class="text-red-500 hover:text-red-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+                `;
+                    } else {
+                        // --- FIX HERE: Changed openModal -> openProjectModal ---
+                        actionsHtml = `
+                    <button onclick="openProjectModal('${safeData}')" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 text-gray-500 transition" title="View Details">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    </button>
+                `;
+
+                        if (canEdit) {
+                            actionsHtml += `
+                        <a href="submit_proposal.html?id=${proposal.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-purple-50 text-cnsc-violet transition" title="Edit">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        </a>`;
+                        }
+                        if (canDelete) {
+                            actionsHtml += `
+                        <button onclick="openDeleteModal('${proposal.id}')" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-red-50 text-red-500 transition" title="Delete">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>`;
+                        }
+                    }
+
+                    const row = `
+                <tr class="border-b hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 font-bold text-gray-900 align-middle">${proposal.title}</td>
+                    <td class="px-6 py-4 align-middle">${dateStr}</td>
+                    <td class="px-6 py-4 align-middle"><span class="px-3 py-1 text-xs font-bold rounded-full ${statusClass}">${proposal.status}</span></td>
+                    <td class="px-6 py-4 align-middle text-right">
+                        <div class="flex justify-end items-center gap-2">
+                            ${actionsHtml}
+                        </div>
+                    </td>
+                </tr>
+            `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-red-500 bg-red-50"><strong>Error:</strong> ${error.message}</td></tr>`;
+            }
+        }
+
+
+        // --- 4. UTILITIES ---
+        const deleteModal = document.getElementById('delete-modal');
+        const deleteModalContent = document.getElementById('delete-modal-content');
+
+        function openDeleteModal(id) { selectedProposalId = id; deleteModal.classList.remove('hidden'); setTimeout(() => { deleteModalContent.classList.remove('scale-95', 'opacity-0'); deleteModalContent.classList.add('scale-100', 'opacity-100'); }, 10); }
+        function closeDeleteModal() { selectedProposalId = null; deleteModalContent.classList.remove('scale-100', 'opacity-100'); deleteModalContent.classList.add('scale-95', 'opacity-0'); setTimeout(() => { deleteModal.classList.add('hidden'); }, 300); }
+
+        async function confirmArchive() { if (!selectedProposalId) return; await sbClient.from('extension_proposals').update({ status: 'Archived' }).eq('id', selectedProposalId); closeDeleteModal(); fetchMyProposals(); }
+        async function confirmHardDelete() { if (!selectedProposalId) return; if (!confirm("Are you sure?")) return; await sbClient.from('extension_proposals').delete().eq('id', selectedProposalId); closeDeleteModal(); fetchMyProposals(); }
+        async function restoreProposal(id) { if (!confirm("Restore?")) return; await sbClient.from('extension_proposals').update({ status: 'Pending' }).eq('id', id); fetchMyProposals(); }
+
+        const modal = document.getElementById('details-modal');
+        const modalContent = document.getElementById('modal-content');
+
+        function openModal(type, encodedData) {
+            try {
+                const data = JSON.parse(decodeURIComponent(encodedData));
+                document.getElementById('modal-title').textContent = data.title;
+                document.getElementById('modal-description').textContent = data.description || data.rationale || "No description.";
+                const modalAtt = document.getElementById('modal-attachments'); modalAtt.innerHTML = '';
+
+                const urls = data.attachment_urls || [];
+                if (urls.length > 0) {
+                    urls.forEach((url, i) => {
+                        const link = document.createElement('a'); link.href = url; link.target = "_blank"; link.className = "flex items-center text-sm text-cnsc-violet hover:underline p-2 bg-purple-50 rounded border border-purple-100 mb-1"; link.innerHTML = `<span class="font-bold mr-2">📎</span> View Attachment ${i + 1}`; modalAtt.appendChild(link);
+                    });
+                } else { modalAtt.innerHTML = '<span class="text-gray-400 text-sm italic">No attachments.</span>'; }
+
+                const modalMeta = document.getElementById('modal-meta'); const claimBtn = document.getElementById('modal-claim-btn');
+                if (type === 'partner') {
+                    modalMeta.textContent = `From: ${data.partner_organization} | Date: ${new Date(data.created_at).toLocaleDateString()}`;
+                    claimBtn.classList.remove('hidden'); claimBtn.onclick = () => claimAndPrepare(data.id);
+                } else {
+                    modalMeta.textContent = `Status: ${data.status} | Date: ${new Date(data.created_at).toLocaleDateString()}`;
+                    claimBtn.classList.add('hidden');
+                }
+                modal.classList.remove('hidden'); setTimeout(() => { modalContent.classList.remove('scale-95', 'opacity-0'); modalContent.classList.add('scale-100', 'opacity-100'); }, 10);
+            } catch (e) { console.error(e); }
+        }
+
+        function closeModal() { modalContent.classList.remove('scale-100', 'opacity-100'); modalContent.classList.add('scale-95', 'opacity-0'); setTimeout(() => { modal.classList.add('hidden'); }, 300); }
+
+
+        // --- TAB SWITCHING LOGIC ---
+
+        function setCategory(category, btn) {
+            // 1. Visual: Update Button Styles (Active/Inactive)
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                const inactiveClass = b.getAttribute('data-inactive-class');
+                const activeClass = b.getAttribute('data-active-class');
+                if (activeClass) b.classList.remove(...activeClass.split(' '));
+                if (inactiveClass) b.classList.add(...inactiveClass.split(' '));
+                b.classList.remove('font-bold'); b.classList.add('font-medium');
+            });
+
+            const myInactive = btn.getAttribute('data-inactive-class');
+            const myActive = btn.getAttribute('data-active-class');
+            if (myInactive) btn.classList.remove(...myInactive.split(' '));
+            if (myActive) btn.classList.add(...myActive.split(' '));
+            btn.classList.remove('font-medium'); btn.classList.add('font-bold');
+
+            // 2. Functional: Hide ALL Views
+            ['view-completed', 'view-partners', 'view-my-proposals', 'view-handled'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+
+            // 3. Functional: Show Selected View & Fetch Data
+            if (category === 'Completed') {
+                document.getElementById('view-completed').classList.remove('hidden');
+                fetchCompletedProjects();
+            } else if (category === 'Partner') {
+                document.getElementById('view-partners').classList.remove('hidden');
+                fetchPartnerOpps();
+            } else if (category === 'My Proposals') {
+                document.getElementById('view-my-proposals').classList.remove('hidden');
+                fetchMyProposals();
+            } else if (category === 'Handled') {
+                document.getElementById('view-handled').classList.remove('hidden');
+                fetchHandledProjects();
+            }
+        }
+
+        // --- DATA FETCHING FUNCTIONS ---
+
+        // 1. COMPLETED PROJECTS (Card View)
+        async function fetchCompletedProjects() {
+            const grid = document.getElementById('completed-cards-grid');
+            grid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10 animate-pulse">Loading archive...</div>`;
+
+            const { data, error } = await sbClient
+                .from('partner_opportunities')
+                .select('*')
+                .eq('status', 'Completed')
+                .order('created_at', { ascending: false });
+
+            if (error || !data.length) {
+                grid.innerHTML = `<div class="col-span-full text-center text-gray-500 py-10">No completed projects found in the archive.</div>`;
+                return;
+            }
+
+            grid.innerHTML = data.map(item => {
+                const safeItem = encodeURIComponent(JSON.stringify(item));
+
+                return `
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-emerald-100 flex flex-col h-full opacity-90 hover:opacity-100 group">
+            <div class="relative h-48">
+                <div class="w-full h-full bg-emerald-50 flex items-center justify-center overflow-hidden">
+                    <!-- Placeholder Image -->
+                    <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2032&auto=format&fit=crop" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500" alt="Project Cover">
+                </div>
+                <div class="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
+                    Completed
+                </div>
+                <div class="absolute bottom-0 left-0 bg-gradient-to-t from-emerald-900/80 to-transparent w-full p-4">
+                    <span class="text-white text-xs font-bold bg-emerald-500 px-2 py-0.5 rounded">Finished</span>
+                </div>
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+                <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1" title="${item.title}">${item.title}</h3>
+                <p class="text-gray-600 text-sm line-clamp-3 mb-4">${item.description || 'Project successfully implemented and closed.'}</p>
+                
+                <div class="mt-auto pt-4 border-t border-gray-100">
+                    <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
+                        <span><strong class="text-gray-800">Handled By:</strong> ${item.claimed_by || 'Team'}</span>
+                        <span><strong class="text-gray-800">Date:</strong> ${new Date(item.created_at).toLocaleDateString()}</span>
+                    </div>
+                    
+                    <button onclick="openProjectModal('${safeItem}')"
+                        class="w-full py-2.5 rounded-lg border-2 border-emerald-600 text-emerald-600 font-bold text-sm hover:bg-emerald-600 hover:text-white transition">
+                        View Outcome
+                    </button>
+                </div>
+            </div>
+        </div>
+        `;
+            }).join('');
+        }
+
+
+        // 2. PARTNER PROPOSALS (With "Drafted By" Tooltip Restored)
+        async function fetchPartnerOpps() {
+            const tbody = document.getElementById('partner-opps-body');
+            tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400 animate-pulse">Loading proposals...</td></tr>`;
+
+            const { data, error } = await sbClient
+                .from('partner_opportunities')
+                .select('*')
+                .neq('status', 'Completed')
+                .order('created_at', { ascending: false });
+
+            if (error || !data.length) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No active partner proposals.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(opp => {
+                const safeData = encodeURIComponent(JSON.stringify(opp));
+                const dateStr = new Date(opp.created_at).toLocaleDateString();
+
+                let btnHtml = '';
+
+                // --- RESTORED TOOLTIP LOGIC ---
+                if (opp.status === 'In Progress') {
+                    const drafterName = opp.claimed_by || "Unknown Faculty";
+                    btnHtml = `
+                <button disabled class="px-3 py-1 bg-orange-50 border border-orange-100 text-orange-400 text-xs rounded font-bold cursor-not-allowed flex items-center gap-1" title="Currently being drafted by: ${drafterName}">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                    Drafting...
+                </button>`;
+                } else {
+                    btnHtml = `<button onclick="startDrafting('${opp.id}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded font-bold transition shadow-sm">Draft This</button>`;
+                }
+
+                return `
+            <tr class="border-b hover:bg-blue-50 transition">
+                <td class="px-6 py-4 font-bold text-gray-900 align-middle">${opp.title}</td>
+                <td class="px-6 py-4 text-gray-600 align-middle">${opp.partner_organization}</td>
+                <td class="px-6 py-4 align-middle">${dateStr}</td>
+                <td class="px-6 py-4 align-middle"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-bold">${opp.status}</span></td>
+                <td class="px-6 py-4 align-middle">
+                    <div class="flex items-center gap-3">
+                        <button onclick="openModal('partner', '${safeData}')" class="text-xs font-bold text-gray-500 uppercase hover:text-blue-600 tracking-wider">Details</button>
+                        ${btnHtml}
+                    </div>
+                </td>
+            </tr>
+        `;
+            }).join('');
+        }
+
+
+        // 3. HANDLED PROJECTS (Card View - Fetched from Supabase)
+        async function fetchHandledProjects() {
+            const grid = document.getElementById('handled-cards-grid');
+            grid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10 animate-pulse">Loading your projects...</div>`;
+
+            // Fetch projects that have been claimed by someone (simulating "Handled")
+            const { data, error } = await sbClient
+                .from('partner_opportunities')
+                .select('*')
+                .not('claimed_by', 'is', null) // Filters where claimed_by is NOT NULL
+                .order('created_at', { ascending: false });
+
+            if (error || !data.length) {
+                grid.innerHTML = `<div class="col-span-full text-center text-gray-500 py-10">You haven't handled any projects yet.</div>`;
+                return;
+            }
+
+            grid.innerHTML = data.map(item => {
+                const safeItem = encodeURIComponent(JSON.stringify(item));
+
+                // Visual logic for the card status color
+                let badgeColor = 'bg-yellow-500';
+                if (item.status === 'Completed') badgeColor = 'bg-green-500';
+                if (item.status === 'In Progress') badgeColor = 'bg-blue-500';
+
+                return `
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full opacity-90 hover:opacity-100 group">
+            <div class="relative h-48">
+                <div class="w-full h-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <!-- Dynamic Random Image based on ID -->
+                    <img src="https://source.unsplash.com/random/400x300?technology,meeting&sig=${item.id}" 
+                         class="w-full h-full object-cover transition duration-500 group-hover:scale-110" 
+                         onerror="this.src='https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop'"
+                         alt="Project Cover">
+                </div>
+                <div class="absolute top-4 right-4 ${badgeColor} text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
+                    ${item.status}
+                </div>
+                <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
+                    <span class="text-white text-xs font-bold bg-orange-500 px-2 py-0.5 rounded">Extension</span>
+                </div>
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+                <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1" title="${item.title}">${item.title}</h3>
+                <p class="text-gray-600 text-sm line-clamp-3 mb-4">${item.description || 'A community extension initiative aimed at sustainable development and technology transfer.'}</p>
+                <div class="mt-auto pt-4 border-t border-gray-100">
+                    <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
+                        <span><strong class="text-gray-800">Lead:</strong> ${item.claimed_by}</span>
+                        <span><strong class="text-gray-800">Partner:</strong> ${item.partner_organization}</span>
+                    </div>
+                    <button onclick="openProjectModal('${safeItem}')"
+                        class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
+                        View Proposal
+                    </button>
+                </div>
+            </div>
+        </div>
+        `;
+            }).join('');
+        }
+
+
+        // --- SIMULATED LOGGED-IN USER ---
+        // Change this name to match the name you use when "Drafting" or the name in the SQL
+        let currentUser = "Dr. R. Magsaysaysaysay";
+
+        // 3. HANDLED PROJECTS (Filtered by Current User)
+        async function fetchHandledProjects() {
+            const grid = document.getElementById('handled-cards-grid');
+            grid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-10 animate-pulse">Loading your projects...</div>`;
+
+            const { data, error } = await sbClient
+                .from('partner_opportunities')
+                .select('*')
+                // FILTER: Only show projects claimed by the current user
+                .eq('claimed_by', currentUser)
+                .order('created_at', { ascending: false });
+
+            if (error || !data.length) {
+                grid.innerHTML = `
+            <div class="col-span-full flex flex-col items-center justify-center text-gray-500 py-10">
+                <svg class="w-12 h-12 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                <p>No projects found for <strong>${currentUser}</strong>.</p>
+                <button onclick="setCategory('Partner', document.querySelectorAll('.filter-btn')[1])" class="mt-4 text-cnsc-violet font-bold hover:underline">Browse Opportunities</button>
+            </div>`;
+                return;
+            }
+
+            grid.innerHTML = data.map(item => {
+                const safeItem = encodeURIComponent(JSON.stringify(item));
+
+                // Visual logic for status color
+                let badgeColor = 'bg-yellow-500';
+                if (item.status === 'Completed') badgeColor = 'bg-green-500';
+                if (item.status === 'In Progress') badgeColor = 'bg-blue-500';
+
+                return `
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full opacity-90 hover:opacity-100 group">
+            <div class="relative h-48">
+                <div class="w-full h-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img src="https://source.unsplash.com/random/400x300?work,office&sig=${item.id}" 
+                         class="w-full h-full object-cover transition duration-500 group-hover:scale-110" 
+                         onerror="this.src='https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop'"
+                         alt="Project Cover">
+                </div>
+                <div class="absolute top-4 right-4 ${badgeColor} text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
+                    ${item.status}
+                </div>
+                <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
+                    <span class="text-white text-xs font-bold bg-orange-500 px-2 py-0.5 rounded">Extension</span>
+                </div>
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+                <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-1" title="${item.title}">${item.title}</h3>
+                <p class="text-gray-600 text-sm line-clamp-3 mb-4">${item.description || 'No description provided.'}</p>
+                <div class="mt-auto pt-4 border-t border-gray-100">
+                    <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
+                        <span><strong class="text-gray-800">Lead:</strong> You</span>
+                        <span><strong class="text-gray-800">Partner:</strong> ${item.partner_organization}</span>
+                    </div>
+                    <button onclick="openProjectModal('${safeItem}')"
+                        class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
+                        Manage Project
+                    </button>
+                </div>
+            </div>
+        </div>
+        `;
+            }).join('');
+        }
+
+        // --- 2. MODAL LOGIC (Open, Close, Switch Tabs) ---
+
+        function openProjectModal(encodedItem) {
+            try {
+                const data = JSON.parse(decodeURIComponent(encodedItem));
+
+                // 1. Populate Title & Status
+                document.getElementById('pm-title').textContent = data.title;
+                const statusEl = document.getElementById('pm-status');
+                statusEl.textContent = data.status;
+
+                // Color logic for status
+                statusEl.className = 'text-xs font-bold px-2 py-1 rounded uppercase text-white ';
+                if (data.status === 'Completed' || data.status === 'Approved') statusEl.classList.add('bg-green-500');
+                else if (data.status === 'In Progress' || data.status === 'Pending') statusEl.classList.add('bg-blue-500');
+                else if (data.status === 'Revision Requested') statusEl.classList.add('bg-red-500');
+                else statusEl.classList.add('bg-gray-500');
+
+                // 2. Populate Description (Handles both 'description' and 'rationale')
+                document.getElementById('pm-desc').textContent = data.description || data.rationale || "No description provided.";
+
+                // 3. Populate Sidebar Info (Handle missing data gracefully)
+                document.getElementById('pm-partner').textContent = data.partner_organization || "Internal Proposal";
+                document.getElementById('pm-date').textContent = new Date(data.created_at).toLocaleDateString();
+                document.getElementById('pm-lead').textContent = data.claimed_by || "You"; // Default to "You" for my proposals
+
+                // 4. Populate Attachments
+                const attachContainer = document.getElementById('pm-attachments');
+                attachContainer.innerHTML = '';
+                if (data.attachment_urls && data.attachment_urls.length > 0) {
+                    data.attachment_urls.forEach((url, i) => {
+                        attachContainer.innerHTML += `
+                    <a href="${url}" target="_blank" class="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:border-[#5A2C9D] transition group">
+                        <span class="text-2xl mr-3">📄</span>
+                        <span class="text-sm font-semibold text-gray-700 group-hover:text-[#5A2C9D]">Attachment ${i + 1}</span>
+                    </a>`;
+                    });
+                } else {
+                    attachContainer.innerHTML = '<p class="text-gray-400 italic text-sm">No attachments found.</p>';
+                }
+
+                // 5. Show Modal & Reset Tab
+                switchTab('overview', document.querySelector('.tab-btn'));
+                document.getElementById('project-modal').classList.remove('hidden');
+
+            } catch (e) {
+                console.error("Error opening modal:", e);
+                alert("Could not load project details.");
+            }
+        }
+
+
+        function closeProjectModal() {
+            document.getElementById('project-modal').classList.add('hidden');
+        }
+
+        function switchTab(tabName, btnClicked) {
+            // 1. Hide all tab panes
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('block'));
+
+            // 2. Show selected pane
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            document.getElementById('tab-' + tabName).classList.add('block');
+
+            // 3. Reset all button styles to "Inactive"
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-[#5A2C9D]', 'text-[#5A2C9D]', 'font-bold');
+                btn.classList.add('border-transparent', 'text-gray-500', 'font-medium');
+            });
+
+            // 4. Set clicked button to "Active"
+            if (btnClicked) {
+                btnClicked.classList.remove('border-transparent', 'text-gray-500', 'font-medium');
+                btnClicked.classList.add('border-[#5A2C9D]', 'text-[#5A2C9D]', 'font-bold');
+            }
+        }
+
+
+        // Global variable to store the current project ID being viewed
+        let currentProjectId = null;
+
+        function openProjectModal(encodedItem) {
+            try {
+                const data = JSON.parse(decodeURIComponent(encodedItem));
+                currentProjectId = data.id; // Store ID for updates
+
+                // 1. Populate Basic Fields
+                document.getElementById('pm-title').textContent = data.title;
+                document.getElementById('pm-desc').textContent = data.description || data.rationale || "No description.";
+                document.getElementById('pm-partner').textContent = data.partner_organization || "Internal";
+                document.getElementById('pm-date').textContent = new Date(data.created_at).toLocaleDateString();
+
+                // 2. Handle Lead/Claimed By
+                const leadName = data.claimed_by || "You";
+                document.getElementById('pm-lead').textContent = leadName;
+                document.getElementById('pm-lead-2').textContent = leadName;
+
+                // 3. Status Badge Logic
+                const statusEl = document.getElementById('pm-status');
+                statusEl.textContent = data.status;
+                statusEl.className = 'text-xs font-bold px-2 py-1 rounded uppercase text-white ';
+                if (data.status === 'Completed') statusEl.classList.add('bg-green-500');
+                else if (data.status === 'In Progress') statusEl.classList.add('bg-blue-500');
+                else statusEl.classList.add('bg-gray-500');
+
+                // 4. Populate Attachments (Display Images nicely)
+                const attachContainer = document.getElementById('pm-attachments');
+                attachContainer.innerHTML = '';
+                if (data.attachment_urls && data.attachment_urls.length > 0) {
+                    data.attachment_urls.forEach((url, i) => {
+                        // Check if it's an image based on extension (simple check)
+                        const isImg = url.match(/\.(jpeg|jpg|gif|png|webp)$/) != null;
+                        if (isImg) {
+                            attachContainer.innerHTML += `
+                        <a href="${url}" target="_blank" class="block overflow-hidden rounded-lg border border-gray-200 hover:shadow-md transition">
+                            <img src="${url}" class="w-full h-32 object-cover" alt="Attachment">
+                            <div class="p-2 bg-white text-xs font-bold text-gray-700">Image ${i + 1}</div>
+                        </a>`;
+                        } else {
+                            attachContainer.innerHTML += `
+                        <a href="${url}" target="_blank" class="flex items-center p-4 bg-white border border-gray-200 rounded-lg hover:border-[#5A2C9D] transition group h-32">
+                            <div class="text-center w-full">
+                                <span class="text-3xl block mb-2">📄</span>
+                                <span class="text-xs font-bold text-gray-600 group-hover:text-[#5A2C9D]">View Document</span>
+                            </div>
+                        </a>`;
+                        }
+                    });
+                } else {
+                    attachContainer.innerHTML = '<p class="col-span-full text-gray-400 italic text-sm text-center py-4">No files uploaded yet.</p>';
+                }
+
+                // ============================================================
+                // ACCESS CONTROL LOGIC
+                // ============================================================
+                const updateBtn = document.getElementById('btn-update-project');
+                const statusSelect = document.getElementById('update-status-select');
+
+                // Logic: Show button IF (claimed_by matches currentUser) OR (It's my proposal and status isn't Archived)
+                // Note: Ensure 'currentUser' variable is defined at the top of your script
+                if (data.claimed_by === currentUser) {
+                    updateBtn.classList.remove('hidden');
+                    statusSelect.value = data.status; // Set current status in dropdown
+                } else {
+                    updateBtn.classList.add('hidden');
+                }
+
+                // Reset Tabs
+                switchTab('overview', document.querySelector('.tab-btn'));
+                document.getElementById('project-modal').classList.remove('hidden');
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // --- NEW: Switch to Manage Tab ---
+        function switchToManageTab() {
+            // Deselect all top nav buttons visually
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-[#5A2C9D]', 'text-[#5A2C9D]', 'font-bold');
+                btn.classList.add('border-transparent', 'text-gray-500', 'font-medium');
+            });
+
+            // Hide all panes
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+
+            // Show Manage Pane
+            document.getElementById('tab-manage').classList.remove('hidden');
+        }
+
+        // --- NEW: Save Status ---
+        async function saveProjectStatus() {
+            const newStatus = document.getElementById('update-status-select').value;
+            if (!currentProjectId) return;
+
+            const btn = event.target;
+            btn.textContent = "Saving...";
+
+            const { error } = await sbClient
+                .from('partner_opportunities')
+                .update({ status: newStatus })
+                .eq('id', currentProjectId);
+
+            if (error) {
+                alert("Error updating status");
+                console.error(error);
+            } else {
+                alert("Status updated to " + newStatus);
+                // Close modal and refresh list
+                closeProjectModal();
+                // Refresh the current view (Handled or Completed)
+                if (document.getElementById('view-handled').classList.contains('hidden') === false) fetchHandledProjects();
+                else fetchCompletedProjects();
+            }
+            btn.textContent = "Save Status";
+        }
+
+        // --- NEW: File Upload Logic ---
+        async function handleFileUpload(input) {
+            if (!input.files || input.files.length === 0) return;
+            if (!currentProjectId) return;
+
+            const statusDiv = document.getElementById('upload-status');
+            statusDiv.innerHTML = `<span class="text-blue-600 animate-pulse">Uploading ${input.files.length} file(s)... please wait.</span>`;
+
+            const newUrls = [];
+
+            try {
+                for (const file of input.files) {
+                    // 1. Create a unique file path: project_id/timestamp_filename
+                    const filePath = `${currentProjectId}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+
+                    // 2. Upload to Supabase Storage (Bucket: 'project-files')
+                    const { data, error } = await sbClient.storage
+                        .from('project-files') // <--- MAKE SURE YOU CREATE THIS BUCKET
+                        .upload(filePath, file);
+
+                    if (error) throw error;
+
+                    // 3. Get Public URL
+                    const { data: { publicUrl } } = sbClient.storage
+                        .from('project-files')
+                        .getPublicUrl(filePath);
+
+                    newUrls.push(publicUrl);
+                }
+
+                // 4. Update Database Array (Append new URLs to existing)
+                // First, get current URLs to append to them
+                const { data: currentData } = await sbClient
+                    .from('partner_opportunities')
+                    .select('attachment_urls')
+                    .eq('id', currentProjectId)
+                    .single();
+
+                const existingUrls = currentData.attachment_urls || [];
+                const updatedUrls = [...existingUrls, ...newUrls];
+
+                // 5. Save back to DB
+                const { error: updateError } = await sbClient
+                    .from('partner_opportunities')
+                    .update({ attachment_urls: updatedUrls })
+                    .eq('id', currentProjectId);
+
+                if (updateError) throw updateError;
+
+                statusDiv.innerHTML = `<span class="text-green-600 font-bold">✅ Successfully uploaded!</span>`;
+                input.value = ''; // Clear input
+
+            } catch (error) {
+                console.error("Upload Error:", error);
+                statusDiv.innerHTML = `<span class="text-red-500 font-bold">❌ Error: ${error.message}</span>`;
+            }
+        }
+
+
+        // --- PROFILE & SETTINGS LOGIC ---
+
+        function openProfileModal(tab = 'general') {
+            document.getElementById('profile-modal').classList.remove('hidden');
+            switchProfileTab(tab);
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.add('hidden');
+        }
+
+        function switchProfileTab(tabName) {
+            // 1. Reset Tabs styling
+            document.querySelectorAll('.profile-tab').forEach(t => {
+                t.className = 'profile-tab border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm';
+            });
+            // 2. Hide Panes
+            document.getElementById('ptab-general').classList.add('hidden');
+            document.getElementById('ptab-security').classList.add('hidden');
+
+            // 3. Activate selected
+            if (tabName === 'general') {
+                document.getElementById('ptab-general').classList.remove('hidden');
+                // Style Active Button
+                const btns = document.querySelectorAll('.profile-tab');
+                btns[0].className = 'profile-tab border-cnsc-violet text-cnsc-violet whitespace-nowrap pb-4 px-1 border-b-2 font-bold text-sm';
+            } else {
+                document.getElementById('ptab-security').classList.remove('hidden');
+                const btns = document.querySelectorAll('.profile-tab');
+                btns[1].className = 'profile-tab border-cnsc-violet text-cnsc-violet whitespace-nowrap pb-4 px-1 border-b-2 font-bold text-sm';
+            }
+        }
+
+        // Preview Image immediately when file is selected
+        function previewProfileImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // Update the Modal Image
+                    document.getElementById('modal-profile-img').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Global variable to store the profile ID (distinct from the name)
+        let currentProfileDbId = null;
+        let currentUserEmail = "hawkieesquadd@gmail.com"; // <--- ADD THIS
+
+
+        // 1. CALL THIS ON LOAD
+        document.addEventListener('DOMContentLoaded', () => {
+            if (sbClient) {
+                fetchUserProfile(); // <--- Add this line
+                fetchMyProposals();
+                fetchPartnerOpps();
+            }
+        });
+
+        // 2. FETCH PROFILE DATA
+        async function fetchUserProfile() {
+            try {
+                // 1. Get the single profile from the database
+                const { data, error } = await sbClient
+                    .from('profiles')
+                    .select('*')
+                    .limit(1)
+                    .single();
+
+                if (error) throw error;
+
+                if (data) {
+                    currentProfileDbId = data.id;
+                    currentUser = data.full_name; // Sync Global Variable
+                    currentUserEmail = data.email;
+
+
+                    // --- UPDATE HEADER UI ---
+                    const headerName = document.getElementById('header-user-name');
+                    if (headerName) headerName.textContent = data.full_name;
+
+                    const headerRole = document.querySelector('#header-user-name + p'); // Selects the role <p> next to name
+                    if (headerRole) headerRole.textContent = data.role || 'Faculty Staff';
+
+                    const headerAvatar = document.getElementById('header-avatar');
+                    if (headerAvatar && data.avatar_url) {
+                        headerAvatar.src = data.avatar_url + '?t=' + new Date().getTime();
+                    }
+
+                    // --- UPDATE DROPDOWN UI ---
+                    // Note: You didn't give the dropdown name an ID in your snippet, 
+                    // so we select it via the structure (inside the div with id 'dropdown-avatar's parent)
+
+                    const dropdownAvatar = document.getElementById('dropdown-avatar');
+                    if (dropdownAvatar && data.avatar_url) {
+                        dropdownAvatar.src = data.avatar_url + '?t=' + new Date().getTime();
+                    }
+
+                    const dropdownName = dropdownAvatar.nextElementSibling.querySelector('p'); // The <p> tag next to the image
+                    if (dropdownName) dropdownName.textContent = data.full_name;
+
+                    const dropdownRole = dropdownAvatar.nextElementSibling.querySelector('span'); // The <span> badge
+                    if (dropdownRole) dropdownRole.textContent = data.role || 'Faculty';
+
+                    // --- UPDATE PROFILE MODAL INPUTS ---
+                    document.getElementById('header-user-name').textContent = data.full_name;
+                    document.getElementById('input-email').value = data.email; // Ensure input gets it
+                    const bioInput = document.getElementById('input-bio');
+                    if (bioInput) bioInput.value = data.bio || "";
+
+                    const modalImg = document.getElementById('modal-profile-img');
+                    if (modalImg && data.avatar_url) {
+                        modalImg.src = data.avatar_url + '?t=' + new Date().getTime();
+                    }
+                }
+            } catch (e) {
+                console.error("Profile Load Error:", e);
+            }
+        }
+
+
+
+        // 3. SAVE PROFILE CHANGES (Uploads Image + Updates DB)
+        async function saveProfileChanges() {
+            const newName = document.getElementById('input-name').value;
+            const newEmail = document.getElementById('input-email').value;
+            const newBio = document.getElementById('input-bio').value;
+            const fileInput = document.getElementById('profile-upload');
+
+            // Capture the OLD name before we save (to find projects belonging to the old name)
+            const oldName = currentUser;
+
+            const saveBtn = event.target;
+            const originalBtnText = saveBtn.innerHTML;
+            saveBtn.innerText = "Saving...";
+            saveBtn.disabled = true;
+
+            try {
+                let newAvatarUrl = null;
+
+                // A. HANDLE FILE UPLOAD
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${currentProfileDbId}-${Date.now()}.${fileExt}`;
+
+                    const { error: uploadError } = await sbClient.storage
+                        .from('avatars')
+                        .upload(fileName, file, { upsert: true });
+
+                    if (uploadError) throw uploadError;
+
+                    const { data: urlData } = sbClient.storage
+                        .from('avatars')
+                        .getPublicUrl(fileName);
+
+                    newAvatarUrl = urlData.publicUrl;
+                }
+
+                // B. UPDATE PROFILE TABLE
+                const updateData = {
+                    full_name: newName,
+                    email: newEmail,
+                    bio: newBio
+                };
+                if (newAvatarUrl) updateData.avatar_url = newAvatarUrl;
+
+                const { error: dbError } = await sbClient
+                    .from('profiles')
+                    .update(updateData)
+                    .eq('id', currentProfileDbId);
+
+                if (dbError) throw dbError;
+
+                // C. CASCADE UPDATE: Update all projects that had the OLD name
+                if (newName !== oldName) {
+                    const { error: projectError } = await sbClient
+                        .from('partner_opportunities')
+                        .update({ claimed_by: newName }) // Set new name
+                        .eq('claimed_by', oldName);      // Find old name
+
+                    if (projectError) throw projectError;
+
+                    // Update the global variable immediately so tabs work
+                    currentUser = newName;
+                }
+
+                // D. SUCCESS & REFRESH
+                alert("Profile and Projects updated successfully!");
+
+                // Update Header UI
+                document.getElementById('header-user-name').textContent = newName;
+
+                // Refresh the dashboard data to show new names in cards
+                fetchUserProfile();
+                fetchHandledProjects();
+                fetchCompletedProjects();
+
+                closeProfileModal();
+
+            } catch (e) {
+                console.error(e);
+                alert("Error updating profile: " + e.message);
+            } finally {
+                saveBtn.innerHTML = originalBtnText;
+                saveBtn.disabled = false;
+            }
+        }
+
+
+
+        // --- NOTIFICATION SYSTEM ---
+
+        // 1. Fetch Notifications on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            // ... existing fetch calls ...
+            if (sbClient) {
+                fetchNotifications();
+                // Poll for new notifications every 30 seconds (optional)
+                setInterval(fetchNotifications, 30000);
+            }
+        });
+
+        async function fetchNotifications() {
+            // Use the global currentUser variable
+            if (!currentUser) return;
+
+            const { data, error } = await sbClient
+                .from('notifications')
+                .select('*')
+                .eq('recipient', currentUser)
+                .order('created_at', { ascending: false })
+                .limit(10);
+
+            if (error) return console.error("Notif Error:", error);
+
+            renderNotificationsUI(data);
+        }
+
+        function renderNotificationsUI(data) {
+            const list = document.getElementById('notif-list');
+            const badge = document.getElementById('notif-badge');
+
+            list.innerHTML = '';
+
+            // Check unread count
+            const unreadCount = data.filter(n => !n.is_read).length;
+            if (unreadCount > 0) badge.classList.remove('hidden');
+            else badge.classList.add('hidden');
+
+            if (data.length === 0) {
+                list.innerHTML = `<div class="p-4 text-center text-gray-400 text-xs italic">No new notifications</div>`;
+                return;
+            }
+
+            data.forEach(n => {
+                // Icon based on type
+                let icon = '<div class="h-2 w-2 rounded-full bg-blue-500 mt-1.5"></div>'; // Info
+                if (n.type === 'success') icon = '<div class="h-2 w-2 rounded-full bg-green-500 mt-1.5"></div>';
+                if (n.type === 'warning') icon = '<div class="h-2 w-2 rounded-full bg-yellow-500 mt-1.5"></div>';
+
+                // Background for unread
+                const bgClass = n.is_read ? 'bg-white' : 'bg-purple-50';
+
+                list.innerHTML += `
+            <div class="p-3 ${bgClass} border-b border-gray-50 flex gap-3 hover:bg-gray-50 transition cursor-pointer">
+                ${icon}
+                <div>
+                    <p class="text-sm text-gray-800 leading-snug">${n.message}</p>
+                    <p class="text-[10px] text-gray-400 mt-1">${new Date(n.created_at).toLocaleTimeString()} • ${new Date(n.created_at).toLocaleDateString()}</p>
+                </div>
+            </div>
+        `;
+            });
+        }
+
+        async function markAllAsRead() {
+            await sbClient.from('notifications').update({ is_read: true }).eq('recipient', currentUser);
+            fetchNotifications(); // Refresh UI
+        }
+
+        // --- SEND NOTIFICATION & EMAIL (The Core Logic) ---
+
+        async function sendSystemNotification(recipientName, message, type) {
+            // 1. Insert into Database (In-App Notification)
+            await sbClient.from('notifications').insert({
+                recipient: recipientName,
+                message: message,
+                type: type
+            });
+
+            // 2. Trigger Email Simulation
+            // In a real app, you would call Supabase Edge Function here.
+            simulateEmailSending(recipientName, message);
+
+            // 3. Refresh the list instantly
+            fetchNotifications();
+        }
+
+        function simulateEmailSending(name, msg) {
+            // 1. Visual Feedback (Keep the toast so you know it's trying)
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-5 right-5 bg-gray-900 text-white px-6 py-4 rounded-lg shadow-2xl flex items-center gap-3 z-[200] animate-pulse";
+            toast.innerHTML = `
+        <svg class="w-5 h-5 text-yellow-400 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        <div><p class="font-bold text-sm">Sending Real Email...</p></div>
+    `;
+            document.body.appendChild(toast);
+
+            // 2. PREPARE PARAMETERS (Must match {{ variables }} in your Template)
+            const templateParams = {
+                name: name,           // Matches {{name}}
+                to_email: currentUserEmail, // Matches {{to_email}} (Configure this in EmailJS template "To Email" field!)
+                message: msg,         // Matches {{message}}
+                subject: "Project Update"
+            };
+
+            // 3. SEND TO EMAILJS
+            emailjs.send('service_gyl0q9g', 'template_q40yoyg', templateParams)
+                .then(function (response) {
+                    console.log('SUCCESS!', response.status, response.text);
+
+                    // Update Toast to Success
+                    toast.classList.remove('animate-pulse');
+                    toast.innerHTML = `
+                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <div>
+                    <p class="font-bold text-sm">Email Sent Successfully!</p>
+                    <p class="text-xs text-gray-400">Check your inbox: ${currentUserEmail}</p>
+                </div>
+            `;
+                    setTimeout(() => toast.remove(), 5000);
+
+                }, function (error) {
+                    console.log('FAILED...', error);
+                    toast.innerHTML = `<p class="text-red-400 font-bold">Email Failed: ${error.text}</p>`;
+                });
+        }
+
+
+        // --- UPDATED SAVE STATUS FUNCTION (To Trigger the Notif) ---
+        // Replace your existing saveProjectStatus with this:
+
+        async function saveProjectStatus() {
+            const newStatus = document.getElementById('update-status-select').value;
+            if (!currentProjectId) return;
+
+            const btn = event.target;
+            btn.textContent = "Saving...";
+
+            // 1. Update Project
+            const { error } = await sbClient
+                .from('partner_opportunities')
+                .update({ status: newStatus })
+                .eq('id', currentProjectId);
+
+            if (error) {
+                alert("Error updating status");
+            } else {
+                // 2. TRIGGER NOTIFICATION & EMAIL
+                // We send it to 'currentUser' to see it in action, 
+                // but in real life, you might send it to the Project Lead.
+
+                let msg = `Your project status has been updated to: ${newStatus}`;
+                let type = 'info';
+
+                if (newStatus === 'Completed') {
+                    msg = "Congratulations! Your project has been officially marked as Completed.";
+                    type = 'success';
+                }
+
+                await sendSystemNotification(currentUser, msg, type);
+
+                alert("Status updated to " + newStatus);
+                closeProjectModal();
+
+                if (document.getElementById('view-handled').classList.contains('hidden') === false) fetchHandledProjects();
+                else fetchCompletedProjects();
+            }
+            btn.textContent = "Save Status";
+        }
+
+
+    </script>
+</body>
+
+</html>
