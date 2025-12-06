@@ -1,68 +1,116 @@
 /**
  * auth-check.js
- * Add this to all protected pages (Admin_Panel.html, etc.)
+ * Global authentication check - Add this to ALL protected pages
  */
 
-import { checkAuth } from './db_connection.js';
+import { getCurrentUser } from './db_connection.js';
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("🔒 Checking authentication...");
+(function() {
+    console.log("🔒 Global Authentication Check Running...");
     
-    const user = checkAuth();
+    // Get current page
+    const currentPath = window.location.pathname;
+    const currentPage = currentPath.split('/').pop().toLowerCase();
     
-    if (!user) {
-        console.log("❌ No valid session, redirecting to login");
-        // Use timeout to prevent redirect loops
-        setTimeout(() => {
-            if (!window.location.pathname.includes('LogIn.html')) {
-                window.location.href = '../HTML/LogIn.html';
-            }
-        }, 100);
+    // List of pages that don't require authentication
+    const PUBLIC_PAGES = [
+        'login.html',
+        'login',
+        'index.html',
+        'home.html',
+        'about.html',
+        'contact.html',
+        'register.html',
+        'signup.html'
+    ];
+    
+    // Check if current page is public
+    const isPublicPage = PUBLIC_PAGES.some(page => 
+        currentPage.includes(page.toLowerCase())
+    );
+    
+    // If it's a public page, don't check auth
+    if (isPublicPage) {
+        console.log(`✅ ${currentPage} is a public page, no auth required`);
         return;
     }
     
-    console.log("✅ User authenticated:", user.email);
+    // Check if user is logged in
+    const user = getCurrentUser();
     
-    // Display user info
-    const userInfoElement = document.getElementById('userInfo') || 
-                           document.getElementById('userName') ||
-                           document.querySelector('.user-info');
-    
-    if (userInfoElement) {
-        userInfoElement.textContent = `Welcome, ${user.full_name || user.email}`;
+    if (!user) {
+        console.log('❌ No user session found, redirecting to login...');
+        
+        // Store the attempted page for redirect after login
+        if (currentPage && !currentPage.includes('login')) {
+            sessionStorage.setItem('redirectAfterLogin', window.location.href);
+        }
+        
+        // Redirect to login page
+        window.location.href = '../HTML/LogIn.html';
+        return;
     }
     
-    // Set user role for page-specific features
-    document.body.setAttribute('data-user-role', user.role);
+    console.log(`✅ User authenticated: ${user.email} (${user.role})`);
     
-    // Optional: Check if user has permission for this page
-    const currentPage = window.location.pathname;
-    const allowedPages = {
-        'admin': ['admin_panel', 'admin'],
-        'faculty': ['faculty', 'dashboard'],
-        'coordinator': ['coordinator', 'dashboard'],
-        'public': ['public', 'dashboard', 'index', 'home']
+    // Optional: Role-based page access control
+    const currentPageName = currentPage.replace('.html', '').toLowerCase();
+    
+    // Define which pages each role can access
+    const rolePermissions = {
+        'admin': ['admin_panel', 'admin', 'dashboard', 'user-management', 'content', 'analytics', 'settings'],
+        'faculty': ['faculty_dashboard', 'dashboard', 'profile'],
+        'coordinator': ['coordinator_dashboard', 'dashboard', 'profile'],
+        'public': ['public_dashboard', 'dashboard', 'profile', 'home', 'index']
     };
     
     const userRole = user.role.toLowerCase();
-    const allowed = allowedPages[userRole] || allowedPages['public'];
-    const hasAccess = allowed.some(page => currentPage.toLowerCase().includes(page));
+    const allowedPages = rolePermissions[userRole] || rolePermissions['public'];
+    const hasAccess = allowedPages.some(page => currentPageName.includes(page));
     
-    if (!hasAccess && userRole !== 'admin') {
-        console.warn("User doesn't have access to this page");
+    // If user doesn't have access to this page
+    if (!hasAccess && !isPublicPage) {
+        console.warn(`User ${user.role} doesn't have access to ${currentPage}`);
+        
         // Redirect to their appropriate dashboard
         const redirectMap = {
             'admin': '../HTML/Admin_Panel.html',
             'faculty': '../HTML/Faculty_Dashboard.html',
             'coordinator': '../HTML/Coordinator_Dashboard.html',
-            'public': '../HTML/Public_Dashboard.html'
+            'public': '../HTML/Public_Dashboard.html',
+            'partner':'../HTML/Partner_Panel.html'
         };
         
         const redirectUrl = redirectMap[userRole] || '../index.html';
-        if (!window.location.pathname.includes(redirectUrl.replace('../', ''))) {
+        
+        // Only redirect if not already on the correct page
+        if (!currentPath.includes(redirectUrl.replace('../', '').replace('.html', ''))) {
             setTimeout(() => {
                 window.location.href = redirectUrl;
-            }, 1000);
+            }, 1500);
         }
+        return;
     }
-});
+    
+    // Display user info if elements exist
+    setTimeout(() => {
+        const userElements = {
+            'userInfo': `Logged in as: ${user.full_name || user.email} (${user.role})`,
+            'userName': user.full_name || user.email,
+            'adminName': `Welcome, ${user.full_name || user.email}`,
+            'currentUserRole': user.role,
+            'userRoleDisplay': user.role
+        };
+        
+        for (const [id, value] of Object.entries(userElements)) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+        
+        // Set data attribute for CSS/styling
+        document.body.setAttribute('data-user-role', user.role);
+    }, 100);
+    
+})();
