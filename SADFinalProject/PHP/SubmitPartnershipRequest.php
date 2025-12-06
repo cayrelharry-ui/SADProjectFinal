@@ -1,20 +1,52 @@
 <?php
+// SubmitPartnershipRequest.php - Submits request and uploads attachments to Supabase
 session_start();
 header('Content-Type: application/json');
 
-// Database connection
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "ccms_portal";
+// --- INCLUDE SUPABASE UTILITY & STORAGE FUNCTION ---
+require_once('db_connection.php'); 
+// ----------------------------------------------------
 
-$conn = new mysqli($host, $user, $pass, $dbname);
-if ($conn->connect_error) {
-    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
-    exit;
+const REQUESTS_TABLE = "partnership_requests";
+const ATTACHMENTS_TABLE = "partnership_attachments";
+const STORAGE_BUCKET = "uploads"; // Assuming you use the public 'uploads' bucket
+
+// Define the file upload function (re-used from Uploads.php conversion)
+function uploadFileToSupabase($bucketName, $filePath, $fileName, $mimeType) {
+    $storageUrl = SUPABASE_URL . "/storage/v1/object/{$bucketName}/{$fileName}";
+    
+    $fileContent = file_get_contents($filePath);
+    if ($fileContent === false) {
+        return ['status' => 'error', 'message' => 'Could not read local file.'];
+    }
+
+    $ch = curl_init($storageUrl);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $fileContent);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $headers = [
+        "apikey: " . SERVICE_ROLE_KEY,
+        "Authorization: Bearer " . SERVICE_ROLE_KEY,
+        "Content-Type: {$mimeType}", 
+        "X-Upsert: true"
+    ];
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($http_code === 200 || $http_code === 201) {
+        $publicUrl = SUPABASE_URL . "/storage/v1/object/public/{$bucketName}/{$fileName}";
+        return ['status' => 'success', 'url' => $publicUrl];
+    } else {
+        return ['status' => 'error', 'message' => 'Storage upload failed.', 'http_code' => $http_code];
+    }
 }
 
-// Get form data
+
+// --- 1. Get Form Data ---
 $letterDate = $_POST['letterDate'] ?? '';
 $subject = $_POST['subject'] ?? '';
 $orgName = $_POST['orgName'] ?? '';
@@ -28,7 +60,7 @@ $position = $_POST['position'] ?? '';
 $email = $_POST['email'] ?? '';
 $phone = $_POST['phone'] ?? '';
 
-// Validate required fields
+// --- 2. Validation (Remains the same) ---
 $requiredFields = ['letterDate', 'subject', 'orgName', 'orgType', 'address', 'collaboration', 'contactPerson', 'email', 'phone'];
 $missingFields = [];
 
@@ -43,72 +75,52 @@ if (!empty($missingFields)) {
         'status' => 'error',
         'message' => 'Please fill in all required fields: ' . implode(', ', $missingFields)
     ]);
-    $conn->close();
     exit;
 }
 
-// Create uploads directory for partnership requests
-$uploadDir = dirname(__DIR__) . '/uploads/partnership_requests/';
-if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
-}
+// --- 3. Supabase: Insert Partnership Request (Replaces MySQL INSERT) ---
 
-// Create partnership_requests table if it doesn't exist
-$createTableQuery = "CREATE TABLE IF NOT EXISTS partnership_requests (
-    request_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    letter_date DATE NOT NULL,
-    subject VARCHAR(255) NOT NULL,
-    org_name VARCHAR(255) NOT NULL,
-    org_type VARCHAR(100) NOT NULL,
-    address TEXT NOT NULL,
-    collaboration TEXT NOT NULL,
-    outcomes TEXT,
-    additional_info TEXT,
-    contact_person VARCHAR(255) NOT NULL,
-    position VARCHAR(255),
-    email VARCHAR(255) NOT NULL,
-    phone VARCHAR(50) NOT NULL,
-    status ENUM('pending', 'reviewed', 'approved', 'rejected') DEFAULT 'pending',
-    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
+// NOTE: We assume 'partnership_requests' and 'partnership_attachments' tables 
+// and their schema have been created manually in Supabase.
+// The local file system directory creation and CREATE TABLE queries are removed.
 
-$conn->query($createTableQuery);
+$requestPayload = [
+    'letter_date' => $letterDate,
+    'subject' => $subject,
+    'org_name' => $orgName,
+    'org_type' => $orgType,
+    'address' => $address,
+    'collaboration' => $collaboration,
+    'outcomes' => $outcomes,
+    'additional_info' => $additionalInfo,
+    'contact_person' => $contactPerson,
+    'position' => $position,
+    'email' => $email,
+    'phone' => $phone,
+    'status' => 'pending' // Default status
+];
 
-// Create partnership_attachments table if it doesn't exist
-$createAttachmentsTableQuery = "CREATE TABLE IF NOT EXISTS partnership_attachments (
-    attachment_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    request_id INT(11) NOT NULL,
-    original_name VARCHAR(255) NOT NULL,
-    stored_name VARCHAR(255) NOT NULL,
-    file_type VARCHAR(50) NOT NULL,
-    file_size INT(11) NOT NULL,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (request_id) REFERENCES partnership_requests(request_id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
+// Use SERVICE_ROLE_KEY to ensure insertion success
+$response_request = supabase_request(REQUESTS_TABLE, 'POST', $requestPayload, SERVICE_ROLE_KEY, 'return=representation');
 
-$conn->query($createAttachmentsTableQuery);
-
-// Insert partnership request into database
-$stmt = $conn->prepare("INSERT INTO partnership_requests (letter_date, subject, org_name, org_type, address, collaboration, outcomes, additional_info, contact_person, position, email, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("ssssssssssss", $letterDate, $subject, $orgName, $orgType, $address, $collaboration, $outcomes, $additionalInfo, $contactPerson, $position, $email, $phone);
-
-if (!$stmt->execute()) {
+if ($response_request === false || $response_request['status'] !== 201) {
+    $error_msg = $response_request['data']['message'] ?? 'Unknown error during request insertion.';
     echo json_encode([
         'status' => 'error',
-        'message' => 'Failed to save partnership request: ' . $conn->error
+        'message' => 'Failed to save partnership request: ' . $error_msg
     ]);
-    $stmt->close();
-    $conn->close();
     exit;
 }
 
-$requestId = $conn->insert_id;
-$stmt->close();
+// Get the request_id from the response payload (crucial for attachments)
+$requestId = $response_request['data'][0]['request_id']; 
 
-// Handle file uploads
+// --- 4. Handle File Uploads to Supabase Storage ---
 $uploadedFiles = [];
 $failedFiles = [];
+$attachmentInserts = [];
+$maxSize = 10 * 1024 * 1024; // 10MB
+$allowedTypes = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'];
 
 if (isset($_FILES['attachments']) && !empty($_FILES['attachments']['name'][0])) {
     $files = $_FILES['attachments'];
@@ -120,40 +132,37 @@ if (isset($_FILES['attachments']) && !empty($_FILES['attachments']['name'][0])) 
             $fileSize = $files['size'][$i];
             $tmpName = $files['tmp_name'][$i];
             $fileExt = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-            
-            // Validate file type
-            $allowedTypes = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'];
+            $fileMime = mime_content_type($tmpName);
+
+            // Validation checks
             if (!in_array($fileExt, $allowedTypes)) {
                 $failedFiles[] = $originalName . ' (Invalid file type)';
                 continue;
             }
-            
-            // Validate file size (10MB)
-            $maxSize = 10 * 1024 * 1024; // 10MB
             if ($fileSize > $maxSize) {
                 $failedFiles[] = $originalName . ' (File too large)';
                 continue;
             }
             
-            // Generate unique filename
-            $storedName = uniqid() . '_' . time() . '_' . $i . '.' . $fileExt;
-            $destination = $uploadDir . $storedName;
+            // Generate unique filename and upload to Supabase Storage
+            $storedName = 'request_' . $requestId . '/' . uniqid() . '_' . $i . '.' . $fileExt;
             
-            if (move_uploaded_file($tmpName, $destination)) {
-                // Insert file record into database
-                $fileStmt = $conn->prepare("INSERT INTO partnership_attachments (request_id, original_name, stored_name, file_type, file_size) VALUES (?, ?, ?, ?, ?)");
-                $fileStmt->bind_param("isssi", $requestId, $originalName, $storedName, $fileExt, $fileSize);
+            $uploadResult = uploadFileToSupabase(STORAGE_BUCKET, $tmpName, $storedName, $fileMime);
+            
+            if ($uploadResult['status'] === 'success') {
+                $uploadedFiles[] = $originalName;
                 
-                if ($fileStmt->execute()) {
-                    $uploadedFiles[] = $originalName;
-                } else {
-                    $failedFiles[] = $originalName . ' (Database error)';
-                    // Remove uploaded file if database insert fails
-                    @unlink($destination);
-                }
-                $fileStmt->close();
+                // Prepare metadata insertion for the batch request
+                $attachmentInserts[] = [
+                    'request_id' => $requestId,
+                    'original_name' => $originalName,
+                    'stored_name' => $storedName, // This is the path in storage
+                    'file_type' => $fileExt,
+                    'file_size' => $fileSize
+                    // 'public_url' => $uploadResult['url'] // Optional: store the public URL
+                ];
             } else {
-                $failedFiles[] = $originalName . ' (Upload failed)';
+                $failedFiles[] = $originalName . ' (Storage error: ' . ($uploadResult['message'] ?? 'Unknown') . ')';
             }
         } else {
             $failedFiles[] = $files['name'][$i] . ' (Upload error: ' . $files['error'][$i] . ')';
@@ -161,15 +170,26 @@ if (isset($_FILES['attachments']) && !empty($_FILES['attachments']['name'][0])) 
     }
 }
 
-$conn->close();
+// --- 5. Supabase: Batch Insert Attachment Metadata (Replaces nested fileStmt inserts) ---
 
-// Prepare response
+if (!empty($attachmentInserts)) {
+    // Send all attachment records in one batch request
+    $response_attachments = supabase_request(ATTACHMENTS_TABLE, 'POST', $attachmentInserts, SERVICE_ROLE_KEY);
+
+    if ($response_attachments === false || $response_attachments['status'] !== 201) {
+        $failedFiles[] = "Metadata insertion failed for one or more files.";
+        // NOTE: In a production app, you would add logic here to DELETE the files 
+        // from Supabase Storage that failed to have their metadata inserted.
+    }
+}
+
+// --- 6. Prepare Final Response ---
 $message = "Partnership request submitted successfully!";
 if (count($uploadedFiles) > 0) {
     $message .= " " . count($uploadedFiles) . " file(s) uploaded.";
 }
 if (count($failedFiles) > 0) {
-    $message .= " " . count($failedFiles) . " file(s) failed to upload.";
+    $message .= " NOTE: " . count($failedFiles) . " file(s) failed to upload/record.";
 }
 
 echo json_encode([
@@ -180,4 +200,3 @@ echo json_encode([
     'failed_files' => $failedFiles
 ]);
 ?>
-

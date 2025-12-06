@@ -1,602 +1,111 @@
-// Admin_Panel.js - SUPER SIMPLE WORKING VERSION
-document.addEventListener('DOMContentLoaded', function() {
+// Admin_Panel.js - UPDATED WITH APPROVAL SYSTEM
+import { 
+    supabase, 
+    logout as supabaseLogout, 
+    getCurrentUser,
+    getAllUsers,
+    getPendingUsers,
+    approveUser,
+    rejectUser,
+    updateUserStatus
+} from './db_connection.js';
+
+// Import the upload functions
+import {
+    uploadFiles,
+    getUploadedFiles,
+    deleteFile,
+    downloadFile,
+    formatFileSize,
+    getFileIcon,
+    getFileAccessBadge,
+    initializeFileUploadForm
+} from './UploadFile.js';
+
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log("👑 Admin Panel Initializing...");
+    
     // Check if user is logged in and is admin
-    const userRole = localStorage.getItem('userRole');
-    if (!userRole || userRole !== 'admin') {
+    const user = getCurrentUser();
+    
+    if (!user) {
+        console.log("❌ No user session, redirecting to login");
         window.location.href = '../HTML/LogIn.html';
         return;
     }
+    
+    if (user.role !== 'admin') {
+        console.log("❌ User is not admin, redirecting to login");
+        showStatus('Access denied. Admin privileges required.', 'error');
+        setTimeout(() => {
+            window.location.href = '../HTML/LogIn.html';
+        }, 2000);
+        return;
+    }
 
+    // Store current admin user ID for approval tracking
+    window.currentAdminId = user.user_id;
+    
     // Initialize the admin panel
-    initializeAdminPanel(userRole);
+    await initializeAdminPanel(user);
     
     // Setup logout button
     setupLogoutButton();
 });
 
 // ============================================
-// LOGOUT FUNCTIONALITY
+// INITIALIZE ADMIN PANEL
 // ============================================
 
-function setupLogoutButton() {
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            logout();
-        });
-    }
-}
-
-function logout() {
-    if (confirm('Are you sure you want to logout?')) {
-        // Clear all localStorage items related to authentication
-        localStorage.removeItem('userRole');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('userName');
-        localStorage.removeItem('userEmail');
-        
-        // If you're using sessionStorage, clear that too
-        sessionStorage.clear();
-        
-        // Show logout message
-        showStatus('Logging out...', 'info');
-        
-        // Redirect to login page after a short delay
-        setTimeout(() => {
-            window.location.href = '../HTML/LogIn.html';
-        }, 1000);
-    }
-}
-
-function initializeAdminPanel(userRole) {
-    console.log("Admin Panel Initializing for:", userRole);
+async function initializeAdminPanel(user) {
+    console.log("Admin Panel Initializing for:", user);
     
-    // Set user role in UI
-    document.getElementById('currentUserRole').textContent = userRole;
-    document.getElementById('userRoleDisplay').textContent = userRole;
+    // Display user info
+    displayUserInfo(user);
     
     // Set user permissions
-    setUserPermissions(userRole);
+    setUserPermissions(user.role);
     
-    // Load initial data
-    loadDashboardData();
-    loadAllUsers();
-    loadPendingApprovals();
+    // Load initial data from Supabase
+    await loadDashboardData();
+    await loadAllUsers();
+    await loadPendingApprovals();
     
     // Setup navigation
     setupSectionNavigation();
     
-    // Setup file upload (SIMPLE VERSION)
-    setupSimpleFileUpload();
+    // Initialize file upload form
+    initializeFileUploadForm('fileUploadForm');
     
-    // Setup file management
-    setupFileManagement();
+    // Setup file preview on selection
+    setupFilePreview();
+    
+    // Setup search and filter listeners
+    setupSearchAndFilters();
 }
 
-// ============================================
-// SIMPLE FILE UPLOAD - THIS WILL WORK
-// ============================================
-
-function setupSimpleFileUpload() {
-    const uploadBtn = document.getElementById('uploadBtn');
-    const fileInput = document.getElementById('fileInput');
-    
-    if (!uploadBtn || !fileInput) return;
-    
-    // Preview selected files
-    fileInput.addEventListener('change', function() {
-        const preview = document.getElementById('filePreview');
-        const filesList = document.getElementById('selectedFilesList');
-        
-        if (!preview || !filesList) return;
-        
-        filesList.innerHTML = '';
-        
-        if (this.files.length > 0) {
-            preview.style.display = 'block';
-            
-            for (let file of this.files) {
-                const size = formatFileSize(file.size);
-                const item = document.createElement('div');
-                item.className = 'list-group-item';
-                item.innerHTML = `
-                    <div class="d-flex justify-content-between">
-                        <div><i class="bi bi-file-earmark me-2"></i>${file.name}</div>
-                        <div class="text-muted">${size}</div>
-                    </div>
-                `;
-                filesList.appendChild(item);
-            }
-        } else {
-            preview.style.display = 'none';
-        }
-    });
-    
-    // Handle upload button click
-    uploadBtn.addEventListener('click', uploadFilesSimple);
-}
-
-async function uploadFilesSimple() {
-    console.log("Upload button clicked");
-    
-    const fileInput = document.getElementById('fileInput');
-    const uploadBtn = document.getElementById('uploadBtn');
-    const uploadSpinner = document.getElementById('uploadSpinner');
-    
-    if (!fileInput || fileInput.files.length === 0) {
-        alert('Please select at least one file');
-        return;
-    }
-    
-    // Show loading
-    uploadBtn.disabled = true;
-    if (uploadSpinner) {
-        uploadSpinner.classList.remove('d-none');
-    }
-    
-    showStatus('Uploading files...', 'info');
-    
-    try {
-        // Create FormData
-        const formData = new FormData();
-        
-        // Add files (MUST use 'files[]' with brackets for PHP)
-        for (let file of fileInput.files) {
-            formData.append('files[]', file);
-        }
-        
-        // Add other data (REMOVED category)
-        const description = document.getElementById('fileDescription').value;
-        const accessLevel = document.querySelector('input[name="accessLevel"]:checked').value;
-        
-        formData.append('description', description);
-        formData.append('access_level', accessLevel); // Note: underscore!
-        
-        // Send to PHP
-        const response = await fetch('../PHP/UploadFile.php', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-        console.log("Upload result:", result);
-        
-        if (result.status === 'success') {
-            showStatus(result.message, 'success');
-            
-            // Clear form
-            fileInput.value = '';
-            document.getElementById('filePreview').style.display = 'none';
-            document.getElementById('selectedFilesList').innerHTML = '';
-            document.getElementById('fileDescription').value = '';
-            
-            // Refresh file list
-            loadUploadedFiles();
-        } else {
-            showStatus('Upload failed: ' + result.message, 'error');
-        }
-        
-    } catch (error) {
-        console.error('Upload error:', error);
-        showStatus('Upload failed: ' + error.message, 'error');
-    } finally {
-        uploadBtn.disabled = false;
-        if (uploadSpinner) {
-            uploadSpinner.classList.add('d-none');
-        }
-    }
-}
-// ============================================
-// FILE MANAGEMENT FUNCTIONS
-// ============================================
-
-function setupFileManagement() {
-    console.log("Setting up file management...");
-    
-    // Setup search and filter
-    const searchInput = document.getElementById('searchFiles');
-    const categoryFilter = document.getElementById('filterCategory');
-    
-    // Setup enhanced search with debounce
-    let searchTimeout;
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                loadUploadedFiles();
-            }, 500);
-        });
-    }
-    
-    if (categoryFilter) {
-        categoryFilter.addEventListener('change', loadUploadedFiles);
-    }
-    
-    // Handle tab switch to load files
-    const manageTab = document.getElementById('manage-tab');
-    if (manageTab) {
-        manageTab.addEventListener('shown.bs.tab', function() {
-            console.log("Manage files tab shown");
-            loadUploadedFiles();
-        });
-    }
-}
-
-async function loadUploadedFiles() {
-    console.log("Loading uploaded files...");
-    
-    const tbody = document.getElementById('filesTableBody');
-    if (!tbody) {
-        console.error("Files table body not found");
-        return;
-    }
-    
-    // Show loading
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="6" class="text-center">
-                <div class="spinner-border spinner-border-sm" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-2">Loading files...</p>
-            </td>
-        </tr>
-    `;
-    
-    try {
-        // Get filter values
-        const category = document.getElementById('filterCategory')?.value || '';
-        const search = document.getElementById('searchFiles')?.value || '';
-        
-        // Build URL with parameters
-        let url = '../PHP/GetFiles.php';
-        const params = new URLSearchParams();
-        if (category) params.append('category', category);
-        if (search) params.append('search', search);
-        
-        if (params.toString()) {
-            url += '?' + params.toString();
-        }
-        
-        console.log("Fetching from:", url);
-        
-        // Fetch files
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const result = await response.json();
-        console.log("Files loaded:", result);
-        
-        if (result.status === 'success') {
-            renderFilesTable(result.files);
-            updateStorageStats(result.stats);
-            showStatus(`Loaded ${result.files.length} file(s)`, 'success');
-        } else {
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">${result.message || 'No files found'}</td></tr>`;
-            showStatus(result.message || 'No files found', 'warning');
-        }
-        
-    } catch (error) {
-        console.error('Error loading files:', error);
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-center text-danger">
-                    <i class="bi bi-exclamation-triangle"></i> Error loading files
-                    <br><small>${error.message}</small>
-                </td>
-            </tr>
-        `;
-        showStatus('Error loading files: ' + error.message, 'error');
-    }
-}
-
-function renderFilesTable(files) {
-    const tbody = document.getElementById('filesTableBody');
-    if (!tbody) return;
-    
-    if (!files || files.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-center text-muted">
-                    <i class="bi bi-inbox"></i> No files found
-                    <br><small>Try changing your search or filter</small>
-                </td>
-            </tr>
-        `;
-        return;
-    }
-    
-    let html = '';
-    files.forEach(file => {
-        const fileSize = formatFileSize(file.file_size);
-        const uploadedDate = new Date(file.uploaded_at).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        const accessBadge = file.access_level === 'public' 
-            ? '<span class="badge bg-success"><i class="bi bi-globe"></i> Public</span>' 
-            : '<span class="badge bg-warning"><i class="bi bi-lock"></i> Private</span>';
-        
-        // Get appropriate icon for file type
-        const fileIcon = getFileIcon(file.file_type);
-        
-        // Escape filename for JavaScript string
-        const escapedFileName = file.original_name.replace(/'/g, "\\'").replace(/"/g, '\\"');
-        
-        html += `
-        <tr>
-            <td>
-                <div class="d-flex align-items-center">
-                    <i class="bi ${fileIcon} me-2 fs-5"></i>
-                    <div>
-                        <div class="fw-semibold">${file.original_name}</div>
-                        <small class="text-muted">${file.description || 'No description'}</small>
-                    </div>
-                </div>
-            </td>
-            <td>
-                <span class="badge bg-info">
-                    <i class="bi bi-tag"></i> ${file.category}
-                </span>
-            </td>
-            <td>${fileSize}</td>
-            <td>
-                <small title="${new Date(file.uploaded_at).toLocaleString()}">
-                    ${uploadedDate}
-                </small>
-            </td>
-            <td>${accessBadge}</td>
-            <td>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button class="btn btn-outline-primary" 
-                            onclick="downloadFile(${file.id}, '${escapedFileName}')"
-                            title="Download ${file.original_name}">
-                        <i class="bi bi-download"></i>
-                    </button>
-                    <button class="btn btn-outline-info" 
-                            onclick="viewFileInfo(${file.id})"
-                            title="View file info">
-                        <i class="bi bi-info-circle"></i>
-                    </button>
-                    <button class="btn btn-outline-danger" 
-                            onclick="confirmDeleteFile(${file.id}, '${escapedFileName}')"
-                            title="Delete file">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-        `;
-    });
-    
-    tbody.innerHTML = html;
-}
-
-function updateStorageStats(stats) {
-    const progressBar = document.getElementById('storageProgress');
-    const usedElement = document.getElementById('storageUsed');
-    const totalElement = document.getElementById('storageTotal');
-    
-    if (!progressBar || !usedElement || !totalElement) {
-        console.error("Storage stats elements not found");
-        return;
-    }
-    
-    const used = stats.total_size || 0;
-    const total = stats.storage_limit || (100 * 1024 * 1024); // Default 100MB
-    const percentage = Math.min(100, (used / total) * 100);
-    
-    // Update progress bar
-    progressBar.style.width = `${percentage}%`;
-    progressBar.setAttribute('aria-valuenow', percentage);
-    progressBar.textContent = `${percentage.toFixed(1)}% Used`;
-    
-    // Update text displays
-    usedElement.textContent = formatFileSize(used);
-    totalElement.textContent = formatFileSize(total);
-    
-    // Change color based on usage
-    progressBar.className = 'progress-bar';
-    if (percentage >= 90) {
-        progressBar.classList.add('bg-danger');
-    } else if (percentage >= 70) {
-        progressBar.classList.add('bg-warning');
-    } else if (percentage >= 50) {
-        progressBar.classList.add('bg-info');
-    } else {
-        progressBar.classList.add('bg-success');
-    }
-    
-    console.log(`Storage: ${formatFileSize(used)} used of ${formatFileSize(total)} (${percentage.toFixed(1)}%)`);
-}
-
-async function deleteFile(fileId) {
-    console.log("Deleting file ID:", fileId);
-    
-    try {
-        const response = await fetch('../PHP/DeleteFile.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ file_id: fileId })
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const result = await response.json();
-        
-        if (result.status === 'success') {
-            showStatus('File deleted successfully', 'success');
-            loadUploadedFiles(); // Refresh the list
-        } else {
-            throw new Error(result.message || 'Delete failed');
-        }
-        
-    } catch (error) {
-        console.error('Delete error:', error);
-        showStatus('Delete failed: ' + error.message, 'error');
-    }
-}
-
-function confirmDeleteFile(fileId, fileName) {
-    // Create a custom confirmation modal
-    const modalHtml = `
-        <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title">
-                            <i class="bi bi-exclamation-triangle"></i> Confirm Delete
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete:</p>
-                        <div class="alert alert-warning">
-                            <i class="bi bi-file-earmark"></i> <strong>${fileName}</strong>
-                        </div>
-                        <p class="text-danger"><i class="bi bi-warning"></i> This action cannot be undone!</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="bi bi-x-circle"></i> Cancel
-                        </button>
-                        <button type="button" class="btn btn-danger" onclick="deleteFile(${fileId})" data-bs-dismiss="modal">
-                            <i class="bi bi-trash"></i> Delete File
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // Remove existing modal if any
-    const existingModal = document.getElementById('deleteConfirmModal');
-    if (existingModal) {
-        existingModal.remove();
-    }
-    
-    // Add new modal to body
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-    
-    // Show the modal
-    const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-    modal.show();
-    
-    // Remove modal from DOM after hiding
-    document.getElementById('deleteConfirmModal').addEventListener('hidden.bs.modal', function() {
-        this.remove();
-    });
-}
-
-function getFileIcon(fileType) {
-    const iconMap = {
-        // Documents
-        'pdf': 'bi-file-pdf-fill text-danger',
-        'doc': 'bi-file-word-fill text-primary',
-        'docx': 'bi-file-word-fill text-primary',
-        'xls': 'bi-file-excel-fill text-success',
-        'xlsx': 'bi-file-excel-fill text-success',
-        'ppt': 'bi-file-ppt-fill text-warning',
-        'pptx': 'bi-file-ppt-fill text-warning',
-        'txt': 'bi-file-text text-secondary',
-        'csv': 'bi-file-text text-info',
-        
-        // Images
-        'jpg': 'bi-file-image-fill text-info',
-        'jpeg': 'bi-file-image-fill text-info',
-        'png': 'bi-file-image-fill text-info',
-        'gif': 'bi-file-image-fill text-info',
-        'bmp': 'bi-file-image-fill text-info',
-        'svg': 'bi-file-image-fill text-info',
-        'webp': 'bi-file-image-fill text-info',
-        
-        // Audio
-        'mp3': 'bi-file-music-fill text-success',
-        'wav': 'bi-file-music-fill text-success',
-        'ogg': 'bi-file-music-fill text-success',
-        
-        // Video
-        'mp4': 'bi-file-play-fill text-danger',
-        'avi': 'bi-file-play-fill text-danger',
-        'mov': 'bi-file-play-fill text-danger',
-        'wmv': 'bi-file-play-fill text-danger',
-        
-        // Archives
-        'zip': 'bi-file-zip-fill text-warning',
-        'rar': 'bi-file-zip-fill text-warning',
-        '7z': 'bi-file-zip-fill text-warning',
-        'tar': 'bi-file-zip-fill text-warning',
-        'gz': 'bi-file-zip-fill text-warning'
+function displayUserInfo(user) {
+    const elements = {
+        'currentUserRole': user.role,
+        'userRoleDisplay': user.role,
+        'adminName': `Welcome, ${user.full_name || user.email}`,
+        'userInfo': `Logged in as: ${user.full_name || user.email} (${user.role})`
     };
     
-    // Extract file extension from file type or filename
-    let ext = '';
-    if (fileType && fileType.includes('.')) {
-        ext = fileType.split('.').pop().toLowerCase();
-    } else if (fileType) {
-        ext = fileType.toLowerCase();
-    }
-    
-    return iconMap[ext] || 'bi-file-earmark-fill text-secondary';
-}
-
-// ============================================
-// ENHANCED UTILITY FUNCTIONS
-// ============================================
-
-function formatFileSize(bytes, decimals = 2) {
-    if (bytes === 0 || bytes === undefined || bytes === null) return '0 Bytes';
-    
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-}
-
-function showStatus(message, type = 'info') {
-    const statusElement = document.getElementById('statusMessage');
-    const alertElement = document.getElementById('statusAlert');
-    
-    if (!statusElement || !alertElement) return;
-    
-    statusElement.textContent = message;
-    alertElement.className = 'alert mt-4';
-    
-    switch(type) {
-        case 'success': alertElement.classList.add('alert-success'); break;
-        case 'error': alertElement.classList.add('alert-danger'); break;
-        case 'warning': alertElement.classList.add('alert-warning'); break;
-        default: alertElement.classList.add('alert-info');
-    }
-    
-    if (type === 'info') {
-        setTimeout(() => {
-            if (statusElement.textContent === message) {
-                statusElement.textContent = 'Ready';
-                alertElement.className = 'alert alert-info mt-4';
-            }
-        }, 5000);
+    for (const [id, value] of Object.entries(elements)) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
     }
 }
 
-// ============================================
-// NAVIGATION & OTHER FUNCTIONS
-// ============================================
+function setUserPermissions(role) {
+    const el = document.getElementById('userPermissions');
+    if (el) el.textContent = role === 'admin' 
+        ? 'Manage all users, content, and system settings.' 
+        : 'Limited access.';
+}
 
 function setupSectionNavigation() {
     const sections = {
@@ -631,37 +140,300 @@ function setupSectionNavigation() {
                 this.classList.add('active');
                 
                 // Load data if needed
-                if (sectionKey === 'content') loadUploadedFiles();
-                else if (sectionKey === 'user-management') loadAllUsers();
-                else if (sectionKey === 'approvals') loadPendingApprovals();
-                else if (sectionKey === 'dashboard') loadDashboardData();
+                if (sectionKey === 'content') {
+                    loadUploadedFiles();
+                } else if (sectionKey === 'user-management') {
+                    loadAllUsers();
+                } else if (sectionKey === 'approvals') {
+                    loadPendingApprovals();
+                } else if (sectionKey === 'dashboard') {
+                    loadDashboardData();
+                }
             }
         });
     });
 }
 
-function setUserPermissions(role) {
-    const el = document.getElementById('userPermissions');
-    if (el) el.textContent = role === 'admin' 
-        ? 'Manage all users, content, and system settings.' 
-        : 'Limited access.';
-}
-
-// ============================================
-// EXISTING FUNCTIONS (keep these as they were)
-// ============================================
-
-function loadDashboardData() {
-    fetch('../PHP/GetDashboardStats.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                updateDashboardStats(data.stats);
-                updateRecentActivity(data.recentActivity || []);
+function setupFilePreview() {
+    const fileInput = document.getElementById('fileInput');
+    if (!fileInput) return;
+    
+    fileInput.addEventListener('change', function() {
+        const preview = document.getElementById('filePreview');
+        const filesList = document.getElementById('selectedFilesList');
+        
+        if (!preview || !filesList) return;
+        
+        filesList.innerHTML = '';
+        
+        if (this.files.length > 0) {
+            preview.style.display = 'block';
+            
+            for (let file of this.files) {
+                const size = formatFileSize(file.size);
+                const item = document.createElement('div');
+                item.className = 'list-group-item';
+                item.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi ${getFileIcon(file.name)} me-2"></i>
+                            <span>${file.name}</span>
+                        </div>
+                        <div class="text-muted">${size}</div>
+                    </div>
+                `;
+                filesList.appendChild(item);
             }
-        })
-        .catch(err => console.error('Dashboard error:', err));
+        } else {
+            preview.style.display = 'none';
+        }
+    });
 }
+
+function setupSearchAndFilters() {
+    // File search
+    const searchInput = document.getElementById('searchFiles');
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(loadUploadedFiles, 300));
+    }
+    
+    // File filter
+    const filterSelect = document.getElementById('filterCategory');
+    if (filterSelect) {
+        filterSelect.addEventListener('change', loadUploadedFiles);
+    }
+    
+    // User search
+    const userSearch = document.getElementById('searchUsers');
+    if (userSearch) {
+        userSearch.addEventListener('input', debounce(filterUsersTable, 300));
+    }
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// ============================================
+// DATA LOADING FUNCTIONS
+// ============================================
+
+async function loadDashboardData() {
+    console.log("Loading dashboard data...");
+    
+    try {
+        // Get total users count
+        const { count: totalUsers, error: usersError } = await supabase
+            .from('users')
+            .select('*', { count: 'exact', head: true });
+        
+        // Get active users count
+        const { count: activeUsers, error: activeError } = await supabase
+            .from('users')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'active');
+        
+        // Get pending users count
+        const { count: pendingUsers, error: pendingError } = await supabase
+            .from('users')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'pending');
+        
+        // Get inactive users count
+        const { count: inactiveUsers, error: inactiveError } = await supabase
+            .from('users')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'inactive');
+        
+        if (usersError || activeError || pendingError || inactiveError) {
+            throw new Error('Failed to load dashboard stats');
+        }
+        
+        // Update dashboard stats
+        updateDashboardStats({
+            total_users: totalUsers || 0,
+            active_users: activeUsers || 0,
+            pending_users: pendingUsers || 0,
+            inactive_users: inactiveUsers || 0
+        });
+        
+        console.log("Dashboard data loaded");
+        
+    } catch (error) {
+        console.error('Dashboard error:', error);
+        showStatus('Error loading dashboard data: ' + error.message, 'error');
+    }
+}
+
+async function loadAllUsers() {
+    console.log("Loading all users...");
+    
+    try {
+        // Use the new function from db_connection.js
+        const { users, error } = await getAllUsers();
+        
+        if (error) {
+            throw new Error('Failed to load users: ' + error.message);
+        }
+        
+        updateUsersTable(users || []);
+        console.log("Users loaded:", users?.length || 0);
+        
+    } catch (error) {
+        console.error('Users error:', error);
+        showStatus('Error loading users: ' + error.message, 'error');
+    }
+}
+
+async function loadPendingApprovals() {
+    console.log("Loading pending approvals...");
+    
+    try {
+        // Use the new function from db_connection.js
+        const { users, error } = await getPendingUsers();
+        
+        if (error) {
+            throw new Error('Failed to load pending approvals: ' + error.message);
+        }
+        
+        updatePendingApprovals(users || []);
+        updatePendingCount(users?.length || 0);
+        console.log("Pending approvals loaded:", users?.length || 0);
+        
+    } catch (error) {
+        console.error('Approvals error:', error);
+        showStatus('Error loading pending approvals: ' + error.message, 'error');
+    }
+}
+
+// Global function to load uploaded files
+window.loadUploadedFiles = async function() {
+    console.log("Loading uploaded files...");
+    
+    const tbody = document.getElementById('filesTableBody');
+    if (!tbody) {
+        console.error("Files table body not found");
+        return;
+    }
+    
+    // Show loading
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="5" class="text-center">
+                <div class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading files...</p>
+            </td>
+        </tr>
+    `;
+    
+    try {
+        const currentUser = getCurrentUser();
+        const userId = currentUser?.user_id;
+        
+        // Get filter values
+        const category = document.getElementById('filterCategory')?.value || '';
+        const search = document.getElementById('searchFiles')?.value || '';
+        
+        // Fetch files
+        const files = await getUploadedFiles({
+            user_id: userId,
+            category: category === 'all' ? '' : category,
+            search: search
+        });
+        
+        // Calculate storage stats
+        const stats = await calculateStorageStats(files);
+        
+        // Render table
+        renderFilesTable(files);
+        updateStorageStats(stats);
+        
+        console.log(`Loaded ${files?.length || 0} file(s)`);
+        
+    } catch (error) {
+        console.error('Error loading files:', error);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center text-danger">
+                    <i class="bi bi-exclamation-triangle"></i> Error loading files
+                    <br><small>${error.message}</small>
+                </td>
+            </tr>
+        `;
+    }
+};
+
+async function calculateStorageStats(files) {
+    try {
+        const totalSize = files?.reduce((sum, file) => sum + (file.file_size || 0), 0) || 0;
+        const storageLimit = 100 * 1024 * 1024; // 100MB default
+        
+        return {
+            total_size: totalSize,
+            storage_limit: storageLimit
+        };
+        
+    } catch (error) {
+        console.error('Storage stats error:', error);
+        return {
+            total_size: 0,
+            storage_limit: 100 * 1024 * 1024
+        };
+    }
+}
+
+// Global delete function
+window.deleteUploadedFile = async function(fileId, fileName) {
+    if (!confirm(`Are you sure you want to delete "${fileName}"?`)) {
+        return;
+    }
+    
+    try {
+        const result = await deleteFile(fileId);
+        
+        if (result.success) {
+            showStatus('File deleted successfully', 'success');
+            await loadUploadedFiles(); // Refresh the list
+        } else {
+            showStatus('Delete failed: ' + result.message, 'error');
+        }
+        
+    } catch (error) {
+        console.error('Delete error:', error);
+        showStatus('Delete failed: ' + error.message, 'error');
+    }
+};
+
+// Global download function
+window.downloadFileFromSupabase = async function(fileId, fileName) {
+    try {
+        const result = await downloadFile(fileId, fileName);
+        
+        if (result.success) {
+            showStatus(result.message, 'success');
+        } else {
+            showStatus('Download failed: ' + result.message, 'error');
+        }
+        
+    } catch (error) {
+        console.error('Download error:', error);
+        showStatus('Download failed: ' + error.message, 'error');
+    }
+};
+
+// ============================================
+// UI UPDATE FUNCTIONS
+// ============================================
 
 function updateDashboardStats(stats) {
     const update = (id, value) => {
@@ -675,38 +447,12 @@ function updateDashboardStats(stats) {
     update('inactiveUsersCount', stats.inactive_users);
 }
 
-function updateRecentActivity(activities) {
-    const container = document.getElementById('recentActivity');
-    if (!container) return;
-    
-    if (activities.length === 0) {
-        container.innerHTML = '<div class="list-group-item text-muted text-center">No recent activity</div>';
-        return;
+function updatePendingCount(count) {
+    const badge = document.getElementById('pendingCountBadge');
+    if (badge) {
+        badge.textContent = count;
+        badge.classList.toggle('d-none', count === 0);
     }
-    
-    let html = '';
-    activities.forEach(activity => {
-        html += `
-        <div class="list-group-item">
-            <div class="d-flex w-100 justify-content-between">
-                <h6 class="mb-1">${activity.action}</h6>
-                <small class="text-muted">${activity.timestamp}</small>
-            </div>
-            <p class="mb-1">${activity.description}</p>
-        </div>
-        `;
-    });
-    
-    container.innerHTML = html;
-}
-
-function loadAllUsers() {
-    fetch('../PHP/GetAllUsers.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') updateUsersTable(data.users);
-        })
-        .catch(err => console.error('Users error:', err));
 }
 
 function updateUsersTable(users) {
@@ -722,7 +468,15 @@ function updateUsersTable(users) {
     users.forEach(user => {
         const statusBadge = user.status === 'active' 
             ? '<span class="badge bg-success">Active</span>' 
-            : '<span class="badge bg-warning">Inactive</span>';
+            : user.status === 'pending'
+            ? '<span class="badge bg-warning">Pending</span>'
+            : '<span class="badge bg-danger">Inactive</span>';
+        
+        // Show approval info if available
+        let approvalInfo = '';
+        if (user.approved_at) {
+            approvalInfo = `<br><small class="text-muted">Approved: ${new Date(user.approved_at).toLocaleDateString()}</small>`;
+        }
         
         html += `
         <tr>
@@ -730,12 +484,19 @@ function updateUsersTable(users) {
             <td>${user.full_name}</td>
             <td>${user.email}</td>
             <td><span class="badge bg-secondary">${user.role}</span></td>
-            <td>${statusBadge}</td>
-            <td>${user.created_at}</td>
+            <td>${statusBadge}${approvalInfo}</td>
+            <td>${new Date(user.created_at).toLocaleDateString()}</td>
             <td>
-                ${user.status === 'active' 
-                    ? '<button class="btn btn-warning btn-sm" onclick="deactivateUser(' + user.user_id + ')">Deactivate</button>'
-                    : '<button class="btn btn-success btn-sm" onclick="activateUser(' + user.user_id + ')">Activate</button>'}
+                <div class="btn-group btn-group-sm" role="group">
+                    ${user.status === 'active' 
+                        ? `<button class="btn btn-warning btn-sm" onclick="deactivateUser(${user.user_id})">Deactivate</button>`
+                        : user.status === 'pending'
+                        ? `<button class="btn btn-success btn-sm" onclick="approveUserAccount(${user.user_id})">Approve</button>
+                           <button class="btn btn-danger btn-sm" onclick="rejectUserAccount(${user.user_id})">Reject</button>`
+                        : `<button class="btn btn-success btn-sm" onclick="activateUser(${user.user_id})">Activate</button>`
+                    }
+                    <button class="btn btn-info btn-sm" onclick="viewUserDetails(${user.user_id})">View</button>
+                </div>
             </td>
         </tr>
         `;
@@ -744,13 +505,14 @@ function updateUsersTable(users) {
     tbody.innerHTML = html;
 }
 
-function loadPendingApprovals() {
-    fetch('../PHP/GetAccounts.php?status=inactive')
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') updatePendingApprovals(data.accounts);
-        })
-        .catch(err => console.error('Approvals error:', err));
+function filterUsersTable() {
+    const searchTerm = document.getElementById('searchUsers')?.value.toLowerCase() || '';
+    const rows = document.querySelectorAll('#usersTableBody tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
 }
 
 function updatePendingApprovals(accounts) {
@@ -758,31 +520,56 @@ function updatePendingApprovals(accounts) {
     if (!container) return;
     
     if (!accounts || accounts.length === 0) {
-        container.innerHTML = '<p class="text-muted text-center">No pending approvals</p>';
+        container.innerHTML = `
+            <div class="text-center py-5">
+                <i class="bi bi-check-circle-fill text-success fs-1"></i>
+                <h5 class="mt-3">No pending approvals</h5>
+                <p class="text-muted">All user accounts are approved</p>
+            </div>
+        `;
         return;
     }
     
     let html = '';
     accounts.forEach(account => {
+        const createdDate = new Date(account.created_at);
+        const daysAgo = Math.floor((new Date() - createdDate) / (1000 * 60 * 60 * 24));
+        
         html += `
-        <div class="card mb-3">
+        <div class="card mb-3 border-warning">
             <div class="card-body">
-                <div class="row">
+                <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h6 class="card-title">${account.full_name}</h6>
-                        <p class="card-text">
-                            <i class="bi bi-envelope"></i> ${account.email}<br>
-                            <i class="bi bi-person-badge"></i> ${account.role}<br>
-                            <i class="bi bi-calendar"></i> ${account.created_at}
-                        </p>
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-sm">
+                                    <span class="avatar-title bg-warning-subtle text-warning rounded-circle fs-4">
+                                        ${account.full_name.charAt(0).toUpperCase()}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="card-title mb-1">${account.full_name}</h6>
+                                <p class="card-text text-muted mb-1">
+                                    <i class="bi bi-envelope"></i> ${account.email}<br>
+                                    <i class="bi bi-person-badge"></i> ${account.role}<br>
+                                    <i class="bi bi-clock"></i> ${createdDate.toLocaleDateString()} (${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago)
+                                </p>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-4 text-end">
-                        <button class="btn btn-success btn-sm" onclick="approveAccount(${account.user_id})">
-                            <i class="bi bi-check-lg"></i> Approve
-                        </button>
-                        <button class="btn btn-danger btn-sm" onclick="rejectAccount(${account.user_id})">
-                            <i class="bi bi-x-lg"></i> Reject
-                        </button>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-success btn-sm me-2" onclick="approveUserAccount(${account.user_id})" title="Approve this user">
+                                <i class="bi bi-check-lg me-1"></i> Approve
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectUserAccount(${account.user_id})" title="Reject this user">
+                                <i class="bi bi-x-lg me-1"></i> Reject
+                            </button>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">Click approve to activate this account</small>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -793,205 +580,280 @@ function updatePendingApprovals(accounts) {
     container.innerHTML = html;
 }
 
-function approveAccount(userId) {
-    if (confirm('Approve this account?')) updateAccountStatus(userId, 'active', 'Account approved');
-}
-
-function rejectAccount(userId) {
-    if (confirm('Reject this account?')) updateAccountStatus(userId, 'rejected', 'Account rejected');
-}
-
-function activateUser(userId) {
-    updateAccountStatus(userId, 'active', 'User activated');
-}
-
-function deactivateUser(userId) {
-    updateAccountStatus(userId, 'inactive', 'User deactivated');
-}
-
-function updateAccountStatus(userId, status, message) {
-    fetch('../PHP/UpdateAccountStatus.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: `user_id=${userId}&status=${status}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showStatus(message, 'success');
-            loadDashboardData();
-            loadAllUsers();
-            loadPendingApprovals();
-        }
-    })
-    .catch(err => console.error('Update error:', err));
-}
-
-function refreshUserData() {
-    showStatus('Refreshing...', 'info');
-    loadDashboardData();
-    loadAllUsers();
-    loadPendingApprovals();
-}
-
-// ============================================
-// FILE INFO MODAL FUNCTION
-// ============================================
-
-async function viewFileInfo(fileId) {
-    try {
-        const response = await fetch(`../PHP/GetFileInfo.php?id=${fileId}`);
-        const result = await response.json();
-        
-        if (result.status === 'success') {
-            const file = result.file;
-            showFileInfoModal(file);
-        } else {
-            throw new Error(result.message || 'Failed to get file info');
-        }
-    } catch (error) {
-        console.error('Error loading file info:', error);
-        showStatus('Error loading file info: ' + error.message, 'error');
-    }
-}
-
-function showFileInfoModal(file) {
-    // Escape filename for JavaScript string
-    const escapedFileName = file.original_name.replace(/'/g, "\\'").replace(/"/g, '\\"');
+function renderFilesTable(files) {
+    const tbody = document.getElementById('filesTableBody');
+    if (!tbody) return;
     
-    const modalHtml = `
-        <div class="modal fade" id="fileInfoModal" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">
-                            <i class="bi bi-info-circle"></i> File Information
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-4 text-center">
-                                <div class="mb-3">
-                                    <i class="bi ${getFileIcon(file.file_type)} fs-1"></i>
-                                </div>
-                                <h5>${file.original_name}</h5>
-                                <div class="mt-3">
-                                    <button class="btn btn-primary btn-sm" 
-                                            onclick="downloadFile(${file.id}, '${escapedFileName}')">
-                                        <i class="bi bi-download"></i> Download
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-md-8">
-                                <table class="table table-sm">
-                                    <tr>
-                                        <th>File Name:</th>
-                                        <td>${file.original_name}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Storage Name:</th>
-                                        <td><code>${file.stored_name}</code></td>
-                                    </tr>
-                                    <tr>
-                                        <th>File Type:</th>
-                                        <td><span class="badge bg-info">${file.file_type || 'Unknown'}</span></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Size:</th>
-                                        <td>${formatFileSize(file.file_size)}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Category:</th>
-                                        <td><span class="badge bg-secondary">${file.category}</span></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Access Level:</th>
-                                        <td>
-                                            ${file.access_level === 'public' 
-                                                ? '<span class="badge bg-success"><i class="bi bi-globe"></i> Public</span>' 
-                                                : '<span class="badge bg-warning"><i class="bi bi-lock"></i> Private</span>'}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Uploaded:</th>
-                                        <td>${new Date(file.uploaded_at).toLocaleString()}</td>
-                                    </tr>
-                                    ${file.uploaded_by ? `
-                                    <tr>
-                                        <th>Uploaded By:</th>
-                                        <td>${file.uploaded_by}</td>
-                                    </tr>` : ''}
-                                    <tr>
-                                        <th>Description:</th>
-                                        <td>${file.description || '<em class="text-muted">No description</em>'}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="bi bi-x-circle"></i> Close
-                        </button>
-                        <button type="button" class="btn btn-danger" 
-                                onclick="confirmDeleteFile(${file.id}, '${escapedFileName}')"
-                                data-bs-dismiss="modal">
-                            <i class="bi bi-trash"></i> Delete File
-                        </button>
+    if (!files || files.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    <i class="bi bi-inbox"></i> No files found
+                    <br><small>Try changing your search or filter</small>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    let html = '';
+    files.forEach(file => {
+        const fileSize = formatFileSize(file.file_size);
+        const uploadedDate = new Date(file.uploaded_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+        
+        const accessBadge = getFileAccessBadge(file.access_level);
+        const fileIcon = getFileIcon(file.original_name || file.file_type);
+        const escapedFileName = (file.original_name || '').replace(/'/g, "\\'").replace(/"/g, '\\"');
+        
+        html += `
+        <tr>
+            <td>
+                <div class="d-flex align-items-center">
+                    <i class="bi ${fileIcon} me-2 fs-5"></i>
+                    <div>
+                        <div class="fw-semibold">${file.original_name}</div>
+                        <small class="text-muted">${file.description || 'No description'}</small>
                     </div>
                 </div>
-            </div>
-        </div>
-    `;
+            </td>
+            <td>${fileSize}</td>
+            <td>${uploadedDate}</td>
+            <td>${accessBadge}</td>
+            <td>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button class="btn btn-outline-primary" onclick="downloadFileFromSupabase(${file.id}, '${escapedFileName}')" title="Download ${file.original_name}">
+                        <i class="bi bi-download"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="deleteUploadedFile(${file.id}, '${escapedFileName}')" title="Delete file">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        `;
+    });
     
-    // Remove existing modal if any
-    const existingModal = document.getElementById('fileInfoModal');
-    if (existingModal) {
-        existingModal.remove();
+    tbody.innerHTML = html;
+}
+
+function updateStorageStats(stats) {
+    const progressBar = document.getElementById('storageProgress');
+    const usedElement = document.getElementById('storageUsed');
+    const totalElement = document.getElementById('storageTotal');
+    
+    if (!progressBar || !usedElement || !totalElement) return;
+    
+    const used = stats.total_size || 0;
+    const total = stats.storage_limit || (100 * 1024 * 1024);
+    const percentage = Math.min(100, (used / total) * 100);
+    
+    progressBar.style.width = `${percentage}%`;
+    progressBar.setAttribute('aria-valuenow', percentage);
+    progressBar.textContent = `${percentage.toFixed(1)}% Used`;
+    
+    usedElement.textContent = formatFileSize(used);
+    totalElement.textContent = formatFileSize(total);
+    
+    progressBar.className = 'progress-bar';
+    if (percentage >= 90) progressBar.classList.add('bg-danger');
+    else if (percentage >= 70) progressBar.classList.add('bg-warning');
+    else if (percentage >= 50) progressBar.classList.add('bg-info');
+    else progressBar.classList.add('bg-success');
+}
+
+// ============================================
+// AUTH & UTILITY FUNCTIONS
+// ============================================
+
+function setupLogoutButton() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            logout();
+        });
+    }
+}
+
+async function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        try {
+            showStatus('Logging out...', 'info');
+            
+            await supabaseLogout();
+            localStorage.clear();
+            
+            showStatus('Logged out successfully', 'success');
+            
+            setTimeout(() => {
+                window.location.href = '../HTML/LogIn.html';
+            }, 1000);
+            
+        } catch (error) {
+            console.error('Logout error:', error);
+            showStatus('Logout failed: ' + error.message, 'error');
+        }
+    }
+}
+
+function showStatus(message, type = 'info') {
+    const statusElement = document.getElementById('statusMessage');
+    const alertElement = document.getElementById('statusAlert');
+    
+    if (!statusElement || !alertElement) return;
+    
+    statusElement.textContent = message;
+    alertElement.className = 'alert mt-4';
+    
+    switch(type) {
+        case 'success': alertElement.classList.add('alert-success'); break;
+        case 'error': alertElement.classList.add('alert-danger'); break;
+        case 'warning': alertElement.classList.add('alert-warning'); break;
+        default: alertElement.classList.add('alert-info');
+    }
+}
+
+// ============================================
+// GLOBAL FUNCTIONS FOR HTML ONCLICK
+// ============================================
+
+// Approval functions using the new db_connection.js functions
+window.approveUserAccount = async function(userId) {
+    if (!confirm('Approve this user account? They will be able to login immediately.')) {
+        return;
     }
     
-    // Add new modal to body
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    try {
+        const result = await approveUser(userId, window.currentAdminId);
+        
+        if (result.success) {
+            showStatus('User approved successfully!', 'success');
+            // Refresh data
+            await loadDashboardData();
+            await loadAllUsers();
+            await loadPendingApprovals();
+        } else {
+            showStatus('Approval failed: ' + result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Approval error:', error);
+        showStatus('Approval failed: ' + error.message, 'error');
+    }
+};
+
+window.rejectUserAccount = async function(userId) {
+    if (!confirm('Reject this user account? They will not be able to login.')) {
+        return;
+    }
     
-    // Show the modal
-    const modal = new bootstrap.Modal(document.getElementById('fileInfoModal'));
-    modal.show();
+    try {
+        const result = await rejectUser(userId, window.currentAdminId);
+        
+        if (result.success) {
+            showStatus('User rejected successfully', 'success');
+            // Refresh data
+            await loadDashboardData();
+            await loadAllUsers();
+            await loadPendingApprovals();
+        } else {
+            showStatus('Rejection failed: ' + result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Rejection error:', error);
+        showStatus('Rejection failed: ' + error.message, 'error');
+    }
+};
+
+window.activateUser = async function(userId) {
+    if (!confirm('Activate this user account?')) {
+        return;
+    }
     
-    // Remove modal from DOM after hiding
-    document.getElementById('fileInfoModal').addEventListener('hidden.bs.modal', function() {
-        this.remove();
-    });
-}
+    try {
+        const result = await updateUserStatus(userId, 'active', window.currentAdminId);
+        
+        if (result.success) {
+            showStatus('User activated successfully', 'success');
+            // Refresh data
+            await loadDashboardData();
+            await loadAllUsers();
+            await loadPendingApprovals();
+        } else {
+            showStatus('Activation failed: ' + result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Activation error:', error);
+        showStatus('Activation failed: ' + error.message, 'error');
+    }
+};
 
-// ============================================
-// DOWNLOAD FILE FUNCTION
-// ============================================
-
-function downloadFile(fileId, fileName) {
-    // Create a temporary link to trigger download
-    const link = document.createElement('a');
-    link.style.display = 'none';
-    link.href = `../PHP/DownloadFile.php?id=${fileId}&name=${encodeURIComponent(fileName)}`;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+window.deactivateUser = async function(userId) {
+    if (!confirm('Deactivate this user account? They will not be able to login.')) {
+        return;
+    }
     
-    showStatus(`Downloading: ${fileName}`, 'info');
-}
+    try {
+        const result = await updateUserStatus(userId, 'inactive', window.currentAdminId);
+        
+        if (result.success) {
+            showStatus('User deactivated successfully', 'success');
+            // Refresh data
+            await loadDashboardData();
+            await loadAllUsers();
+            await loadPendingApprovals();
+        } else {
+            showStatus('Deactivation failed: ' + result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Deactivation error:', error);
+        showStatus('Deactivation failed: ' + error.message, 'error');
+    }
+};
 
-// ============================================
-// GLOBAL EXPORTS
-// ============================================
+window.viewUserDetails = async function(userId) {
+    try {
+        const { data: user, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('user_id', userId)
+            .single();
+        
+        if (error) throw error;
+        
+        let details = `
+            <strong>User Details:</strong><br><br>
+            <strong>ID:</strong> ${user.user_id}<br>
+            <strong>Name:</strong> ${user.full_name}<br>
+            <strong>Email:</strong> ${user.email}<br>
+            <strong>Username:</strong> ${user.username || 'N/A'}<br>
+            <strong>Role:</strong> ${user.role}<br>
+            <strong>Status:</strong> ${user.status}<br>
+            <strong>Created:</strong> ${new Date(user.created_at).toLocaleString()}<br>
+        `;
+        
+        if (user.approved_at) {
+            details += `<strong>Approved:</strong> ${new Date(user.approved_at).toLocaleString()}<br>`;
+        }
+        
+        if (user.approved_by) {
+            details += `<strong>Approved By:</strong> User ID ${user.approved_by}<br>`;
+        }
+        
+        alert(details);
+    } catch (error) {
+        console.error('View user error:', error);
+        alert('Failed to load user details');
+    }
+};
 
-window.approveAccount = approveAccount;
-window.rejectAccount = rejectAccount;
-window.activateUser = activateUser;
-window.deactivateUser = deactivateUser;
-window.deleteFile = deleteFile;
-window.downloadFile = downloadFile;
-window.loadUploadedFiles = loadUploadedFiles;
-window.refreshUserData = refreshUserData;
-window.confirmDeleteFile = confirmDeleteFile;
-window.viewFileInfo = viewFileInfo;
+window.refreshUserData = async function() {
+    showStatus('Refreshing...', 'info');
+    await loadDashboardData();
+    await loadAllUsers();
+    await loadPendingApprovals();
+    showStatus('Data refreshed', 'success');
+};
