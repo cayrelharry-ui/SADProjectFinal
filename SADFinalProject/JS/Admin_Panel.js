@@ -949,7 +949,124 @@ window.deleteUserAccount = async function(userId, userName) {
         showStatus('Delete failed: ' + error.message, 'error');
     }
 };
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // 1. Sidebar Navigation Logic (Switching Tabs)
+    const navLinks = document.querySelectorAll('.nav-link[data-section]');
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Remove active class from all links
+            navLinks.forEach(l => l.classList.remove('active'));
+            // Add active class to clicked link
+            e.currentTarget.classList.add('active');
+            
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(sec => sec.classList.add('d-none'));
+            
+            // Show target section
+            const sectionId = e.currentTarget.dataset.section + '-section';
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('d-none');
+            }
+        });
+    });
 
+    // 2. Dynamic Proponents: Add New Input Field
+    const addPropBtn = document.getElementById('addProponentBtn');
+    if (addPropBtn) {
+        addPropBtn.addEventListener('click', () => {
+            const container = document.getElementById('proponents-container');
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2 proponent-entry';
+            div.innerHTML = `
+                <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
+                <input type="text" class="form-control" name="proponent[]" placeholder="Enter name">
+                <button class="btn btn-outline-danger" type="button" onclick="this.parentElement.remove()">
+                    <i class="bi bi-trash"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // 3. Handle Form Submission
+    const projectForm = document.getElementById('projectForm');
+    if (projectForm) {
+        projectForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const saveBtn = document.getElementById('saveBtn');
+            const originalText = saveBtn.innerHTML;
+            
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
+
+            try {
+                // A. Collect Proponents into an Array
+                const proponents = [];
+                document.querySelectorAll('input[name="proponent[]"]').forEach(input => {
+                    if(input.value.trim() !== "") proponents.push(input.value.trim());
+                });
+
+                // B. Upload Image to Storage
+                const fileInput = document.getElementById('pImage');
+                let imageUrl = null;
+
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    // Create unique filename
+                    const fileName = `proj_${Date.now()}_${file.name.replace(/\s+/g, '-')}`;
+                    
+                    const { error: uploadError } = await supabase.storage
+                        .from('project-images')
+                        .upload(fileName, file);
+
+                    if (uploadError) throw uploadError;
+
+                    // Get the Public URL
+                    const { data } = supabase.storage.from('project-images').getPublicUrl(fileName);
+                    imageUrl = data.publicUrl;
+                }
+
+                // C. Insert Data into Database
+                const { error: dbError } = await supabase.from('projects').insert([{
+                    title: document.getElementById('pTitle').value,
+                    description: document.getElementById('pDesc').value,
+                    objectives: document.getElementById('pObjectives').value,
+                    proponents: proponents, // Stores as JSON array
+                    start_date: document.getElementById('pStartDate').value,
+                    end_date: document.getElementById('pEndDate').value,
+                    beneficiaries: document.getElementById('pBeneficiaries').value,
+                    location: document.getElementById('pLocation').value,
+                    funding_agency: document.getElementById('pFunding').value,
+                    image_url: imageUrl,
+                    status: 'Ongoing' // Default status
+                }]);
+
+                if (dbError) throw dbError;
+
+                alert('Project successfully created!');
+                projectForm.reset();
+                
+                // Reset proponents list to just one input
+                document.getElementById('proponents-container').innerHTML = `
+                    <div class="input-group mb-2 proponent-entry">
+                        <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" name="proponent[]" placeholder="Enter name">
+                    </div>`;
+
+            } catch (err) {
+                console.error(err);
+                alert('Error: ' + err.message);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
+            }
+        });
+    }
+});
 window.loadAnalyticsSection = loadAnalyticsSection;
 window.refreshUserData = refreshUserData;
 window.loadUploadedFiles = loadUploadedFiles;

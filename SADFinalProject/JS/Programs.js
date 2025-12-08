@@ -1,0 +1,126 @@
+import { supabase } from './db_connection.js';
+
+// Store fetched projects globally for the modal to access
+window.dbProjects = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const grid = document.getElementById('projects-grid');
+    if (!grid) return; // Guard clause in case ID is missing
+
+    // 1. Fetch from Supabase
+    const { data: projects, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error("Error loading DB projects:", error);
+        return;
+    }
+
+    if (!projects || projects.length === 0) return; // Do nothing if empty (keep hardcoded ones)
+
+    // Store data globally so the modal function can read it later
+    window.dbProjects = projects;
+
+    // 2. Generate HTML for new projects
+    projects.forEach((proj, index) => {
+        // Status Badge Logic
+        let badgeColor = 'bg-blue-600'; // Default (Completed)
+        if (proj.status === 'Ongoing') badgeColor = 'bg-green-500';
+        if (proj.status === 'Proposed') badgeColor = 'bg-yellow-500';
+
+        const startYear = proj.start_date ? new Date(proj.start_date).getFullYear() : 'TBA';
+        // Determine Funding (handle nulls)
+const fundingSource = proj.funding_agency || 'Internal';
+
+        // Card HTML Structure
+        const cardHtml = `
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
+            <div class="relative h-48">
+                <img src="${proj.image_url || 'https://placehold.co/600x400?text=Project'}" class="w-full h-full object-cover">
+                <div class="absolute top-4 right-4 ${badgeColor} text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
+                    ${proj.status}
+                </div>
+                <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
+                    <span class="text-white text-xs font-bold bg-[#5A2C9D] px-2 py-0.5 rounded">${proj.location || 'General'}</span>
+                </div>
+            </div>
+            <div class="p-6 flex-1 flex flex-col">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">${proj.title}</h3>
+                <p class="text-gray-600 text-sm line-clamp-3 mb-4">${proj.description}</p>
+
+                <div class="mt-auto pt-4 border-t border-gray-100">
+                    <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
+                        <span><strong class="text-gray-800">Start:</strong> ${startYear}</span>
+                        <span><strong class="text-gray-800">Fund:</strong> ${proj.funding_agency || 'N/A'}</span>
+                    </div>
+                    <button onclick="window.openDbModal(${index})" 
+                        class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
+                        View Full Details
+                    </button>
+                </div>
+            </div>
+        </div>
+        `;
+
+        // 3. Append to the end of the grid
+        grid.insertAdjacentHTML('beforeend', cardHtml);
+    });
+});
+
+// 4. Global Function to Open the Generic Modal
+window.openDbModal = function(index) {
+    const proj = window.dbProjects[index];
+    if (!proj) return;
+
+    // Fill Text Fields
+    setText('modal-title', proj.title);
+    setText('modal-desc', proj.description);
+    setText('modal-objectives', proj.objectives);
+    setText('modal-timeline', `${proj.start_date} - ${proj.end_date}`);
+    setText('modal-location', proj.location);
+    setText('modal-funding', proj.funding_agency);
+    setText('modal-beneficiaries', proj.beneficiaries);
+
+    // Set Image
+    const imgEl = document.getElementById('modal-image');
+    if (imgEl) imgEl.src = proj.image_url || 'https://placehold.co/600x400?text=Project';
+
+    // Set Status Badge Color
+    const statusEl = document.getElementById('modal-status');
+    if (statusEl) {
+        statusEl.innerText = proj.status;
+        statusEl.className = 'text-white text-xs font-bold px-2 py-1 rounded uppercase ' + 
+            (proj.status === 'Ongoing' ? 'bg-green-500' : proj.status === 'Proposed' ? 'bg-yellow-500' : 'bg-blue-600');
+    }
+
+    // Populate Proponents
+    const propContainer = document.getElementById('modal-proponents-list');
+    if (propContainer) {
+        propContainer.innerHTML = '';
+        if (proj.proponents && Array.isArray(proj.proponents)) {
+            proj.proponents.forEach(name => {
+                propContainer.insertAdjacentHTML('beforeend', `
+                    <div class="flex items-center bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-[#5A2C9D] mr-3"><i class="bi bi-person"></i></div>
+                        <span class="font-bold text-gray-900 text-sm">${name}</span>
+                    </div>
+                `);
+            });
+        }
+    }
+
+    // Show Modal using Bootstrap
+    const modalElement = document.getElementById('dynamicProjectModal');
+    if (modalElement && window.bootstrap) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+    }
+};
+
+// Helper helper to safely set text
+function setText(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.innerText = text || 'N/A';
+}

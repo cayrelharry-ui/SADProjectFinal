@@ -38,6 +38,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+    <a class="nav-link" href="#" data-section="project-management">
+        <i class="bi bi-kanban"></i> Project Management
+    </a>
+</li>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="#" data-section="analytics">
                                 <i class="bi bi-graph-up"></i> Analytics
                             </a>
@@ -548,6 +554,95 @@
                         </div>
                     </div>
                 </div>
+                <!-- Project Management Section -->
+<div id="project-management-section" class="section-content d-none">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white p-3">
+            <h5 class="mb-0"><i class="bi bi-folder-plus me-2"></i>Create New Project</h5>
+        </div>
+        <div class="card-body p-4">
+            <form id="projectForm">
+                
+                <!-- SECTION 1: General Info -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Project Title</label>
+                    <input type="text" class="form-control" id="pTitle" placeholder="Enter official project title" required>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Description</label>
+                        <textarea class="form-control" id="pDesc" rows="4" placeholder="Project summary..." required></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Objectives</label>
+                        <textarea class="form-control" id="pObjectives" rows="4" placeholder="List key objectives..." required></textarea>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: Dynamic Proponents -->
+                <div class="mb-4 p-3 bg-light rounded border">
+                    <label class="form-label fw-bold mb-2">Project Proponents (Members)</label>
+                    <div id="proponents-container">
+                        <!-- Dynamic inputs appear here -->
+                        <div class="input-group mb-2 proponent-entry">
+                            <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control" name="proponent[]" placeholder="Enter name">
+                            <!-- First one doesn't need a delete button -->
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-1" id="addProponentBtn">
+                        <i class="bi bi-plus-lg"></i> Add Member
+                    </button>
+                </div>
+
+                <!-- SECTION 3: Project Details & Timeline -->
+                <h6 class="text-primary fw-bold border-bottom pb-2 mb-3">Project Details</h6>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Timeline (Start & End Dates)</label>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="pStartDate" required>
+                            <span class="input-group-text">to</span>
+                            <input type="date" class="form-control" id="pEndDate" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Target Beneficiaries</label>
+                        <input type="text" class="form-control" id="pBeneficiaries" placeholder="e.g. 50 Youth Leaders">
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Location</label>
+                        <input type="text" class="form-control" id="pLocation" placeholder="e.g. Labo, Camarines Norte">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Funding Agency</label>
+                        <input type="text" class="form-control" id="pFunding" placeholder="e.g. CNSC GAD Fund">
+                    </div>
+                </div>
+
+                <!-- SECTION 4: Image Upload -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Project Cover Image</label>
+                    <input type="file" class="form-control" id="pImage" accept="image/*" required>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <button type="submit" class="btn btn-success px-4" id="saveBtn">
+                        <i class="bi bi-save"></i> Save Project
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
                 <!-- Status Alert -->
                 <div class="alert alert-info mt-4" id="statusAlert" role="alert">

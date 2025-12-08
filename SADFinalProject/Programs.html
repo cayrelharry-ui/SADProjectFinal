@@ -493,7 +493,7 @@
         </div>
 
         <!-- 2. PROJECTS GRID -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
             <!-- CARD 1: ONGOING -->
             <div
@@ -1094,6 +1094,62 @@
             });
         });
     </script>
+    <!-- ============================================ -->
+<!-- GENERIC MODAL FOR DATABASE PROJECTS          -->
+<!-- ============================================ -->
+<div class="modal fade" id="dynamicProjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content rounded-2xl overflow-hidden border-0">
+            <!-- Header -->
+            <div class="relative bg-gray-900 h-48 md:h-64">
+                <img id="modal-image" src="" class="w-full h-full object-cover opacity-60">
+                <div class="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <span id="modal-status" class="text-white text-xs font-bold px-2 py-1 rounded uppercase"></span>
+                    </div>
+                    <h2 id="modal-title" class="text-3xl md:text-4xl font-bold text-white leading-tight"></h2>
+                    <button type="button" class="btn-close btn-close-white absolute top-4 right-4" data-bs-dismiss="modal"></button>
+                </div>
+            </div>
+            <!-- Body -->
+            <div class="modal-body p-0 bg-gray-50">
+                <ul class="nav nav-tabs px-6 pt-4 bg-white shadow-sm" role="tablist">
+                    <li class="nav-item"><button class="nav-link active px-4 py-3" data-bs-toggle="tab" data-bs-target="#dyn-overview">Overview</button></li>
+                    <li class="nav-item"><button class="nav-link px-4 py-3" data-bs-toggle="tab" data-bs-target="#dyn-team">Team & Info</button></li>
+                </ul>
+                <div class="tab-content p-6 md:p-8">
+                    <!-- Overview Tab -->
+                    <div class="tab-pane fade show active" id="dyn-overview">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div class="lg:col-span-2 space-y-6">
+                                <div><h4 class="text-lg font-bold text-gray-900 mb-2">Description</h4><p id="modal-desc" class="text-gray-600 text-sm whitespace-pre-line"></p></div>
+                                <div><h4 class="text-lg font-bold text-gray-900 mb-2">Objectives</h4><p id="modal-objectives" class="text-gray-600 text-sm whitespace-pre-line"></p></div>
+                            </div>
+                            <!-- Info Sidebar -->
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
+                                <h5 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Details</h5>
+                                <div class="space-y-4">
+                                    <div><p class="text-xs text-gray-500">Timeline</p><p id="modal-timeline" class="text-sm font-bold text-gray-800"></p></div>
+                                    <div><p class="text-xs text-gray-500">Location</p><p id="modal-location" class="text-sm font-bold text-gray-800"></p></div>
+                                    <div><p class="text-xs text-gray-500">Funding</p><p id="modal-funding" class="text-sm font-bold text-gray-800"></p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Team Tab -->
+                    <div class="tab-pane fade" id="dyn-team">
+                        <h4 class="text-lg font-bold text-gray-900 mb-4">Beneficiaries</h4>
+                        <p id="modal-beneficiaries" class="text-gray-700 mb-6"></p>
+                        <h4 class="text-lg font-bold text-gray-900 mb-4">Proponents</h4>
+                        <div id="modal-proponents-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module" src="./JS/Programs.js"></script>
 </body>
 
 </html>
