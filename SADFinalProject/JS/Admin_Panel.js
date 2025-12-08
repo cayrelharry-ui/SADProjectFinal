@@ -992,80 +992,86 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Handle Form Submission
-    const projectForm = document.getElementById('projectForm');
-    if (projectForm) {
-        projectForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const saveBtn = document.getElementById('saveBtn');
-            const originalText = saveBtn.innerHTML;
-            
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
+    // Handle Project Form Submission
+const projectForm = document.getElementById('projectForm');
+if (projectForm) {
+    projectForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const saveBtn = document.getElementById('saveBtn');
+        const originalText = saveBtn.innerHTML;
+        
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
 
-            try {
-                // A. Collect Proponents into an Array
-                const proponents = [];
-                document.querySelectorAll('input[name="proponent[]"]').forEach(input => {
-                    if(input.value.trim() !== "") proponents.push(input.value.trim());
-                });
+        try {
+            // A. Collect Proponents (Filter out empty inputs)
+            const proponents = [];
+            document.querySelectorAll('input[name="proponent[]"]').forEach(input => {
+                if(input.value.trim() !== "") proponents.push(input.value.trim());
+            });
 
-                // B. Upload Image to Storage
-                const fileInput = document.getElementById('pImage');
-                let imageUrl = null;
+            // B. Upload Image (Only if file selected)
+            const fileInput = document.getElementById('pImage');
+            let imageUrl = null; // Default if no image
 
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    // Create unique filename
-                    const fileName = `proj_${Date.now()}_${file.name.replace(/\s+/g, '-')}`;
-                    
-                    const { error: uploadError } = await supabase.storage
-                        .from('project-images')
-                        .upload(fileName, file);
-
-                    if (uploadError) throw uploadError;
-
-                    // Get the Public URL
-                    const { data } = supabase.storage.from('project-images').getPublicUrl(fileName);
-                    imageUrl = data.publicUrl;
-                }
-
-                // C. Insert Data into Database
-                const { error: dbError } = await supabase.from('projects').insert([{
-                    title: document.getElementById('pTitle').value,
-                    description: document.getElementById('pDesc').value,
-                    objectives: document.getElementById('pObjectives').value,
-                    proponents: proponents, // Stores as JSON array
-                    start_date: document.getElementById('pStartDate').value,
-                    end_date: document.getElementById('pEndDate').value,
-                    beneficiaries: document.getElementById('pBeneficiaries').value,
-                    location: document.getElementById('pLocation').value,
-                    funding_agency: document.getElementById('pFunding').value,
-                    image_url: imageUrl,
-                    status: 'Ongoing' // Default status
-                }]);
-
-                if (dbError) throw dbError;
-
-                alert('Project successfully created!');
-                projectForm.reset();
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const fileName = `project_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                 
-                // Reset proponents list to just one input
-                document.getElementById('proponents-container').innerHTML = `
-                    <div class="input-group mb-2 proponent-entry">
-                        <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
-                        <input type="text" class="form-control" name="proponent[]" placeholder="Enter name">
-                    </div>`;
+                const { error: uploadError } = await supabase.storage
+                    .from('project-images')
+                    .upload(fileName, file);
 
-            } catch (err) {
-                console.error(err);
-                alert('Error: ' + err.message);
-            } finally {
-                saveBtn.disabled = false;
-                saveBtn.innerHTML = originalText;
+                if (uploadError) throw uploadError;
+
+                const { data } = supabase.storage.from('project-images').getPublicUrl(fileName);
+                imageUrl = data.publicUrl;
             }
-        });
-    }
+
+            // C. Get Form Values (Handle empty strings -> null)
+            const getVal = (id) => {
+                const val = document.getElementById(id).value.trim();
+                return val === "" ? null : val;
+            };
+
+            // D. Insert Data
+            const { error: dbError } = await supabase.from('projects').insert([{
+                title: document.getElementById('pTitle').value.trim(), // Required field
+                description: getVal('pDesc'),
+                objectives: getVal('pObjectives'),
+                proponents: proponents, // Array (can be empty)
+                start_date: getVal('pStartDate'),
+                end_date: getVal('pEndDate'),
+                beneficiaries: getVal('pBeneficiaries'),
+                location: getVal('pLocation'),
+                funding_agency: getVal('pFunding'),
+                image_url: imageUrl,
+                status: 'Ongoing' 
+            }]);
+
+            if (dbError) throw dbError;
+
+            alert('Project successfully created!');
+            projectForm.reset();
+            
+            // Reset proponents UI
+            document.getElementById('proponents-container').innerHTML = `
+                <div class="input-group mb-2 proponent-entry">
+                    <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
+                    <input type="text" class="form-control" name="proponent[]" placeholder="Enter member name">
+                </div>`;
+
+        } catch (err) {
+            console.error(err);
+            alert('Error saving project: ' + (err.message || 'Unknown error'));
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalText;
+        }
+    });
+}
+
 });
 window.loadAnalyticsSection = loadAnalyticsSection;
 window.refreshUserData = refreshUserData;

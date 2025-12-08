@@ -555,6 +555,7 @@
                     </div>
                 </div>
                 <!-- Project Management Section -->
+<!-- Project Management Section -->
 <div id="project-management-section" class="section-content d-none">
     <div class="card shadow-sm border-0">
         <div class="card-header bg-primary text-white p-3">
@@ -565,18 +566,18 @@
                 
                 <!-- SECTION 1: General Info -->
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Project Title</label>
+                    <label class="form-label fw-bold">Project Title <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="pTitle" placeholder="Enter official project title" required>
                 </div>
 
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Description</label>
-                        <textarea class="form-control" id="pDesc" rows="4" placeholder="Project summary..." required></textarea>
+                        <textarea class="form-control" id="pDesc" rows="4" placeholder="Project summary..."></textarea>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Objectives</label>
-                        <textarea class="form-control" id="pObjectives" rows="4" placeholder="List key objectives..." required></textarea>
+                        <textarea class="form-control" id="pObjectives" rows="4" placeholder="List key objectives..."></textarea>
                     </div>
                 </div>
 
@@ -584,11 +585,9 @@
                 <div class="mb-4 p-3 bg-light rounded border">
                     <label class="form-label fw-bold mb-2">Project Proponents (Members)</label>
                     <div id="proponents-container">
-                        <!-- Dynamic inputs appear here -->
                         <div class="input-group mb-2 proponent-entry">
                             <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
                             <input type="text" class="form-control" name="proponent[]" placeholder="Enter name">
-                            <!-- First one doesn't need a delete button -->
                         </div>
                     </div>
                     <button type="button" class="btn btn-sm btn-outline-primary mt-1" id="addProponentBtn">
@@ -600,11 +599,11 @@
                 <h6 class="text-primary fw-bold border-bottom pb-2 mb-3">Project Details</h6>
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Timeline (Start & End Dates)</label>
+                        <label class="form-label fw-bold">Timeline (Start & End Date)</label>
                         <div class="input-group">
-                            <input type="date" class="form-control" id="pStartDate" required>
+                            <input type="date" class="form-control" id="pStartDate">
                             <span class="input-group-text">to</span>
-                            <input type="date" class="form-control" id="pEndDate" required>
+                            <input type="date" class="form-control" id="pEndDate">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -623,11 +622,21 @@
                         <input type="text" class="form-control" id="pFunding" placeholder="e.g. CNSC GAD Fund">
                     </div>
                 </div>
+                <div class="col-md-4">
+        <label class="form-label fw-bold">Project Status</label>
+        <select class="form-select" id="pStatus">
+            <option value="Ongoing" selected>Ongoing</option>
+            <option value="Proposed">Proposed</option>
+            <option value="Completed">Completed</option>
+        </select>
+    </div>
+</div>
 
                 <!-- SECTION 4: Image Upload -->
                 <div class="mb-4">
                     <label class="form-label fw-bold">Project Cover Image</label>
-                    <input type="file" class="form-control" id="pImage" accept="image/*" required>
+                    <input type="file" class="form-control" id="pImage" accept="image/*">
+                    <div class="form-text">Optional. Default image will be used if empty.</div>
                 </div>
 
                 <hr>
@@ -642,6 +651,7 @@
         </div>
     </div>
 </div>
+
 
 
                 <!-- Status Alert -->
