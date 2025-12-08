@@ -6,9 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CNSC - Programs & Projects</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    
     <style>
+         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
@@ -64,7 +67,6 @@
 </head>
 
 <body>
-
     <header class="fixed top-0 left-0 w-full bg-white shadow-md z-50">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
 
@@ -905,9 +907,7 @@
         </div>
     </footer>
 
-
-
-    <script>
+   <script>
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -992,6 +992,57 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
         </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Elements ---
+            const modal = document.getElementById('welcome-modal');
+            const guestBtn = document.getElementById('continue-guest-btn');
+
+            const loginView = document.getElementById('login-view');
+            const registerView = document.getElementById('register-view');
+
+            const toRegisterBtn = document.getElementById('to-register-btn');
+            const toLoginBtn = document.getElementById('to-login-btn');
+
+            const roleSelect = document.getElementById('role-select');
+            const adminNotice = document.getElementById('admin-notice');
+
+            // --- 1. Guest Mode (Close Modal) ---
+            guestBtn.addEventListener('click', () => {
+                modal.classList.remove('opacity-100');
+                modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 500);
+            });
+
+            // --- 2. Switch Views (Login <-> Register) ---
+            toRegisterBtn.addEventListener('click', () => {
+                loginView.classList.add('hidden');
+                registerView.classList.remove('hidden');
+            });
+
+            toLoginBtn.addEventListener('click', () => {
+                registerView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+            });
+
+            // --- 3. ROLE CHECK LOGIC ---
+            roleSelect.addEventListener('change', function () {
+                const selectedRole = this.value;
+
+                // Check if role is "faculty" or "coordinator"
+                if (selectedRole === 'faculty' || selectedRole === 'coordinator') {
+                    // Show Red Notice
+                    adminNotice.classList.remove('hidden');
+                    adminNotice.classList.add('block', 'animate-pulse'); // Optional pulse animation
+                } else {
+                    // Hide Red Notice
+                    adminNotice.classList.add('hidden');
+                    adminNotice.classList.remove('block', 'animate-pulse');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
