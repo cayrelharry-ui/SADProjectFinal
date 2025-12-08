@@ -461,56 +461,116 @@
                     let failedFiles = [];
 
                     if (files && files.length > 0) {
-                        for (let i = 0; i < files.length; i++) {
-                            const file = files[i];
-                            try {
-                                // Upload file to Supabase Storage
-                                const fileExt = file.name.split('.').pop();
-                                const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-                                const filePath = `partnership-requests/${data.request_id}/${fileName}`;
+                        console.log(`Starting upload of ${files.length} file(s)...`);
 
-                                const { error: uploadError } = await supabase.storage
-                                    .from('uploads')
-                                    .upload(filePath, file);
+                        // First, test if storage bucket is accessible
+                        try {
+                            // Test storage connection
+                            const testBlob = new Blob(['test'], { type: 'text/plain' });
+                            const testPath = `test_${Date.now()}.txt`;
 
-                                if (uploadError) {
-                                    console.error('File upload error:', uploadError);
-                                    failedFiles.push(`${file.name}: ${uploadError.message}`);
-                                } else {
-                                    // Get public URL
-                                    const { data: { publicUrl } } = supabase.storage
-                                        .from('uploads')
-                                        .getPublicUrl(filePath);
+                            const { error: testError } = await supabase.storage
+                                .from('uploads')
+                                .upload(testPath, testBlob);
 
-                                    // Save file metadata to uploaded_files table
-                                    const fileMetadata = {
-                                        original_name: file.name,
-                                        storage_path: filePath,
-                                        file_type: file.type,
-                                        file_size: file.size,
-                                        public_url: publicUrl,
-                                        uploaded_by: userId,
-                                        category: 'partnership_request',
-                                        access_level: 'private',
-                                        description: `Attachment for partnership request #${data.request_id}`,
-                                        uploaded_at: new Date().toISOString(),
-                                        partnership_request_id: data.request_id
-                                    };
+                            if (testError && testError.message.includes('not found')) {
+                                console.warn('"uploads" bucket might not exist. Please create it in Supabase Dashboard → Storage');
+                                // Skip file upload but still process form
+                                for (let i = 0; i < files.length; i++) {
+                                    uploadedFiles.push(`${files[i].name} (storage bucket missing)`);
+                                }
+                            } else if (testError) {
+                                console.error('Storage test failed:', testError);
+                            } else {
+                                console.log('Storage test successful, proceeding with uploads...');
 
-                                    const { error: dbError } = await supabase
-                                        .from('uploaded_files')
-                                        .insert([fileMetadata]);
+                                // Upload each file
+                                for (let i = 0; i < files.length; i++) {
+                                    const file = files[i];
+                                    console.log(`Uploading file ${i+1}: ${file.name}`);
 
-                                    if (dbError) {
-                                        console.error('Error saving file metadata:', dbError);
-                                        failedFiles.push(`${file.name}: Failed to save metadata`);
-                                    } else {
-                                        uploadedFiles.push(file.name);
+                                    try {
+                                        // Generate safe filename
+                                        const safeFileName = file.name
+                                            .replace(/[^a-zA-Z0-9.-]/g, '_')
+                                            .replace(/\s+/g, '_');
+                                        const fileExt = file.name.split('.').pop().toLowerCase();
+                                        const uniqueId = Math.random().toString(36).substr(2, 9);
+                                        const fileName = `partner_${Date.now()}_${uniqueId}.${fileExt}`;
+
+                                        // Create storage path
+                                        const filePath = `partnership-requests/${data.request_id}/${fileName}`;
+                                        console.log(`Uploading to: ${filePath}`);
+
+                                        // Upload to storage
+                                        const { error: uploadError } = await supabase.storage
+                                            .from('Uploads')
+                                            .upload(filePath, file);
+
+                                        if (uploadError) {
+                                            console.error('Storage upload failed:', uploadError);
+                                            failedFiles.push(`${file.name}: ${uploadError.message}`);
+                                            continue;
+                                        }
+
+                                        console.log('✓ File uploaded to storage');
+
+                                        // Get public URL
+                                        const { data: { publicUrl } } = supabase.storage
+                                            .from('uploads')
+                                            .getPublicUrl(filePath);
+
+                                        // Insert into uploaded_files table
+                                        const fileMetadata = {
+                                            original_name: file.name,
+                                            storage_path: filePath,
+                                            file_type: file.type,
+                                            file_size: file.size,
+                                            public_url: publicUrl,
+                                            uploaded_by: userId,
+                                            category: 'partnership_request',
+                                            access_level: 'private',
+                                            description: `Attachment for partnership request #${data.request_id}`,
+                                            uploaded_at: new Date().toISOString(),
+                                            partnership_request_id: data.request_id
+                                        };
+
+                                        const { error: dbError } = await supabase
+                                            .from('uploaded_files')
+                                            .insert([fileMetadata]);
+
+                                        if (dbError) {
+                                            console.error('Database insert error:', dbError);
+
+                                            // Try without partnership_request_id
+                                            delete fileMetadata.partnership_request_id;
+
+                                            const { error: retryError } = await supabase
+                                                .from('uploaded_files')
+                                                .insert([fileMetadata]);
+
+                                            if (retryError) {
+                                                console.error('Retry also failed:', retryError);
+                                                failedFiles.push(`${file.name}: Database insert failed`);
+                                            } else {
+                                                uploadedFiles.push(`${file.name} (uploaded, no request link)`);
+                                            }
+                                        } else {
+                                            uploadedFiles.push(file.name);
+                                            console.log('✓ File metadata saved to database');
+                                        }
+
+                                    } catch (error) {
+                                        console.error('Error processing file:', error);
+                                        failedFiles.push(`${file.name}: ${error.message}`);
                                     }
                                 }
-                            } catch (fileError) {
-                                console.error('File upload exception:', fileError);
-                                failedFiles.push(`${file.name}: ${fileError.message}`);
+                            }
+
+                        } catch (error) {
+                            console.error('Storage test failed:', error);
+                            for (let i = 0; i < files.length; i++) {
+                                uploadedFiles.push(`${files[i].name} (upload skipped - ${error.message})`);
                             }
                         }
                     }

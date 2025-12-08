@@ -88,11 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const files = event.target.files;
         const fileList = document.getElementById('fileList');
         const fileItems = document.getElementById('fileItems');
-        
+
         if (files.length > 0) {
             fileList.classList.remove('hidden');
             fileItems.innerHTML = '';
-            
+
             Array.from(files).forEach((file, index) => {
                 // Check file size (10MB limit)
                 const maxSize = 10 * 1024 * 1024; // 10MB in bytes
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert(`File "${file.name}" exceeds the 10MB size limit and will not be uploaded.`);
                     return;
                 }
-                
+
                 const fileItem = document.createElement('div');
                 fileItem.className = 'flex items-center justify-between p-3 bg-white border border-gray-300 rounded-lg';
                 fileItem.innerHTML = `
@@ -132,15 +132,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileInput = document.getElementById('fileUpload');
         const dt = new DataTransfer();
         const files = Array.from(fileInput.files);
-        
+
         files.forEach((file, i) => {
             if (i !== index) {
                 dt.items.add(file);
             }
         });
-        
+
         fileInput.files = dt.files;
-        
+
         // Trigger the file select handler to update the display
         const event = new Event('change', { bubbles: true });
         fileInput.dispatchEvent(event);
@@ -160,40 +160,40 @@ document.addEventListener('DOMContentLoaded', () => {
     if (partnerForm) {
         partnerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             // Validate file sizes before submission
             const fileInput = document.getElementById('fileUpload');
             const files = fileInput.files;
             const maxSize = 10 * 1024 * 1024; // 10MB
-            
+
             for (let i = 0; i < files.length; i++) {
                 if (files[i].size > maxSize) {
                     alert(`File "${files[i].name}" exceeds the 10MB size limit. Please remove it before submitting.`);
                     return;
                 }
             }
-            
+
             // Disable submit button to prevent double submission
             const submitButton = document.getElementById('submitButton');
             const submitButtonText = document.getElementById('submitButtonText');
             const submitButtonLoader = document.getElementById('submitButtonLoader');
-            
+
             submitButton.disabled = true;
             submitButtonText.classList.add('hidden');
             submitButtonLoader.classList.remove('hidden');
-            
+
             try {
                 // Create FormData object from form (automatically includes all fields and files)
                 const formData = new FormData(partnerForm);
-                
+
                 // Send form data to server
                 const response = await fetch('../PHP/SubmitPartnershipRequest.php', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.status === 'success') {
                     // Show success message
                     let message = result.message;
@@ -203,14 +203,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (result.failed_files && result.failed_files.length > 0) {
                         message += '\n\nFailed files:\n' + result.failed_files.join('\n');
                     }
-                    
+
                     alert(message + '\n\nOur team will contact you within 5-7 business days.');
-                    
+
                     // Reset form
                     partnerForm.reset();
                     document.getElementById('fileList').classList.add('hidden');
                     document.getElementById('fileItems').innerHTML = '';
-                    
+
                     // Reset date to today
                     if (letterDate) {
                         const today = new Date();
@@ -235,4 +235,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
