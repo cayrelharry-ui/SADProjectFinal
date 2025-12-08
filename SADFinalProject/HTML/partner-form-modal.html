@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Partnership Request</title>
-    
+
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../CSS/partner-form.css">
-    
+
     <style>
         body {
             margin: 0;
@@ -19,15 +19,15 @@
             background: #f8f9fa;
             font-family: 'Inter', sans-serif;
         }
-        
+
         .violet-accent {
             color: #5A2C9D;
         }
-        
+
         .bg-violet {
             background-color: #5A2C9D;
         }
-        
+
         .bg-violet-dark:hover {
             background-color: #4C2684;
         }
@@ -91,6 +91,10 @@
                                     <option value="Industry Partner">Industry Partner</option>
                                     <option value="Academic Institution">Academic Institution</option>
                                     <option value="Non-Government Organization (NGO)">Non-Government Organization (NGO)</option>
+                                    <option value="Government Agency">Government Agency</option>
+                                    <option value="Private Company">Private Company</option>
+                                    <option value="Community Organization">Community Organization</option>
+                                    <option value="Other">Other</option>
                                 </select>
                             </span> located at <span class="inline-block min-w-[250px]">
                                 <input type="text" id="address" name="address" required
@@ -142,7 +146,7 @@
 
                         <div>
                             <p class="text-gray-700 mb-6">Respectfully yours,</p>
-                            
+
                             <!-- Signature Fields -->
                             <div class="space-y-4">
                                 <div>
@@ -151,7 +155,7 @@
                                         placeholder="[Your Full Name]">
                                     <p class="text-sm text-gray-600 mt-1">Signature</p>
                                 </div>
-                                
+
                                 <div>
                                     <input type="text" id="position" name="position"
                                         class="w-full md:w-80 px-4 py-2 bg-white border-b-2 border-gray-400 focus:outline-none focus:border-violet transition"
@@ -182,7 +186,7 @@
                 <div class="mt-8 pt-6 border-t-2 border-gray-300">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Attachments</h3>
                     <p class="text-sm text-gray-600 mb-4">You may attach supporting documents such as organization profile, proposal documents, certificates, or other relevant files.</p>
-                    
+
                     <div class="space-y-4">
                         <!-- File Upload Area -->
                         <label for="fileUpload" class="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 hover:border-violet hover:bg-gray-100 transition-colors cursor-pointer block" style="cursor: pointer; user-select: none;">
@@ -239,9 +243,19 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Form JavaScript (simplified version) -->
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Form JavaScript -->
     <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://fkdqenrxfanpgmtogiig.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDA1NzksImV4cCI6MjA4MDMxNjU3OX0.NSA57GQcxnCpLnqMVlDpf_lvfggb2H-IGGTBL_XYQ4I';
+
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         document.addEventListener('DOMContentLoaded', () => {
             // Set default date to today
             const letterDate = document.getElementById('letterDate');
@@ -253,7 +267,21 @@
                 letterDate.value = `${year}-${month}-${day}`;
             }
 
-            // Format file size function (needed for file handler)
+            // Auto-fill email from localStorage if available
+            const emailField = document.getElementById('email');
+            try {
+                const userData = localStorage.getItem('user');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    if (user && user.email && emailField) {
+                        emailField.value = user.email;
+                    }
+                }
+            } catch (e) {
+                console.log('No user data in localStorage');
+            }
+
+            // Format file size function
             function formatFileSize(bytes) {
                 if (bytes === 0) return '0 Bytes';
                 const k = 1024;
@@ -262,25 +290,23 @@
                 return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
             }
 
-            // No need for manual click handler - label will handle it automatically
-
             // File upload handler
             window.handleFileSelect = function(event) {
                 const files = event.target.files;
                 const fileList = document.getElementById('fileList');
                 const fileItems = document.getElementById('fileItems');
-                
+
                 if (files.length > 0) {
                     fileList.classList.remove('hidden');
                     fileItems.innerHTML = '';
-                    
+
                     Array.from(files).forEach((file, index) => {
                         const maxSize = 10 * 1024 * 1024; // 10MB
                         if (file.size > maxSize) {
                             alert(`File "${file.name}" exceeds the 10MB size limit and will not be uploaded.`);
                             return;
                         }
-                        
+
                         const fileItem = document.createElement('div');
                         fileItem.className = 'flex items-center justify-between p-3 bg-white border border-gray-300 rounded-lg';
                         fileItem.innerHTML = `
@@ -312,34 +338,36 @@
                 const fileInput = document.getElementById('fileUpload');
                 const dt = new DataTransfer();
                 const files = Array.from(fileInput.files);
-                
+
                 files.forEach((file, i) => {
                     if (i !== index) {
                         dt.items.add(file);
                     }
                 });
-                
+
                 fileInput.files = dt.files;
                 const event = new Event('change', { bubbles: true });
                 fileInput.dispatchEvent(event);
             };
 
-            // Format file size
-            function formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-            }
-
-            // Form submission
+            // Form submission handler
             const partnerForm = document.getElementById('partnerForm');
             partnerForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
-                // Validate file sizes
+
+                // Get form data
+                const formData = new FormData(partnerForm);
+                const formDataObject = {};
+
+                // Convert FormData to object
+                formData.forEach((value, key) => {
+                    formDataObject[key] = value;
+                });
+
+                // Get files
                 const files = document.getElementById('fileUpload').files;
+
+                // Validate file sizes
                 for (let i = 0; i < files.length; i++) {
                     if (files[i].size > 10 * 1024 * 1024) {
                         alert(`File "${files[i].name}" exceeds the 10MB size limit. Please remove it before submitting.`);
@@ -347,59 +375,197 @@
                     }
                 }
 
+                // Get user data
+                let userId = null;
+                try {
+                    const userData = localStorage.getItem('user');
+                    if (userData) {
+                        const user = JSON.parse(userData);
+                        userId = user.user_id;
+                    }
+                } catch (e) {
+                    console.log('No user data in localStorage');
+                }
+
                 const submitButton = document.getElementById('submitButton');
                 const submitButtonText = document.getElementById('submitButtonText');
                 const submitButtonLoader = document.getElementById('submitButtonLoader');
-                
+
                 submitButton.disabled = true;
                 submitButtonText.classList.add('hidden');
                 submitButtonLoader.classList.remove('hidden');
 
                 try {
-                    const formData = new FormData(partnerForm);
-                    
-                    const response = await fetch('../PHP/SubmitPartnershipRequest.php', {
-                        method: 'POST',
-                        body: formData
-                    });
+                    const partnershipData = {
+                        letter_date: formDataObject.letterDate,
+                        subject: formDataObject.subject,
+                        org_name: formDataObject.orgName,
+                        org_type: formDataObject.orgType,
+                        address: formDataObject.address,
+                        collaboration: formDataObject.collaboration,
+                        outcomes: formDataObject.outcomes || null,
+                        additional_info: formDataObject.additionalInfo || null,
+                        contact_person: formDataObject.contactPerson,
+                        position: formDataObject.position || null,
+                        email: formDataObject.email,
+                        phone: formDataObject.phone,
+                        status: 'pending',
+                        submitted_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    };
 
-                    const result = await response.json();
-                    
-                    if (result.status === 'success') {
-                        // Notify parent window if in iframe (for modal)
-                        if (window.parent !== window) {
-                            window.parent.postMessage('partnershipSubmitted', '*');
-                        }
-                        
-                        let message = result.message;
-                        if (result.uploaded_files && result.uploaded_files.length > 0) {
-                            message += '\n\nUploaded files:\n' + result.uploaded_files.join('\n');
-                        }
-                        if (result.failed_files && result.failed_files.length > 0) {
-                            message += '\n\nFailed files:\n' + result.failed_files.join('\n');
-                        }
-                        
-                        alert(message + '\n\nOur team will contact you within 5-7 business days.');
-                        
-                        // Reset form
-                        partnerForm.reset();
-                        document.getElementById('fileList').classList.add('hidden');
-                        document.getElementById('fileItems').innerHTML = '';
-                        
-                        // Reset date to today
-                        if (letterDate) {
-                            const today = new Date();
-                            const year = today.getFullYear();
-                            const month = String(today.getMonth() + 1).padStart(2, '0');
-                            const day = String(today.getDate()).padStart(2, '0');
-                            letterDate.value = `${year}-${month}-${day}`;
-                        }
-                    } else {
-                        alert('Error: ' + result.message);
+                    if (userId) {
+                        // First, try to insert with user_id
+                        partnershipData.user_id = userId;
                     }
+
+                    console.log('Submitting partnership request:', partnershipData);
+
+                    // Insert into partnership_requests table
+                    const { data, error } = await supabase
+                        .from('partnership_requests')
+                        .insert([partnershipData])
+                        .select()
+                        .single();
+
+                    if (error) {
+                        console.error('Error inserting partnership request:', error);
+
+                        // If error is about user_id column, try without it
+                        if (error.message.includes('user_id') && userId) {
+                            console.log('Trying without user_id column...');
+
+                            // Remove user_id and try again
+                            delete partnershipData.user_id;
+
+                            const { data: retryData, error: retryError } = await supabase
+                                .from('partnership_requests')
+                                .insert([partnershipData])
+                                .select()
+                                .single();
+
+                            if (retryError) {
+                                throw new Error(`Failed to submit request: ${retryError.message}`);
+                            }
+
+                            data = retryData;
+                        } else {
+                            throw new Error(`Failed to submit request: ${error.message}`);
+                        }
+                    }
+
+                    console.log('Partnership request inserted successfully:', data);
+
+                    // Upload files if any
+                    let uploadedFiles = [];
+                    let failedFiles = [];
+
+                    if (files && files.length > 0) {
+                        for (let i = 0; i < files.length; i++) {
+                            const file = files[i];
+                            try {
+                                // Upload file to Supabase Storage
+                                const fileExt = file.name.split('.').pop();
+                                const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+                                const filePath = `partnership-requests/${data.request_id}/${fileName}`;
+
+                                const { error: uploadError } = await supabase.storage
+                                    .from('uploads')
+                                    .upload(filePath, file);
+
+                                if (uploadError) {
+                                    console.error('File upload error:', uploadError);
+                                    failedFiles.push(`${file.name}: ${uploadError.message}`);
+                                } else {
+                                    // Get public URL
+                                    const { data: { publicUrl } } = supabase.storage
+                                        .from('uploads')
+                                        .getPublicUrl(filePath);
+
+                                    // Save file metadata to uploaded_files table
+                                    const fileMetadata = {
+                                        original_name: file.name,
+                                        storage_path: filePath,
+                                        file_type: file.type,
+                                        file_size: file.size,
+                                        public_url: publicUrl,
+                                        uploaded_by: userId,
+                                        category: 'partnership_request',
+                                        access_level: 'private',
+                                        description: `Attachment for partnership request #${data.request_id}`,
+                                        uploaded_at: new Date().toISOString(),
+                                        partnership_request_id: data.request_id
+                                    };
+
+                                    const { error: dbError } = await supabase
+                                        .from('uploaded_files')
+                                        .insert([fileMetadata]);
+
+                                    if (dbError) {
+                                        console.error('Error saving file metadata:', dbError);
+                                        failedFiles.push(`${file.name}: Failed to save metadata`);
+                                    } else {
+                                        uploadedFiles.push(file.name);
+                                    }
+                                }
+                            } catch (fileError) {
+                                console.error('File upload exception:', fileError);
+                                failedFiles.push(`${file.name}: ${fileError.message}`);
+                            }
+                        }
+                    }
+
+                    // Success - notify parent window and reset form
+                    if (window.parent !== window) {
+                        window.parent.postMessage({
+                            type: 'partnershipSubmitted',
+                            success: true,
+                            request_id: data.request_id,
+                            message: 'Partnership request submitted successfully!'
+                        }, '*');
+                    }
+
+                    // Show success message
+                    let message = 'Partnership request submitted successfully!';
+                    if (uploadedFiles.length > 0) {
+                        message += '\n\nUploaded files:\n' + uploadedFiles.join('\n');
+                    }
+                    if (failedFiles.length > 0) {
+                        message += '\n\nFailed files:\n' + failedFiles.join('\n');
+                    }
+
+                    alert(message + '\n\nOur team will contact you within 5-7 business days.');
+
+                    // Reset form
+                    partnerForm.reset();
+                    document.getElementById('fileList').classList.add('hidden');
+                    document.getElementById('fileItems').innerHTML = '';
+
+                    // Reset date to today
+                    if (letterDate) {
+                        const today = new Date();
+                        const year = today.getFullYear();
+                        const month = String(today.getMonth() + 1).padStart(2, '0');
+                        const day = String(today.getDate()).padStart(2, '0');
+                        letterDate.value = `${year}-${month}-${day}`;
+                    }
+
+                    // Auto-fill email again
+                    try {
+                        const userData = localStorage.getItem('user');
+                        if (userData) {
+                            const user = JSON.parse(userData);
+                            if (user && user.email && emailField) {
+                                emailField.value = user.email;
+                            }
+                        }
+                    } catch (e) {
+                        console.log('No user data in localStorage');
+                    }
+
                 } catch (error) {
                     console.error('Error submitting form:', error);
-                    alert('An error occurred while submitting your request. Please try again later.');
+                    alert('Error submitting request: ' + error.message);
                 } finally {
                     submitButton.disabled = false;
                     submitButtonText.classList.remove('hidden');
@@ -410,4 +576,3 @@
     </script>
 </body>
 </html>
-
