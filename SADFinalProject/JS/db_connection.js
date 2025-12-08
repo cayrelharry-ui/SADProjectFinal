@@ -12,27 +12,69 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const DEBUG = true;
 
 // --- 2. INITIALIZATION ---
-if (typeof window.supabase === 'undefined') {
-    console.error("Supabase library not loaded. Check <script> tag in HTML.");
-    // Create a dummy supabase object to prevent crashes
-    window.supabase = {
-        createClient: () => ({
-            from: () => ({ select: () => ({}) })
-        })
-    };
-}
+console.log("🔧 DEBUG: Initializing Supabase connection...");
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Check if Supabase is loaded
+let supabaseClient;
+let supabaseAuth; // Your custom auth object
 
-if (DEBUG) {
-    console.log("🔧 DEBUG: Supabase client initialized");
-    // Make debugging functions available
-    window.__supabaseDebug = {
-        supabase,
+try {
+    if (typeof supabase !== 'undefined') {
+        // Create standard Supabase client
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log("✅ Standard Supabase client initialized");
+    } else if (typeof window.supabase !== 'undefined') {
+        // Create standard Supabase client from window
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log("✅ Standard Supabase client initialized from window");
+    } else {
+        console.error("❌ Supabase library not loaded. Loading from CDN...");
+        
+        // Dynamically load Supabase
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.async = true;
+        script.onload = () => {
+            console.log("📦 Supabase loaded from CDN");
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log("✅ Standard Supabase client initialized after CDN load");
+            
+            // Re-initialize other scripts that depend on Supabase
+            if (window.newsEventsCalendar) {
+                window.newsEventsCalendar.init();
+            }
+        };
+        document.head.appendChild(script);
+    }
+    
+    // Create your custom auth object
+    supabaseAuth = {
+        // Your custom authentication methods
+        signIn: signIn,
+        signUp: signUp,
+        checkAuth: checkAuth,
+        logout: logout,
+        getCurrentUser: getCurrentUser,
+        updatePassword: updatePassword,
+        
+        // Admin functions
+        getAllUsers: getAllUsers,
+        getPendingUsers: getPendingUsers,
+        approveUser: approveUser,
+        rejectUser: rejectUser,
+        updateUserStatus: updateUserStatus,
+        
+        // Debug functions
         testConnection: testConnection,
-        listUsers: listAllUsers,
-        resetPassword: resetUserPassword
+        listAllUsers: listAllUsers,
+        resetUserPassword: resetUserPassword,
+        
+        // Database update
+        updateDatabaseForApprovalWorkflow: updateDatabaseForApprovalWorkflow
     };
+    
+} catch (error) {
+    console.error("❌ Error initializing Supabase:", error);
 }
 
 // --- 3. PASSWORD HANDLING FUNCTIONS ---
@@ -89,7 +131,7 @@ function isPlainText(password) {
  */
 async function testConnection() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('users')
             .select('count')
             .limit(1);
@@ -107,7 +149,7 @@ async function testConnection() {
  */
 async function listAllUsers() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('users')
             .select('user_id, email, username, full_name, role, status, created_at')
             .order('user_id');
@@ -135,7 +177,7 @@ async function listAllUsers() {
 async function resetUserPassword(identifier, newPassword) {
     try {
         // Find user
-        const { data: user, error: findError } = await supabase
+        const { data: user, error: findError } = await supabaseClient
             .from('users')
             .select('user_id')
             .or(`email.eq.${identifier},full_name.eq.${identifier}`)
@@ -150,7 +192,7 @@ async function resetUserPassword(identifier, newPassword) {
         const hashedPassword = await hashPassword(newPassword);
         
         // Update password
-        const { error: updateError } = await supabase
+        const { error: updateError } = await supabaseClient
             .from('users')
             .update({ password: hashedPassword })
             .eq('user_id', user.user_id);
@@ -179,31 +221,18 @@ async function updateDatabaseForApprovalWorkflow() {
     try {
         console.log("🔄 Updating database for approval workflow...");
         
-        // Step 1: Drop the existing constraint
-        const dropQuery = `
+        // Note: You need to run these SQL commands in your Supabase SQL editor
+        console.log("📝 Please run these SQL commands in Supabase SQL editor:");
+        console.log(`
             ALTER TABLE users DROP CONSTRAINT IF EXISTS users_status_check;
-        `;
-        
-        // Step 2: Create new constraint that allows 'pending'
-        const createQuery = `
             ALTER TABLE users ADD CONSTRAINT users_status_check 
             CHECK (status IN ('pending', 'active', 'inactive'));
-        `;
-        
-        // Step 3: Add approval timestamp column
-        const addColumnQuery = `
             ALTER TABLE users ADD COLUMN IF NOT EXISTS approved_at TIMESTAMP;
-        `;
-        
-        // Step 4: Add approved_by column
-        const addApprovedByQuery = `
             ALTER TABLE users ADD COLUMN IF NOT EXISTS approved_by INTEGER REFERENCES users(user_id);
-        `;
+        `);
         
-        console.log("📝 Database updated successfully!");
-        console.log("✅ Now users can have 'pending', 'active', or 'inactive' status");
-        
-        return { success: true, message: "Database updated for approval workflow" };
+        console.log("✅ Database update instructions provided!");
+        return { success: true, message: "Please run SQL commands in Supabase" };
         
     } catch (err) {
         console.error("❌ Database update error:", err);
@@ -235,7 +264,7 @@ async function updateUserStatus(userId, newStatus, adminUserId = null) {
             }
         }
         
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('users')
             .update(updateData)
             .eq('user_id', userId)
@@ -261,7 +290,7 @@ async function updateUserStatus(userId, newStatus, adminUserId = null) {
  */
 async function getPendingUsers() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('users')
             .select('user_id, email, full_name, username, role, created_at')
             .eq('status', 'pending')
@@ -305,7 +334,7 @@ async function signIn(identifier, password) {
         let user = null;
         
         // Try email first
-        const { data: emailUser, error: emailError } = await supabase
+        const { data: emailUser, error: emailError } = await supabaseClient
             .from('users')
             .select('*')
             .eq('email', identifier)
@@ -318,7 +347,7 @@ async function signIn(identifier, password) {
         
         // Try full name if not found by email
         if (!user) {
-            const { data: nameUser, error: nameError } = await supabase
+            const { data: nameUser, error: nameError } = await supabaseClient
                 .from('users')
                 .select('*')
                 .eq('full_name', identifier)
@@ -384,7 +413,7 @@ async function signIn(identifier, password) {
             
             // Auto-migrate to SHA-256
             if (passwordValid) {
-                await supabase
+                await supabaseClient
                     .from('users')
                     .update({ password: sha256Hash })
                     .eq('user_id', user.user_id);
@@ -408,7 +437,7 @@ async function signIn(identifier, password) {
             
             if (passwordValid) {
                 // Migrate to SHA-256
-                await supabase
+                await supabaseClient
                     .from('users')
                     .update({ password: sha256Hash })
                     .eq('user_id', user.user_id);
@@ -448,6 +477,12 @@ async function signIn(identifier, password) {
 function createSuccessResponse(user) {
     // Generate session token
     const sessionToken = `user_${user.user_id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Store user data in localStorage
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('sessionToken', sessionToken);
+    localStorage.setItem('sessionExpiry', Date.now() + (24 * 60 * 60 * 1000));
+    localStorage.setItem('userRole', user.role);
     
     return {
         user: {
@@ -490,7 +525,7 @@ async function signUp(email, password, fullName, username, role = 'public') {
         }
         
         // Check if user already exists
-        const { data: existingUser, error: checkError } = await supabase
+        const { data: existingUser, error: checkError } = await supabaseClient
             .from('users')
             .select('email')
             .eq('email', email)
@@ -521,7 +556,7 @@ async function signUp(email, password, fullName, username, role = 'public') {
         }
         
         // Create user with 'pending' status
-        const { data: newUser, error: createError } = await supabase
+        const { data: newUser, error: createError } = await supabaseClient
             .from('users')
             .insert([{
                 email: email,
@@ -628,7 +663,7 @@ function logout() {
 async function updatePassword(userId, currentPassword, newPassword) {
     try {
         // Get user
-        const { data: user, error: fetchError } = await supabase
+        const { data: user, error: fetchError } = await supabaseClient
             .from('users')
             .select('password')
             .eq('user_id', userId)
@@ -644,7 +679,7 @@ async function updatePassword(userId, currentPassword, newPassword) {
         
         // Update to new password
         const newHash = await hashPassword(newPassword);
-        const { error: updateError } = await supabase
+        const { error: updateError } = await supabaseClient
             .from('users')
             .update({ password: newHash })
             .eq('user_id', userId);
@@ -678,7 +713,7 @@ function getCurrentUser() {
  */
 async function getAllUsers() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('users')
             .select('user_id, email, full_name, username, role, status, created_at, approved_at, approved_by')
             .order('created_at', { ascending: false });
@@ -740,8 +775,12 @@ async function rejectUser(userId, adminUserId) {
 }
 
 // --- 9. EXPORTS ---
+// Export the standard Supabase client for database operations
+export const supabase = supabaseClient;
+
+// Export your custom authentication functions
 export { 
-    supabase, 
+    supabaseAuth,
     signIn, 
     signUp, 
     checkAuth, 
