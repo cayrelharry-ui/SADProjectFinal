@@ -492,40 +492,126 @@
             </div>
         </div>
 
+<!-- ADD ACTIVITY BUTTON + FLOATING FORM -->
+<!-- Floating + button (bottom-right) -->
+<button
+    id="add-activity-toggle"
+    class="fixed bottom-6 right-6 bg-[#5A2C9D] text-white w-14 h-14 rounded-full shadow-xl 
+           hover:bg-[#4C2684] flex items-center justify-center text-3xl transition z-50">
+    +
+</button>
+
+<!-- Small card form (hidden by default) -->
+<div
+    id="add-activity-form"
+    class="fixed top-24 right-4 md:right-6 w-[90vw] max-w-sm max-h-[80vh] overflow-y-auto
+           bg-white rounded-xl shadow-xl border border-gray-200 p-4 hidden z-40">
+
+    <h3 class="text-sm font-bold text-gray-800 mb-3">New Activity / Project</h3>
+
+    <div class="grid grid-cols-1 gap-3 mb-3">
+        <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Title</label>
+            <input id="act-title" type="text"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Category</label>
+            <input id="act-category" type="text" placeholder="e.g. ICT Training, Sustainability"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Status</label>
+            <select id="act-status"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
+                <option value="Completed">Completed</option>
+                <option value="Ongoing">Ongoing</option>
+                <option value="Proposed">Proposed</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Lead</label>
+            <input id="act-lead" type="text"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Location</label>
+            <input id="act-location" type="text" placeholder="e.g. Daet, CN"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
+        </div>
+
+        <div>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Image URL / File name</label>
+            <input id="act-image" type="text" placeholder="e.g. pro1.avif"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="block text-xs font-semibold text-gray-600 mb-1">Short Description</label>
+        <textarea id="act-description" rows="3"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]"></textarea>
+    </div>
+
+    <div class="flex justify-end gap-2">
+        <button
+            id="act-cancel"
+            type="button"
+            class="px-3 py-2 text-xs font-bold rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100">
+            Cancel
+        </button>
+        <button
+            id="act-save"
+            type="button"
+            class="px-4 py-2 text-xs font-bold rounded-lg bg-[#5A2C9D] text-white hover:bg-[#4C2684]">
+            Add Activity
+        </button>
+    </div>
+</div>
+
+
+
         <!-- 2. PROJECTS GRID -->
         <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-            <!-- CARD 1: Completed -->
-            <div
-                class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
-                <div class="relative h-48">
-                    <img src="pro1.avif" alt="Project" class="w-full h-full object-cover">
-                    <div
-                        class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
-                        Completed</div>
-                    <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
-                        <span class="text-white text-xs font-bold bg-[#5A2C9D] px-2 py-0.5 rounded">ICT Training</span>
-                    </div>
-                </div>
-                <div class="p-6 flex-1 flex flex-col">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Automated TOS and Test Paper Generation System</h3>
-                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">This system was implemented with the intention of effectively creating Table of Specification and Periodical 
-                        Test Questions that is beneficial to the operation of Deped and its teachers. 
-                    </p>
+<!-- CARD 1: Completed -->
+<div
+    class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
+    <div class="relative h-48">
+        <img src="pro1.avif" alt="Project" class="w-full h-full object-cover">
+        <div
+            class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
+            Completed
+        </div>
+        <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
+            <span class="text-white text-xs font-bold bg-[#5A2C9D] px-2 py-0.5 rounded">ICT Training</span>
+        </div>
+    </div>
+    <div class="p-6 flex-1 flex flex-col">
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Automated TOS and Test Paper Generation System</h3>
+        <p class="text-gray-600 text-sm line-clamp-3 mb-4">
+            This system was implemented with the intention of effectively creating Table of Specification and Periodical 
+            Test Questions that is beneficial to the operation of Deped and its teachers.
+        </p>
 
-                    <div class="mt-auto pt-4 border-t border-gray-100">
-                        <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
-                            <span><strong class="text-gray-800">Lead:</strong> Evelyn M. Baesa, MIT </span>
-                            <span><strong class="text-gray-800">Loc:</strong> Daet, CN</span>
-                        </div>
-                        <button
-                            class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition"
-                            data-bs-toggle="modal" data-bs-target="#projectModal1">
-                            View Full Details
-                        </button>
-                    </div>
-                </div>
+        <div class="mt-auto pt-4 border-t border-gray-100">
+            <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
+                <span><strong class="text-gray-800">Lead:</strong> Evelyn M. Baesa, MIT </span>
+                <span><strong class="text-gray-800">Loc:</strong> Daet, CN</span>
             </div>
+            <!-- Link styled as button -->
+            <a href="TOS.html"
+               class="w-full inline-block text-center py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
+                View Full Details
+            </a>
+        </div>
+    </div>
+</div>
+
 
             <!-- CARD 2: COMPLETED -->
             <div
@@ -602,14 +688,111 @@
                     </div>
                 </div>
                 <div class="p-6 flex-1 flex flex-col">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Development of Automated Barangay Record Management System with Data
-                    Analytics</h3>
-                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">This project is conceptualized to help the barangay in organizing 
-                        their files and database so that valuable  information becomes readily available and accessible to those who needs it. .</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2"> Learning Management System Refresher Course</h3>
+                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">This project aimed to refresh and review the learnings on the use 
+                        of Learning Management System for faculty as a  tool in instruction and to be fully equipped with knowledge and 
+                        skills to produce and create a course in LMS application for the semester.</p>
 
                     <div class="mt-auto pt-4 border-t border-gray-100">
                         <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
                             <span><strong class="text-gray-800">Lead:</strong> Mary Grace B. Bolos, Sharine A. Gutierrez, Bernadeth C. Mendejar</span>
+                            <span><strong class="text-gray-800">Loc:</strong> Daet, CN</span>
+                        </div>
+                        <button
+                            class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
+                            View Full Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+                        <!-- CARD 6: PROPOSED -->
+            <div
+                class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full opacity-90 hover:opacity-100">
+                <div class="relative h-48">
+                    <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div
+                        class="absolute top-4 right-4 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
+                        Proposed</div>
+                    <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/50 to-transparent w-full p-4">
+                        <span class="text-white text-xs font-bold bg-orange-500 px-2 py-0.5 rounded">Research</span>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">School Online Success</h3>
+                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">This project aimed to help the ICS secondary school partners
+                        in achieving a successful online teaching and learning experience. </p>
+
+                    <div class="mt-auto pt-4 border-t border-gray-100">
+                        <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
+                            <span><strong class="text-gray-800">Lead:</strong>Dr. Daniel E. Maligat,Jr., Dr. Jocelyn O. Torio,
+                            Dr. Rosemarie Bigueras, Dr. Mary Grace B. Bolos, Sharine Gutierrez</span>
+                            <span><strong class="text-gray-800">Loc:</strong> Basud, CN</span>
+                        </div>
+                        <button
+                            class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
+                            View Proposal
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+                                    <!-- CARD 5: COMPLETED -->
+            <div
+                class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
+                <div class="relative h-48">
+                    <img src="pro2.webp" alt="Project" class="w-full h-full object-cover grayscale">
+                    <div
+                        class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
+                        Completed</div>
+                    <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
+                        <span class="text-white text-xs font-bold bg-teal-600 px-2 py-0.5 rounded">Sustainability</span>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Virtual Jobs/ Project T.E.L.L</h3>
+                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">This activity successfully educated the Barangay Alawihao 
+                    Residence on how to become a virtual agent. </p>
+
+                    <div class="mt-auto pt-4 border-t border-gray-100">
+                        <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
+                            <span><strong class="text-gray-800">Lead:</strong> Dr. Jocelyn Torio, Dr. Daniel E. Maligat, Jr.</span>
+                            <span><strong class="text-gray-800">Loc:</strong> Daet, CN</span>
+                        </div>
+                        <button
+                            class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
+                            View Full Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+                                                <!-- CARD 5: COMPLETED -->
+            <div
+                class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
+                <div class="relative h-48">
+                    <img src="pro2.webp" alt="Project" class="w-full h-full object-cover grayscale">
+                    <div
+                        class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
+                        Completed</div>
+                    <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
+                        <span class="text-white text-xs font-bold bg-teal-600 px-2 py-0.5 rounded">Sustainability</span>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">IT Consultation on Digital Marketings</h3>
+                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">In partnership with the Institue of Computer Studies, the DTI collaborated to form a seminar consulation on 
+                        Digital Marketing, and Software tools to facilitate online business. </p>
+
+                    <div class="mt-auto pt-4 border-t border-gray-100">
+                        <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
+                            <span><strong class="text-gray-800">Lead:</strong> Dr. Jocelyn Torio, Dr. Daniel E. Maligat, Jr.</span>
                             <span><strong class="text-gray-800">Loc:</strong> Daet, CN</span>
                         </div>
                         <button
@@ -682,7 +865,7 @@
                 </div>
             </div>
 
-                        <!-- CARD 6: PROPOSED -->
+            <!-- CARD 6: PROPOSED -->
             <div
                 class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full opacity-90 hover:opacity-100">
                 <div class="relative h-48">
@@ -1275,6 +1458,110 @@
 </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script type="module" src="./JS/Programs.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('projects-grid');
+
+    const toggleBtn = document.getElementById('add-activity-toggle');
+    const formBox  = document.getElementById('add-activity-form');
+    const saveBtn  = document.getElementById('act-save');
+    const cancelBtn = document.getElementById('act-cancel');
+
+    const titleInput = document.getElementById('act-title');
+    const categoryInput = document.getElementById('act-category');
+    const statusInput = document.getElementById('act-status');
+    const leadInput = document.getElementById('act-lead');
+    const locationInput = document.getElementById('act-location');
+    const imageInput = document.getElementById('act-image');
+    const descInput = document.getElementById('act-description');
+
+    // Show / hide form
+    toggleBtn.addEventListener('click', () => {
+      formBox.classList.toggle('hidden');
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      formBox.classList.add('hidden');
+    });
+
+    // Helper: map status to color class
+    function getStatusClass(status) {
+      if (status === 'Ongoing') return 'bg-green-500';
+      if (status === 'Proposed') return 'bg-yellow-500';
+      return 'bg-blue-600'; // default Completed
+    }
+
+    // When "Add Activity" clicked
+    saveBtn.addEventListener('click', () => {
+      const title = titleInput.value.trim();
+      const category = categoryInput.value.trim() || 'ICT Training';
+      const status = statusInput.value;
+      const lead = leadInput.value.trim() || 'N/A';
+      const location = locationInput.value.trim() || 'Camarines Norte';
+      const image = imageInput.value.trim() || 'pro1.avif';
+      const desc = descInput.value.trim() || 'No description provided.';
+
+      if (!title) {
+        alert('Please enter a title.');
+        return;
+      }
+
+      const statusClass = getStatusClass(status);
+
+      const card = document.createElement('div');
+      card.className = 'bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full';
+
+      card.innerHTML = `
+        <div class="relative h-48">
+          <img src="${image}" alt="${title}" class="w-full h-full object-cover">
+          <div class="absolute top-4 right-4 ${statusClass} text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
+            ${status}
+          </div>
+          <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
+            <span class="text-white text-xs font-bold bg-[#5A2C9D] px-2 py-0.5 rounded">
+              ${category}
+            </span>
+          </div>
+        </div>
+        <div class="p-6 flex-1 flex flex-col">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">${title}</h3>
+          <p class="text-gray-600 text-sm line-clamp-3 mb-4">
+            ${desc}
+          </p>
+
+          <div class="mt-auto pt-4 border-t border-gray-100">
+            <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
+              <span><strong class="text-gray-800">Lead:</strong> ${lead}</span>
+              <span><strong class="text-gray-800">Loc:</strong> ${location}</span>
+            </div>
+            <button
+              class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
+              View Full Details
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Add new card sa taas ng list
+      grid.prepend(card);
+
+      // Clear form + hide
+      titleInput.value = '';
+      categoryInput.value = '';
+      leadInput.value = '';
+      locationInput.value = '';
+      imageInput.value = '';
+      descInput.value = '';
+      statusInput.value = 'Completed';
+      formBox.classList.add('hidden');
+    });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module" src="./JS/Activities.js"></script>
+
 </body>
 
 </html>
