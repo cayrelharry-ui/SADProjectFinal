@@ -1,143 +1,166 @@
+/**
+ * LogIn.js
+ * Handles ONLY login page functionality
+ * NO auth checks - auth-check.js handles that
+ */
+
+import { signIn, signUp } from './db_connection.js';
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("✅ DOM Loaded - Starting login page script");
+    setupLoginPage();
+});
+
+function setupLoginPage() {
+    console.log("Setting up login page...");
+
+    // --- 1. Get all elements ---
     const loginForm = document.getElementById('loginForm');
-    const createAccountForm = document.getElementById('createAccountForm');
-    const createAccountBtn = document.getElementById('createAccountBtn');
-    const usernameInput = document.getElementById('username');
+    const identifierInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const passwordToggle = document.getElementById('passwordToggle');
+    const loginBtn = document.getElementById('loginBtn') || loginForm?.querySelector('button[type="submit"]');
     const btnText = document.getElementById('btnText');
     const btnSpinner = document.getElementById('btnSpinner');
-    const createBtnText = document.getElementById('createBtnText');
-    const createBtnSpinner = document.getElementById('createBtnSpinner');
     const errorAlert = document.getElementById('errorAlert');
     const errorMessage = document.getElementById('errorMessage');
-    const successAlert = document.getElementById('successAlert');
-    const successMessage = document.getElementById('successMessage');
-    const credentialItems = document.querySelectorAll('.credential-item');
-    const createAccountModal = new bootstrap.Modal(document.getElementById('createAccountModal'));
 
-    // Password toggle functionality for login form
-    passwordToggle.addEventListener('click', function() {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
-    });
+    // Create Account Modal Elements
+    const createAccountBtn = document.getElementById('createAccountBtn');
+    const createAccountModal = document.getElementById('createAccountModal');
+    const createAccountForm = document.getElementById('createAccountForm');
+    const createBtnText = document.getElementById('createBtnText');
+    const createBtnSpinner = document.getElementById('createBtnSpinner');
 
-    // Password toggle for create account form
-    const newPasswordToggle = document.getElementById('newPasswordToggle');
-    const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
-    
-    if (newPasswordToggle) {
-        newPasswordToggle.addEventListener('click', function() {
-            const newPasswordInput = document.getElementById('newPassword');
-            const type = newPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            newPasswordInput.setAttribute('type', type);
-            this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
-        });
+    // Guest button
+    const guestBtn = document.querySelector('.btn-guest');
+
+    // Check critical elements
+    if (!loginForm || !identifierInput || !passwordInput) {
+        console.error("❌ Critical elements missing!");
+        showError("Some page elements failed to load. Please refresh.", true);
+        return;
     }
 
-    if (confirmPasswordToggle) {
-        confirmPasswordToggle.addEventListener('click', function() {
-            const confirmPasswordInput = document.getElementById('confirmPassword');
-            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            confirmPasswordInput.setAttribute('type', type);
-            this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
-        });
+    // --- 2. Initialize Bootstrap Modal ---
+    let modalInstance = null;
+    if (createAccountModal && typeof bootstrap !== 'undefined') {
+        modalInstance = new bootstrap.Modal(createAccountModal);
+        console.log("✅ Modal initialized");
     }
 
-    // Fill credentials when clicking demo items
-    credentialItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const username = this.getAttribute('data-username');
-            usernameInput.value = username;
-            passwordInput.value = 'password123';
+    // --- 3. SETUP PASSWORD TOGGLES ---
+    setupPasswordToggles();
 
-            credentialItems.forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
+    function setupPasswordToggles() {
+        console.log("🔐 Setting up password toggles...");
 
-    // Login Form submission
-    loginForm.addEventListener('submit', function(e) {
+        function setupToggle(toggleId, inputId) {
+            const toggle = document.getElementById(toggleId);
+            const input = document.getElementById(inputId);
+
+            if (!toggle || !input) {
+                console.log(`⚠️ Toggle not found: ${toggleId} or ${inputId}`);
+                return;
+            }
+
+            console.log(`✅ Setting up toggle: ${toggleId} for input: ${inputId}`);
+
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const currentType = input.getAttribute('type');
+                const newType = currentType === 'password' ? 'text' : 'password';
+
+                // Toggle input type
+                input.setAttribute('type', newType);
+
+                // Toggle icon
+                const icon = this.querySelector('i');
+                if (icon) {
+                    if (newType === 'text') {
+                        icon.classList.remove('bi-eye');
+                        icon.classList.add('bi-eye-slash');
+                    } else {
+                        icon.classList.remove('bi-eye-slash');
+                        icon.classList.add('bi-eye');
+                    }
+                }
+
+                input.focus();
+            });
+        }
+
+        setupToggle('passwordToggle', 'password');
+        setupToggle('newPasswordToggle', 'newPassword');
+        setupToggle('confirmPasswordToggle', 'confirmPassword');
+    }
+
+    // --- 4. Login Form Submission ---
+    loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
+        console.log("📝 Login form submitted");
 
-        btnText.textContent = 'Signing In...';
-        btnSpinner.classList.remove('d-none');
-        errorAlert.classList.add('d-none');
-        if (successAlert) successAlert.classList.add('d-none');
-
-        const username = usernameInput.value.trim();
+        const identifier = identifierInput.value.trim();
         const password = passwordInput.value;
 
-        if (!username || !password) {
-            showError('Please enter both username/email and password.');
-            resetButtonState();
+        if (!identifier || !password) {
+            showError('Please enter your email/username and password.');
             return;
         }
 
-        console.log('Attempting login for:', username);
+        setLoadingState(true);
 
-        const formData = new URLSearchParams();
-        formData.append('username', username);
-        formData.append('password', password);
+        try {
+            console.log("🔐 Attempting authentication...");
 
-        fetch('../PHP/LogIn.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: formData
-        })
-        .then(response => {
-            console.log('Response status:', response.status);
-            if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.status);
+            const result = await signIn(identifier, password);
+
+            if (result.error) {
+                throw new Error(result.error.message || 'Invalid login credentials.');
             }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Login response:', data);
-            
-            if (data.status === 'success') {
-                showSuccess(data.message);
-                localStorage.setItem('userRole', data.role);
-                localStorage.setItem('userName', username);
 
-                setTimeout(() => {
-                    const role = data.role.toLowerCase();
-                    const pages = {
-                        'admin': 'Admin_Panel.html',
-                        'faculty': 'Faculty_Dashboard.html', 
-                        'coordinator': 'Coordinator_Dashboard.html',
-                        'public': 'Public_Dashboard.html'
-                    };
-                    
-                    window.location.href = pages[role] || 'Admin_Panel.html';
-                }, 1500);
-            } else {
-                showError(data.message);
-                resetButtonState();
+            const user = result.user;
+            console.log('✅ Login successful:', user.email);
+
+            // Check account status
+            if (user.status && user.status.toLowerCase() !== 'active') {
+                showError(`Your account is ${user.status}. Please wait for administrator approval.`);
+                setLoadingState(false);
+                return;
             }
-        })
-        .catch(err => {
-            console.error('Login error:', err);
-            showError('Connection error. Please try again.');
-            resetButtonState();
-        });
+
+            // Store user data
+            storeUserSession(user, result.session);
+
+            // Redirect based on role
+            setTimeout(() => {
+                redirectBasedOnRole(user.role);
+            }, 500);
+
+        } catch (err) {
+            console.error('❌ Login error:', err);
+            showError(err.message || 'An error occurred during login.');
+            setLoadingState(false);
+        }
     });
 
-    // Create Account functionality
+    // --- 5. Create Account Functionality ---
     if (createAccountBtn) {
-        createAccountBtn.addEventListener('click', function() {
-            const fullName = document.getElementById('fullName').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const role = document.getElementById('role').value;
+        createAccountBtn.addEventListener('click', async function() {
+            console.log("📝 Create account button clicked");
+
+            const fullName = document.getElementById('fullName')?.value.trim();
+            const email = document.getElementById('email')?.value.trim();
+            const username = document.getElementById('usernameField')?.value.trim() || email?.split('@')[0];
+            const password = document.getElementById('newPassword')?.value;
+            const confirmPassword = document.getElementById('confirmPassword')?.value;
+            const role = document.getElementById('role')?.value || 'public';
 
             // Validation
-            if (!fullName || !email || !password || !confirmPassword || !role) {
-                showModalError('Please fill in all fields.');
+            if (!fullName || !email || !password || !confirmPassword) {
+                showModalError('Please fill in all required fields.');
                 return;
             }
 
@@ -156,54 +179,127 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Show loading state
-            createBtnText.textContent = 'Creating...';
-            createBtnSpinner.classList.remove('d-none');
-            createAccountBtn.disabled = true;
+            setCreateAccountLoading(true);
 
-            const formData = new URLSearchParams();
-            formData.append('fullName', fullName);
-            formData.append('email', email);
-            formData.append('password', password);
-            formData.append('role', role);
+            try {
+                console.log("👤 Creating new account...");
 
-            fetch('../PHP/CreateAccount.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    // Show success message in main form
-                    showSuccess('Account created successfully! Please wait for administrator approval.');
-                    createAccountModal.hide();
-                    createAccountForm.reset();
-                    clearModalErrors();
-                } else {
-                    showModalError('Error: ' + data.message);
+                const result = await signUp(email, password, fullName, username, role);
+
+                if (result.error) {
+                    throw new Error(result.error.message);
                 }
-            })
-            .catch(err => {
-                console.error('Create account error:', err);
-                showModalError('Error creating account. Please try again.');
-            })
-            .finally(() => {
-                createBtnText.textContent = 'Create Account';
-                createBtnSpinner.classList.add('d-none');
-                createAccountBtn.disabled = false;
-            });
+
+                // **SUCCESS MESSAGE - Not "approved" but "created"**
+                showSuccessMessage('Account created. Please wait for admin approval.');
+
+                if (modalInstance) modalInstance.hide();
+                if (createAccountForm) createAccountForm.reset();
+                clearModalErrors();
+
+                // Optional: Pre-fill login form with the new email
+                if (identifierInput && email) {
+                    identifierInput.value = email;
+                }
+
+            } catch (err) {
+                console.error('❌ Create account error:', err);
+                showModalError(err.message || 'Error creating account. Please try again.');
+            } finally {
+                setCreateAccountLoading(false);
+            }
         });
     }
 
-    // Clear modal when hidden
-    if (createAccountModal) {
-        createAccountModal._element.addEventListener('hidden.bs.modal', function() {
-            createAccountForm.reset();
-            clearModalErrors();
+    // --- 6. Guest Login ---
+    if (guestBtn) {
+        guestBtn.addEventListener('click', function() {
+            console.log("👤 Guest button clicked");
+
+            const originalHTML = this.innerHTML;
+            this.innerHTML = '<i class="bi bi-arrow-right-circle"></i> Redirecting...';
+            this.disabled = true;
+
+            // Create guest user object
+            const guestUser = {
+                user_id: 0,
+                email: 'guest@example.com',
+                full_name: 'Guest User',
+                username: 'guest',
+                role: 'guest',
+                status: 'active'
+            };
+
+            storeUserSession(guestUser, {
+                access_token: 'guest_token',
+                expires_at: Date.now() + (2 * 60 * 60 * 1000)
+            });
+
+            localStorage.setItem('isGuest', 'true');
+
+            // Redirect to home page
+            setTimeout(() => {
+                window.location.href = '../Home.html';
+            }, 500);
+
+            setTimeout(() => {
+                this.innerHTML = originalHTML;
+                this.disabled = false;
+            }, 3000);
         });
+    }
+
+    // --- 7. Helper Functions ---
+
+    function setLoadingState(isLoading) {
+        if (loginBtn) loginBtn.disabled = isLoading;
+        if (btnText && btnSpinner) {
+            btnText.textContent = isLoading ? 'Signing In...' : 'Sign In';
+            btnSpinner.classList.toggle('d-none', !isLoading);
+        }
+    }
+
+    function setCreateAccountLoading(isLoading) {
+        if (createAccountBtn) createAccountBtn.disabled = isLoading;
+        if (createBtnText && createBtnSpinner) {
+            createBtnText.textContent = isLoading ? 'Creating...' : 'Create Account';
+            createBtnSpinner.classList.toggle('d-none', !isLoading);
+        }
+    }
+
+    function storeUserSession(user, session) {
+        // Store user data
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('userRole', user.role || 'public');
+        localStorage.setItem('userName', user.full_name || 'User');
+        localStorage.setItem('userEmail', user.email);
+        localStorage.setItem('userId', user.user_id);
+        localStorage.setItem('username', user.username);
+
+        // Store session data
+        if (session) {
+            localStorage.setItem('sessionToken', session.access_token);
+            localStorage.setItem('sessionExpiry', session.expires_at || Date.now() + (24 * 60 * 60 * 1000));
+        }
+
+        localStorage.setItem('lastLogin', new Date().toISOString());
+        console.log("💾 Session stored for:", user.email);
+    }
+
+    function redirectBasedOnRole(role) {
+        const roleLower = (role || 'public').toLowerCase();
+        const pageMap = {
+            'admin': '../HTML/Admin_Panel.html',
+            'partner': '../HTML/Partner_Panel.html',
+            'faculty': '../HTML/Faculty_Dashboard.html',
+            'coordinator': '../HTML/Partner_Panel.html',
+            'public': '../HTML/Public_Dashboard.html',
+            'guest': '../index.html'
+        };
+
+        const redirectUrl = pageMap[roleLower] || '../index.html';
+        console.log(`🔄 Redirecting to: ${redirectUrl}`);
+        window.location.href = redirectUrl;
     }
 
     function validateEmail(email) {
@@ -211,12 +307,57 @@ document.addEventListener('DOMContentLoaded', function() {
         return emailRegex.test(email);
     }
 
-    function showModalError(message) {
-        // Remove any existing modal alerts
-        const existingAlert = document.querySelector('.modal .alert-danger');
-        if (existingAlert) {
-            existingAlert.remove();
+    function showError(message, isAlert = false) {
+    if (isAlert) {
+        alert(message);
+        return;
+    }
+
+    if (errorAlert && errorMessage) {
+        errorMessage.textContent = message; // Just shows the message without "Error:"
+        errorAlert.classList.remove('d-none');
+        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        setTimeout(() => {
+            errorAlert.classList.add('d-none');
+        }, 5000);
+    }
+}
+    function showSuccessMessage(message) {
+    if (errorAlert && errorMessage) {
+        // Use the error alert element but style it as success
+        errorMessage.textContent = message; // Just shows the message without "Error:"
+        errorAlert.classList.remove('d-none', 'alert-danger');
+        errorAlert.classList.add('alert-success');
+
+        // Change icon if present
+        const icon = errorAlert.querySelector('.bi');
+        if (icon) {
+            icon.classList.remove('bi-exclamation-triangle');
+            icon.classList.add('bi-check-circle');
         }
+
+        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        setTimeout(() => {
+            errorAlert.classList.add('d-none');
+            // Reset styling
+            errorAlert.classList.remove('alert-success');
+            errorAlert.classList.add('alert-danger');
+            if (icon) {
+                icon.classList.remove('bi-check-circle');
+                icon.classList.add('bi-exclamation-triangle');
+            }
+        }, 5000);
+    }
+}
+
+    function showModalError(message) {
+        const modalBody = document.querySelector('.modal-body');
+        if (!modalBody) return;
+
+        const existingAlert = document.querySelector('.modal .alert-danger');
+        if (existingAlert) existingAlert.remove();
 
         const alert = document.createElement('div');
         alert.className = 'alert alert-danger alert-dismissible fade show mt-3';
@@ -224,11 +365,8 @@ document.addEventListener('DOMContentLoaded', function() {
             <strong>Error:</strong> ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
-        
-        const modalBody = document.querySelector('.modal-body');
+
         modalBody.appendChild(alert);
-        
-        // Scroll to alert
         alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
@@ -237,109 +375,21 @@ document.addEventListener('DOMContentLoaded', function() {
         modalAlerts.forEach(alert => alert.remove());
     }
 
-    function showError(message) {
-        errorMessage.textContent = message;
-        errorAlert.classList.remove('d-none');
-        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-            errorAlert.classList.add('d-none');
-        }, 5000);
-    }
-
-    function showSuccess(message) {
-        if (successAlert && successMessage) {
-            successMessage.textContent = message;
-            successAlert.classList.remove('d-none');
-            successAlert.scrollIntoView({ behavior: 'smooth', block: 'center'} );
-            
-            // Auto-hide after 3 seconds
-            setTimeout(() => {
-                successAlert.classList.add('d-none');
-            }, 3000);
-        }
-    }
-
-    function resetButtonState() {
-        btnText.textContent = 'Sign In';
-        btnSpinner.classList.add('d-none');
-    }
-
-    // Clear alerts on input
-    usernameInput.addEventListener('input', () => {
-        errorAlert.classList.add('d-none');
-        if (successAlert) successAlert.classList.add('d-none');
-    });
-    
-    passwordInput.addEventListener('input', () => {
-        errorAlert.classList.add('d-none');
-        if (successAlert) successAlert.classList.add('d-none');
-    });
-
-    // Real-time password validation for create account form
-    const newPasswordInput = document.getElementById('newPassword');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-    
-    if (newPasswordInput && confirmPasswordInput) {
-        confirmPasswordInput.addEventListener('input', function() {
-            const password = newPasswordInput.value;
-            const confirmPassword = this.value;
-            
-            if (confirmPassword && password !== confirmPassword) {
-                this.classList.add('is-invalid');
-                this.classList.remove('is-valid');
-            } else if (confirmPassword) {
-                this.classList.add('is-valid');
-                this.classList.remove('is-invalid');
-            } else {
-                this.classList.remove('is-valid', 'is-invalid');
-            }
-        });
-
-        newPasswordInput.addEventListener('input', function() {
-            const password = this.value;
-            const confirmPassword = confirmPasswordInput.value;
-            
-            if (password.length < 6 && password.length > 0) {
-                this.classList.add('is-invalid');
-                this.classList.remove('is-valid');
-            } else if (password.length >= 6) {
-                this.classList.add('is-valid');
-                this.classList.remove('is-invalid');
-                
-                // Update confirm password validation
-                if (confirmPassword) {
-                    if (password === confirmPassword) {
-                        confirmPasswordInput.classList.add('is-valid');
-                        confirmPasswordInput.classList.remove('is-invalid');
-                    } else {
-                        confirmPasswordInput.classList.add('is-invalid');
-                        confirmPasswordInput.classList.remove('is-valid');
-                    }
-                }
-            } else {
-                this.classList.remove('is-valid', 'is-invalid');
-                confirmPasswordInput.classList.remove('is-valid', 'is-invalid');
-            }
+    if (identifierInput) {
+        identifierInput.addEventListener('input', () => {
+            if (errorAlert) errorAlert.classList.add('d-none');
         });
     }
 
-    // Email validation for create account form
-    const emailInput = document.getElementById('email');
-    if (emailInput) {
-        emailInput.addEventListener('input', function() {
-            const email = this.value;
-            
-            if (email && !validateEmail(email)) {
-                this.classList.add('is-invalid');
-                this.classList.remove('is-valid');
-            } else if (email) {
-                this.classList.add('is-valid');
-                this.classList.remove('is-invalid');
-            } else {
-                this.classList.remove('is-valid', 'is-invalid');
-            }
+    if (passwordInput) {
+        passwordInput.addEventListener('input', () => {
+            if (errorAlert) errorAlert.classList.add('d-none');
         });
     }
-});
+
+    setTimeout(() => {
+        if (identifierInput) identifierInput.focus();
+    }, 100);
+
+    console.log("✅ Login page setup complete");
+}

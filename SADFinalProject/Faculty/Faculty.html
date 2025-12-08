@@ -359,7 +359,7 @@
                             <button id="toggle-archives-btn" onclick="toggleArchives()"
                                 class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-lg shadow-md text-sm transition">Show
                                 Archives</button>
-                            <a href="submit_proposal.html"
+                            <a href="SubmitProposal.html"
                                 class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md text-sm flex items-center gap-2"><span>+</span>
                                 Create New</a>
                         </div>
@@ -400,9 +400,7 @@
     </main>
 
 
-    <!-- ============================================ -->
-    <!-- PROJECT DETAIL MODAL (Tailwind Version)      -->
-    <!-- ============================================ -->
+    <!-- PROJECT DETAIL MODAL (Tailwind Version) -->
     <div id="project-modal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog"
         aria-modal="true">
 
@@ -416,197 +414,182 @@
                 <div
                     class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-5xl border-0">
 
-                    <!-- Modal Header / Banner -->
+                    <!-- Banner -->
                     <div class="relative h-48 md:h-64 bg-gray-900">
-                        <!-- Dynamic Image -->
                         <img id="pm-banner"
                             src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=2070&auto=format&fit=crop"
                             class="w-full h-full object-cover opacity-50" alt="Cover">
-
                         <div class="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
                             <div class="flex items-center space-x-3 mb-2">
                                 <span id="pm-status"
-                                    class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded uppercase">Ongoing</span>
+                                    class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded uppercase">Loading...</span>
                                 <span
                                     class="bg-[#5A2C9D] text-white text-xs font-bold px-2 py-1 rounded uppercase">Extension</span>
                             </div>
                             <h2 id="pm-title"
                                 class="text-2xl md:text-4xl font-bold text-white leading-tight drop-shadow-md">Project
-                                Title Here</h2>
-
-                            <!-- Close Button -->
+                                Title</h2>
                             <button type="button" onclick="closeProjectModal()"
-                                class="absolute top-4 right-4 text-white/80 hover:text-white bg-black/20 hover:bg-black/40 rounded-full p-2 transition">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
+                                class="absolute top-4 right-4 text-white/80 hover:text-white bg-black/20 rounded-full p-2">✕</button>
                         </div>
                     </div>
 
-                    <!-- Navigation Tabs -->
+                    <!-- Tabs -->
                     <div class="bg-white border-b border-gray-200 px-6 pt-2">
-                        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                        <nav class="-mb-px flex space-x-8">
                             <button onclick="switchTab('overview', this)"
-                                class="tab-btn active-tab border-[#5A2C9D] text-[#5A2C9D] whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition-colors">
-                                Overview
-                            </button>
+                                class="tab-btn active-tab border-[#5A2C9D] text-[#5A2C9D] whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm">Overview</button>
                             <button onclick="switchTab('team', this)"
-                                class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
-                                Implementing Team
-                            </button>
-                            <button onclick="switchTab('impact', this)"
-                                class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
-                                Impact Matrix
-                            </button>
+                                class="tab-btn border-transparent text-gray-500 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Team</button>
                             <button onclick="switchTab('docs', this)"
-                                class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors">
-                                Gallery & Docs
-                            </button>
+                                class="tab-btn border-transparent text-gray-500 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Gallery
+                                & Docs</button>
+                            <button id="btn-manage-tab" onclick="switchTab('manage', this)"
+                                class="hidden tab-btn border-transparent text-orange-600 whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm">Manage
+                                Project</button>
                         </nav>
                     </div>
 
-                    <!-- Tab Content Area -->
+                    <!-- Content Area -->
                     <div class="bg-gray-50 p-6 md:p-8 min-h-[300px]">
 
-                        <!-- 1. Overview Tab -->
+                        <!-- 1. Overview -->
                         <div id="tab-overview" class="tab-pane block">
                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                                 <div class="lg:col-span-2 space-y-6">
                                     <div>
-                                        <h4 class="text-lg font-bold text-gray-900 mb-2">Description / Rationale</h4>
-                                        <p id="pm-desc"
-                                            class="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">Loading...
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-lg font-bold text-gray-900 mb-2">Objectives</h4>
-                                        <ul class="list-disc pl-5 text-gray-600 text-sm space-y-1">
-                                            <li>To successfully implement the proposed extension activities.</li>
-                                            <li>To engage with the partner community effectively.</li>
-                                            <li>To ensure sustainable development through technology transfer.</li>
-                                        </ul>
+                                        <h4 class="font-bold text-gray-900 mb-2">Description</h4>
+                                        <p id="pm-desc" class="text-sm text-gray-600 whitespace-pre-wrap">...</p>
                                     </div>
                                 </div>
-                                <!-- Sidebar Info -->
-                                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
-                                    <h5 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Project
-                                        Info</h5>
-                                    <div class="space-y-4">
-                                        <div>
-                                            <p class="text-xs text-gray-500">Partner Organization</p>
-                                            <p id="pm-partner" class="text-sm font-bold text-gray-800">Loading...</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-500">Date Started</p>
-                                            <p id="pm-date" class="text-sm font-bold text-gray-800">Loading...</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-500">Lead Faculty</p>
-                                            <p id="pm-lead" class="text-sm font-bold text-[#5A2C9D]">Loading...</p>
-                                        </div>
+                                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit space-y-4">
+                                    <div>
+                                        <p class="text-xs text-gray-500">Partner</p>
+                                        <p id="pm-partner" class="font-bold text-gray-800">...</p>
                                     </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Date Started</p>
+                                        <p id="pm-date" class="font-bold text-gray-800">...</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Lead</p>
+                                        <p id="pm-lead" class="font-bold text-[#5A2C9D]">...</p>
+                                    </div>
+                                    <div id="pm-lead-2" class="hidden"></div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 2. Implementing Team Tab -->
+                        <!-- 2. Team -->
                         <div id="tab-team" class="tab-pane hidden">
-                            <h4 class="text-lg font-bold text-gray-900 mb-6">Project Lead</h4>
-                            <div
-                                class="flex items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm max-w-md">
+                            <h4 class="font-bold text-gray-900 mb-6">Project Lead</h4>
+                            <div class="flex items-center bg-white p-4 rounded-xl border shadow-sm max-w-md">
                                 <div
                                     class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-[#5A2C9D] font-bold mr-4">
                                     PL</div>
                                 <div>
-                                    <h5 id="pm-lead-2" class="font-bold text-gray-900 text-sm">Loading...</h5>
+                                    <h5 id="pm-lead-3" class="font-bold text-sm">Loading...</h5>
                                     <p class="text-xs text-gray-500">Project Leader</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3. Impact Tab -->
-                        <div id="tab-impact" class="tab-pane hidden">
-                            <div class="flex flex-col items-center justify-center h-48 text-gray-400">
-                                <span class="text-4xl mb-2">📊</span>
-                                <p>Impact data visualization will appear here.</p>
-                            </div>
-                        </div>
-
-                        <!-- 4. Docs Tab -->
+                        <!-- 3. Docs -->
                         <div id="tab-docs" class="tab-pane hidden">
-                            <h4 class="text-lg font-bold text-gray-900 mb-4">Project Attachments & Photos</h4>
-                            <div id="pm-attachments" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- Links injected via JS -->
-                            </div>
+                            <h4 class="font-bold text-gray-900 mb-4">Attachments</h4>
+                            <div id="pm-attachments" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                         </div>
 
-                        <!-- 5. NEW: MANAGE PROJECT TAB (Hidden by default, Owner Only) -->
+                        <!-- 4. MANAGE TAB (The Edit Form) -->
                         <div id="tab-manage" class="tab-pane hidden">
-                            <div class="max-w-2xl mx-auto space-y-8">
-
-                                <!-- Status Update Section -->
+                            <div class="max-w-3xl mx-auto space-y-6">
+                                <!-- EDIT FORM -->
                                 <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                                    <h4 class="text-lg font-bold text-gray-900 mb-4">Update Status</h4>
-                                    <div class="flex gap-4 items-center">
-                                        <select id="update-status-select"
-                                            class="flex-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block p-2.5">
-                                            <option value="In Progress">In Progress</option>
-                                            <option value="Completed">Mark as Completed</option>
-                                        </select>
-                                        <button onclick="saveProjectStatus()"
-                                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm transition">Save
-                                            Status</button>
+                                    <h4 class="font-bold text-gray-900 mb-4">Edit Details</h4>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div class="md:col-span-2">
+                                            <label class="text-xs font-bold text-gray-700 uppercase mb-1">Title</label>
+                                            <input type="text" id="edit-title"
+                                                class="w-full px-3 py-2 border rounded-lg text-sm">
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="text-xs font-bold text-gray-700 uppercase mb-1">Partner</label>
+                                            <input type="text" id="edit-partner"
+                                                class="w-full px-3 py-2 border rounded-lg text-sm">
+                                        </div>
+
+                                        <!-- DATE STARTED -->
+                                        <div>
+                                            <label class="text-xs font-bold text-gray-700 uppercase mb-1">Date
+                                                Started</label>
+                                            <input type="date" id="edit-date"
+                                                class="w-full px-3 py-2 border rounded-lg text-sm">
+                                        </div>
+
+                                        <!-- STATUS + TRIGGER -->
+                                        <div>
+                                            <label class="text-xs font-bold text-gray-700 uppercase mb-1">Status</label>
+                                            <select id="edit-status" onchange="toggleCompletionDate()"
+                                                class="w-full px-3 py-2 border rounded-lg text-sm">
+                                                <option value="New">New</option>
+                                                <option value="In Progress">In Progress</option>
+                                                <option value="Completed">Completed</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- DATE COMPLETED (Hidden) -->
+                                        <div id="completion-date-wrapper"
+                                            class="hidden md:col-span-2 bg-green-50 p-3 rounded border border-green-200 mt-2">
+                                            <label class="text-xs font-bold text-green-800 uppercase mb-1">Date Finished
+                                                (Required)</label>
+                                            <input type="date" id="edit-date-completed"
+                                                class="w-full px-3 py-2 border border-green-300 rounded-lg text-sm bg-white">
+                                        </div>
+
+                                        <div class="md:col-span-2">
+                                            <label
+                                                class="text-xs font-bold text-gray-700 uppercase mb-1">Description</label>
+                                            <textarea id="edit-desc" rows="5"
+                                                class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <button onclick="saveAllChanges()"
+                                            class="px-6 py-2 bg-[#5A2C9D] text-white font-bold rounded-lg text-sm hover:bg-[#4C2684]">Save
+                                            Changes</button>
                                     </div>
                                 </div>
 
-                                <!-- File Upload Section -->
+                                <!-- UPLOAD -->
                                 <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Upload Photos & Docs</h4>
-                                    <p class="text-sm text-gray-500 mb-4">Upload event photos, attendance sheets, or
-                                        reports.</p>
-
-                                    <div class="flex items-center justify-center w-full">
-                                        <label for="dropzone-file"
-                                            class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                                <svg class="w-8 h-8 mb-3 text-gray-500" fill="none"
-                                                    stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
-                                                    </path>
-                                                </svg>
-                                                <p class="text-sm text-gray-500"><span class="font-semibold">Click to
-                                                        upload</span></p>
-                                            </div>
-                                            <input id="dropzone-file" type="file" class="hidden" multiple
-                                                onchange="handleFileUpload(this)" />
-                                        </label>
-                                    </div>
-                                    <div id="upload-status" class="mt-2 text-sm text-gray-500"></div>
+                                    <h4 class="font-bold text-gray-900 mb-2">Upload Files</h4>
+                                    <label
+                                        class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <span class="text-sm text-gray-500">Click to upload</span>
+                                        <input type="file" id="dropzone-file" class="hidden" multiple
+                                            onchange="handleFileUpload(this)">
+                                    </label>
+                                    <div id="upload-status" class="mt-2 text-sm text-center"></div>
                                 </div>
-
                             </div>
                         </div>
 
                     </div>
 
-                    <!-- Modal Footer -->
+                    <!-- Footer -->
                     <div class="bg-gray-50 px-8 py-4 border-t border-gray-200 flex justify-end gap-3">
-                        <button type="button" onclick="closeProjectModal()"
-                            class="px-6 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg hover:bg-gray-300 transition text-sm">Close</button>
-                        <!-- This button will dynamically hide/show -->
-                        <button id="btn-update-project" type="button" onclick="switchToManageTab()"
-                            class="hidden px-6 py-2 bg-[#5A2C9D] text-white font-bold rounded-lg hover:bg-[#4C2684] transition text-sm">Update
+                        <button onclick="closeProjectModal()"
+                            class="px-6 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg text-sm">Close</button>
+                        <button id="btn-update-project" onclick="switchToManageTab()"
+                            class="hidden px-6 py-2 bg-[#5A2C9D] text-white font-bold rounded-lg text-sm">Update
                             Project</button>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
+
 
 
     <!-- MODAL 2: DELETE OPTIONS -->
@@ -990,7 +973,7 @@
                         .eq('id', oppId);
 
                     // 3. Go to form
-                    window.location.href = "submit_proposal.html";
+                    window.location.href = "SubmitProposal.html";
                 } catch (e) {
                     console.error(e);
                     alert("Error starting draft.");
@@ -1062,7 +1045,7 @@
 
                         if (canEdit) {
                             actionsHtml += `
-                        <a href="submit_proposal.html?id=${proposal.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-purple-50 text-cnsc-violet transition" title="Edit">
+                        <a href="SubmitProposal.html?id=${proposal.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-purple-50 text-cnsc-violet transition" title="Edit">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         </a>`;
                         }
@@ -1474,21 +1457,28 @@
         }
 
         function switchTab(tabName, btnClicked) {
-            // 1. Hide all tab panes
-            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
-            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('block'));
+            // Hide all panes safely
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                if (pane) {
+                    pane.classList.add('hidden');
+                    pane.classList.remove('block');
+                }
+            });
 
-            // 2. Show selected pane
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            document.getElementById('tab-' + tabName).classList.add('block');
+            // Show selected pane safely
+            const selectedPane = document.getElementById('tab-' + tabName);
+            if (selectedPane) {
+                selectedPane.classList.remove('hidden');
+                selectedPane.classList.add('block');
+            }
 
-            // 3. Reset all button styles to "Inactive"
+            // Reset Button Styles
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('border-[#5A2C9D]', 'text-[#5A2C9D]', 'font-bold');
                 btn.classList.add('border-transparent', 'text-gray-500', 'font-medium');
             });
 
-            // 4. Set clicked button to "Active"
+            // Activate Clicked Button
             if (btnClicked) {
                 btnClicked.classList.remove('border-transparent', 'text-gray-500', 'font-medium');
                 btnClicked.classList.add('border-[#5A2C9D]', 'text-[#5A2C9D]', 'font-bold');
@@ -1502,77 +1492,85 @@
         function openProjectModal(encodedItem) {
             try {
                 const data = JSON.parse(decodeURIComponent(encodedItem));
-                currentProjectId = data.id; // Store ID for updates
+                currentProjectId = data.id;
 
-                // 1. Populate Basic Fields
-                document.getElementById('pm-title').textContent = data.title;
-                document.getElementById('pm-desc').textContent = data.description || data.rationale || "No description.";
-                document.getElementById('pm-partner').textContent = data.partner_organization || "Internal";
-                document.getElementById('pm-date').textContent = new Date(data.created_at).toLocaleDateString();
+                // Helper to set text content safely
+                const setText = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = val || "N/A";
+                }
+                // Helper to set input values safely
+                const setVal = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = val || "";
+                }
 
-                // 2. Handle Lead/Claimed By
-                const leadName = data.claimed_by || "You";
-                document.getElementById('pm-lead').textContent = leadName;
-                document.getElementById('pm-lead-2').textContent = leadName;
+                // A. POPULATE READ-ONLY VIEW
+                setText('pm-title', data.title);
+                setText('pm-desc', data.description || data.rationale);
+                setText('pm-partner', data.partner_organization);
+                setText('pm-lead', data.claimed_by || "Team");
+                if (document.getElementById('pm-lead-2')) document.getElementById('pm-lead-2').textContent = data.claimed_by || "Team";
 
-                // 3. Status Badge Logic
+                // Handle Date Logic
+                const rawDate = data.date_started || data.created_at;
+                let dateStr = "N/A";
+                let dateInputVal = "";
+                if (rawDate) {
+                    const d = new Date(rawDate);
+                    if (!isNaN(d.getTime())) {
+                        dateStr = d.toLocaleDateString();
+                        dateInputVal = d.toISOString().split('T')[0];
+                    }
+                }
+                setText('pm-date', dateStr);
+
+                // Status Badge
                 const statusEl = document.getElementById('pm-status');
-                statusEl.textContent = data.status;
-                statusEl.className = 'text-xs font-bold px-2 py-1 rounded uppercase text-white ';
-                if (data.status === 'Completed') statusEl.classList.add('bg-green-500');
-                else if (data.status === 'In Progress') statusEl.classList.add('bg-blue-500');
-                else statusEl.classList.add('bg-gray-500');
-
-                // 4. Populate Attachments (Display Images nicely)
-                const attachContainer = document.getElementById('pm-attachments');
-                attachContainer.innerHTML = '';
-                if (data.attachment_urls && data.attachment_urls.length > 0) {
-                    data.attachment_urls.forEach((url, i) => {
-                        // Check if it's an image based on extension (simple check)
-                        const isImg = url.match(/\.(jpeg|jpg|gif|png|webp)$/) != null;
-                        if (isImg) {
-                            attachContainer.innerHTML += `
-                        <a href="${url}" target="_blank" class="block overflow-hidden rounded-lg border border-gray-200 hover:shadow-md transition">
-                            <img src="${url}" class="w-full h-32 object-cover" alt="Attachment">
-                            <div class="p-2 bg-white text-xs font-bold text-gray-700">Image ${i + 1}</div>
-                        </a>`;
-                        } else {
-                            attachContainer.innerHTML += `
-                        <a href="${url}" target="_blank" class="flex items-center p-4 bg-white border border-gray-200 rounded-lg hover:border-[#5A2C9D] transition group h-32">
-                            <div class="text-center w-full">
-                                <span class="text-3xl block mb-2">📄</span>
-                                <span class="text-xs font-bold text-gray-600 group-hover:text-[#5A2C9D]">View Document</span>
-                            </div>
-                        </a>`;
-                        }
-                    });
-                } else {
-                    attachContainer.innerHTML = '<p class="col-span-full text-gray-400 italic text-sm text-center py-4">No files uploaded yet.</p>';
+                if (statusEl) {
+                    statusEl.textContent = data.status;
+                    statusEl.className = 'text-xs font-bold px-2 py-1 rounded uppercase text-white ';
+                    if (data.status === 'Completed') statusEl.classList.add('bg-green-500');
+                    else if (data.status === 'In Progress') statusEl.classList.add('bg-blue-500');
+                    else statusEl.classList.add('bg-gray-500');
                 }
 
-                // ============================================================
-                // ACCESS CONTROL LOGIC
-                // ============================================================
+                // B. POPULATE EDIT FORM (Manage Tab)
+                setVal('edit-title', data.title);
+                setVal('edit-partner', data.partner_organization);
+                setVal('edit-status', data.status);
+                setVal('edit-desc', data.description || data.rationale);
+                setVal('edit-date', dateInputVal);
+
+                // Handle Completed Date
+                const compInput = document.getElementById('edit-date-completed');
+                if (compInput) {
+                    compInput.value = data.date_completed ? new Date(data.date_completed).toISOString().split('T')[0] : "";
+                }
+                toggleCompletionDate(); // Refresh visibility
+
+                // C. ACCESS CONTROL (Show/Hide Buttons)
+                const isOwner = data.claimed_by === currentUser;
                 const updateBtn = document.getElementById('btn-update-project');
-                const statusSelect = document.getElementById('update-status-select');
+                const manageTabBtn = document.getElementById('btn-manage-tab');
 
-                // Logic: Show button IF (claimed_by matches currentUser) OR (It's my proposal and status isn't Archived)
-                // Note: Ensure 'currentUser' variable is defined at the top of your script
-                if (data.claimed_by === currentUser) {
-                    updateBtn.classList.remove('hidden');
-                    statusSelect.value = data.status; // Set current status in dropdown
-                } else {
-                    updateBtn.classList.add('hidden');
-                }
+                if (updateBtn) updateBtn.classList.toggle('hidden', !isOwner);
+                if (manageTabBtn) manageTabBtn.classList.toggle('hidden', !isOwner);
 
-                // Reset Tabs
+                // D. RENDER ATTACHMENTS
+                renderAttachments(data.attachment_urls, isOwner);
+
+                // E. SHOW MODAL
                 switchTab('overview', document.querySelector('.tab-btn'));
                 document.getElementById('project-modal').classList.remove('hidden');
 
             } catch (e) {
-                console.error(e);
+                console.error("Error opening modal:", e);
+                alert("Details could not be loaded.");
             }
         }
+
+
 
         // --- NEW: Switch to Manage Tab ---
         function switchToManageTab() {
@@ -1618,62 +1616,39 @@
 
         // --- NEW: File Upload Logic ---
         async function handleFileUpload(input) {
-            if (!input.files || input.files.length === 0) return;
-            if (!currentProjectId) return;
-
-            const statusDiv = document.getElementById('upload-status');
-            statusDiv.innerHTML = `<span class="text-blue-600 animate-pulse">Uploading ${input.files.length} file(s)... please wait.</span>`;
-
-            const newUrls = [];
+            if (!input.files.length || !currentProjectId) return;
+            const status = document.getElementById('upload-status');
+            if (status) status.innerHTML = '<span class="text-blue-500 animate-pulse">Uploading...</span>';
 
             try {
+                const newUrls = [];
                 for (const file of input.files) {
-                    // 1. Create a unique file path: project_id/timestamp_filename
-                    const filePath = `${currentProjectId}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-
-                    // 2. Upload to Supabase Storage (Bucket: 'project-files')
-                    const { data, error } = await sbClient.storage
-                        .from('project-files') // <--- MAKE SURE YOU CREATE THIS BUCKET
-                        .upload(filePath, file);
-
-                    if (error) throw error;
-
-                    // 3. Get Public URL
-                    const { data: { publicUrl } } = sbClient.storage
-                        .from('project-files')
-                        .getPublicUrl(filePath);
-
-                    newUrls.push(publicUrl);
+                    const name = `${currentProjectId}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    await sbClient.storage.from('project-files').upload(name, file);
+                    const { data } = sbClient.storage.from('project-files').getPublicUrl(name);
+                    newUrls.push(data.publicUrl);
                 }
 
-                // 4. Update Database Array (Append new URLs to existing)
-                // First, get current URLs to append to them
-                const { data: currentData } = await sbClient
-                    .from('partner_opportunities')
-                    .select('attachment_urls')
-                    .eq('id', currentProjectId)
-                    .single();
+                // Get existing + new
+                const { data } = await sbClient.from('partner_opportunities').select('attachment_urls').eq('id', currentProjectId).single();
+                const combined = [...(data.attachment_urls || []), ...newUrls];
 
-                const existingUrls = currentData.attachment_urls || [];
-                const updatedUrls = [...existingUrls, ...newUrls];
+                // Save
+                await sbClient.from('partner_opportunities').update({ attachment_urls: combined }).eq('id', currentProjectId);
 
-                // 5. Save back to DB
-                const { error: updateError } = await sbClient
-                    .from('partner_opportunities')
-                    .update({ attachment_urls: updatedUrls })
-                    .eq('id', currentProjectId);
+                if (status) status.innerHTML = '<span class="text-green-600 font-bold">Done! Redirecting...</span>';
 
-                if (updateError) throw updateError;
+                renderAttachments(combined, true);
+                setTimeout(() => {
+                    switchTab('docs', document.querySelectorAll('.tab-btn')[2]); // Switch to Gallery
+                    if (status) status.innerHTML = '';
+                }, 800);
 
-                statusDiv.innerHTML = `<span class="text-green-600 font-bold">✅ Successfully uploaded!</span>`;
-                input.value = ''; // Clear input
-
-            } catch (error) {
-                console.error("Upload Error:", error);
-                statusDiv.innerHTML = `<span class="text-red-500 font-bold">❌ Error: ${error.message}</span>`;
+            } catch (e) {
+                console.error(e);
+                if (status) status.innerHTML = '<span class="text-red-500">Error uploading.</span>';
             }
         }
-
 
         // --- PROFILE & SETTINGS LOGIC ---
 
@@ -2057,6 +2032,205 @@
             btn.textContent = "Save Status";
         }
 
+        // --- HELPER: Render Attachments ---
+        function renderAttachments(urls, isOwner = false) {
+            const container = document.getElementById('pm-attachments');
+            if (!container) return; // Prevent crash if ID missing
+
+            container.innerHTML = '';
+
+            if (urls && urls.length > 0) {
+                urls.forEach((url, i) => {
+                    const isImg = url.match(/\.(jpeg|jpg|gif|png|webp|avif)$/i) != null;
+
+                    const deleteBtn = isOwner ?
+                        `<button onclick="deleteAttachment('${encodeURIComponent(url)}')" class="absolute top-2 right-2 bg-red-600 text-white p-1.5 rounded-full shadow-md hover:bg-red-700 transition opacity-0 group-hover:opacity-100 z-20" title="Delete">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                     </button>` : '';
+
+                    const content = isImg
+                        ? `<img src="${url}" class="w-full h-32 object-cover transition duration-500 group-hover:scale-110">
+                       <div class="p-2 bg-white text-xs font-bold text-gray-700">Image ${i + 1}</div>`
+                        : `<div class="flex items-center justify-center h-32 text-gray-400"><span class="text-3xl">📄</span></div>
+                       <div class="p-2 bg-white text-xs font-bold text-center text-gray-700">Document ${i + 1}</div>`;
+
+                    container.innerHTML += `
+                    <div class="relative group block overflow-hidden rounded-lg border border-gray-200 hover:shadow-md transition bg-gray-100">
+                        ${deleteBtn}
+                        <a href="${url}" target="_blank" class="block h-full">${content}</a>
+                    </div>`;
+                });
+            } else {
+                container.innerHTML = '<p class="col-span-full text-gray-400 italic text-sm text-center py-4">No files uploaded yet.</p>';
+            }
+        }
+
+
+
+
+        async function saveAllChanges() {
+            const newTitle = document.getElementById('edit-title').value;
+            const newPartner = document.getElementById('edit-partner').value;
+            const newStatus = document.getElementById('edit-status').value;
+            const newDesc = document.getElementById('edit-desc').value;
+            const newDate = document.getElementById('edit-date').value;
+            const completionDate = document.getElementById('edit-date-completed').value;
+
+            if (newStatus === 'Completed' && !completionDate) {
+                alert("Please enter the Date Finished.");
+                return;
+            }
+
+            if (!currentProjectId) return;
+
+            const btn = event.target;
+            btn.innerText = "Saving...";
+            btn.disabled = true;
+
+            const { error } = await sbClient
+                .from('partner_opportunities')
+                .update({
+                    title: newTitle,
+                    partner_organization: newPartner,
+                    status: newStatus,
+                    description: newDesc,
+                    date_started: newDate,
+                    date_completed: completionDate
+                })
+                .eq('id', currentProjectId);
+
+            if (error) {
+                alert("Error: " + error.message);
+            } else {
+                if (newStatus === 'Completed') {
+                    await sendSystemNotification(currentUser, `Project "${newTitle}" marked as Completed on ${completionDate}!`, 'success');
+                } else {
+                    alert("Project updated successfully!");
+                }
+
+                closeProjectModal();
+
+                // Refresh the active view
+                if (document.getElementById('view-handled').classList.contains('hidden') === false) fetchHandledProjects();
+                else fetchCompletedProjects();
+            }
+            btn.innerText = "Save Changes";
+            btn.disabled = false;
+        }
+
+
+        async function deleteAttachment(encodedUrl) {
+            if (!confirm("Delete this file permanently?")) return;
+            const urlToDelete = decodeURIComponent(encodedUrl);
+
+            try {
+                // 1. Get current array
+                const { data } = await sbClient
+                    .from('partner_opportunities')
+                    .select('attachment_urls')
+                    .eq('id', currentProjectId)
+                    .single();
+
+                if (!data) return;
+
+                // 2. Filter out deleted URL
+                const updatedUrls = data.attachment_urls.filter(u => u !== urlToDelete);
+
+                // 3. Update DB
+                const { error } = await sbClient
+                    .from('partner_opportunities')
+                    .update({ attachment_urls: updatedUrls })
+                    .eq('id', currentProjectId);
+
+                if (error) throw error;
+
+                // 4. Refresh UI
+                renderAttachments(updatedUrls, true);
+
+            } catch (e) {
+                console.error(e);
+                alert("Delete failed.");
+            }
+        }
+
+
+
+        // --- 1. TOGGLE FUNCTION (Add this new function) ---
+        function toggleCompletionDate() {
+            const status = document.getElementById('edit-status');
+            const wrapper = document.getElementById('completion-date-wrapper');
+            const dateInput = document.getElementById('edit-date-completed');
+
+            // Safety Check
+            if (!status || !wrapper || !dateInput) return;
+
+            if (status.value === 'Completed') {
+                wrapper.classList.remove('hidden');
+                if (!dateInput.value) dateInput.value = new Date().toISOString().split('T')[0];
+            } else {
+                wrapper.classList.add('hidden');
+                dateInput.value = '';
+            }
+        }
+
+        function switchToManageTab() {
+            switchTab('manage', document.getElementById('btn-manage-tab'));
+        }
+
+        function closeProjectModal() {
+            document.getElementById('project-modal').classList.add('hidden');
+        }
+
+        // --- 2. UPDATE: SAVE CHANGES (With Validation) ---
+        async function saveAllChanges() {
+            const newTitle = document.getElementById('edit-title').value;
+            const newPartner = document.getElementById('edit-partner').value;
+            const newStatus = document.getElementById('edit-status').value;
+            const newDesc = document.getElementById('edit-desc').value;
+            const newDate = document.getElementById('edit-date').value;
+            const completionDate = document.getElementById('edit-date-completed').value; // <--- NEW
+
+            if (!currentProjectId) return;
+
+            // --- VALIDATION LOGIC ---
+            if (newStatus === 'Completed' && !completionDate) {
+                alert("Please select the Date Finished before saving.");
+                document.getElementById('edit-date-completed').focus();
+                return; // Stop execution
+            }
+
+            const btn = event.target;
+            btn.innerText = "Saving...";
+            btn.disabled = true;
+
+            const { error } = await sbClient
+                .from('partner_opportunities')
+                .update({
+                    title: newTitle,
+                    partner_organization: newPartner,
+                    status: newStatus,
+                    description: newDesc,
+                    date_started: newDate,
+                    date_completed: completionDate // <--- Save to new column
+                })
+                .eq('id', currentProjectId);
+
+            if (error) {
+                alert("Error saving changes: " + error.message);
+            } else {
+                if (newStatus === 'Completed') {
+                    await sendSystemNotification(currentUser, `Project "${newTitle}" marked as Completed on ${completionDate}!`, 'success');
+                } else {
+                    alert("Project updated successfully!");
+                }
+                closeProjectModal();
+
+                if (document.getElementById('view-handled').classList.contains('hidden') === false) fetchHandledProjects();
+                else fetchCompletedProjects();
+            }
+            btn.innerText = "Save Changes";
+            btn.disabled = false;
+        }
 
     </script>
 </body>

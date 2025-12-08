@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner With Us - CNSC Extension</title>
+
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../CSS/partner-form.css">
+</head>
+
+<body>
+
+    <header class="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+
+            <!-- Logo -->
+            <a href="../index.html" class="flex items-center space-x-3 h-full">
+                <div class="h-10 w-10 rounded-full flex items-center justify-center text-xl font-bold">
+                    <img src="../logo.png" alt="CNSC Logo">
+                </div>
+                <div class="leading-none hidden sm:block">
+                    <p class="text-xs font-bold text-gray-800 tracking-wider">CCMS Extension Services</p>
+                    <h1 class="text-xl font-extrabold violet-accent">CNSC</h1>
+                </div>
+            </a>
+
+            <div class="flex items-center space-x-6">
+                <ul id="desktop-menu" class="hidden lg:flex items-center space-x-6 text-sm font-semibold text-gray-700">
+
+                    <!-- Home: Links to index.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="../Home.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            Home
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="../history.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">History</a>
+                            <a href="../mission-vision.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Mission &
+                                Vision</a>
+                            <a href="../quality-policy.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Quality
+                                Policy</a>
+                        </div>
+                    </li>
+
+                    <!-- Programs: Links to programs.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="../programs.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            Programs
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="../executive-office.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Executive
+                                Office</a>
+                            <a href="../governing-board.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Governing
+                                Board</a>
+                            <a href="../org-chart.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Organizational
+                                Chart</a>
+                        </div>
+                    </li>
+
+                    <!-- News & Events: Links to news-events.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="../News&Events.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            News & Events
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="../news-engineering.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Engineering</a>
+                            <a href="../news-arts-sciences.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Arts &
+                                Sciences</a>
+                            <a href="../news-agriculture.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Agriculture</a>
+                        </div>
+                    </li>
+
+                    <!-- Partnerships: Links to partnerships.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="../Partnership.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            Partnerships
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="../requirements.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Requirements</a>
+                            <a href="../application-form.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Application
+                                Form</a>
+                            <a href="../scholarships.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Scholarships</a>
+                        </div>
+                    </li>
+
+                    <!-- Resources: Links to resources.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="../Reports.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            Resources
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="../journals.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Journals</a>
+                            <a href="../call-for-papers.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Call for
+                                Papers</a>
+                            <a href="../ethics-board.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Ethics
+                                Board</a>
+                        </div>
+                    </li>
+
+                    <!-- Contact Us: Links to contact.html -->
+                    <li class="relative group" tabindex="0">
+                        <a href="../Contact.html"
+                            class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
+                            Contact Us
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="../contact-projects.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Projects</a>
+                            <a href="../contact-partnerships.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Partnerships</a>
+                            <a href="../contact-forms.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Forms</a>
+                        </div>
+                    </li>
+
+                </ul>
+                <!-- Search and Mobile Menu -->
+                <button
+                    class="maroon-accent hover:text-red-900 p-2 rounded-full transition duration-150 focus:outline-none"
+                    aria-label="Search">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+                <button id="mobile-menu-button"
+                    class="lg:hidden p-2 text-gray-700 hover:text-[#5A2C9D] rounded-md focus:outline-none"
+                    aria-label="Toggle menu">
+                    <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                    <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu (Drops down when toggled) -->
+    <div id="mobile-menu"
+        class="hidden fixed top-20 left-0 w-full bg-white lg:hidden shadow-lg z-40 border-t border-gray-200">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+
+            <!-- Mobile Item with Dropdown -->
+            <div class="border-b border-gray-100 pb-2">
+                <button data-target="about-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    ABOUT CNSC
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="about-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">History</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Mission
+                        & Vision</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Quality
+                        Policy</a>
+                </div>
+            </div>
+
+            <!-- Repeated structure for other links -->
+            <div class="border-b border-gray-100 pb-2">
+                <button data-target="admin-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    ADMINISTRATION
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="admin-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Executive
+                        Office</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Governing
+                        Board</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Organizational
+                        Chart</a>
+                </div>
+            </div>
+
+            <div class="border-b border-gray-100 pb-2">
+                <button data-target="college-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    COLLEGES
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="college-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Engineering</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Arts
+                        & Sciences</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Agriculture</a>
+                </div>
+            </div>
+
+            <div class="border-b border-gray-100 pb-2">
+                <button data-target="admission-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    ADMISSION
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="admission-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Requirements</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Application
+                        Form</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Scholarships</a>
+                </div>
+            </div>
+
+            <div class="border-b border-gray-100 pb-2">
+                <button data-target="research-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    RESEARCH
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="research-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Journals</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Call
+                        for Papers</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Ethics
+                        Board</a>
+                </div>
+            </div>
+
+            <div class="pb-2">
+                <button data-target="extension-dropdown"
+                    class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
+                    EXTENSION
+                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="extension-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Projects</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Partnerships</a>
+                    <a href="#"
+                        class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Forms</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <div class="relative pt-20">
+        <div class="h-[300px] relative overflow-hidden">
+            <!-- Placeholder Background Image -->
+            <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop"
+                alt="Partnership" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-violet-900/90 to-violet-600/70"></div>
+
+            <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
+                <span class="text-yellow-400 font-bold tracking-[0.2em] text-xs uppercase mb-3 fade-in-up"
+                    style="animation-delay: 0.1s;">Collaborate • Connect • Create</span>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 fade-in-up"
+                    style="animation-delay: 0.2s;">Partner With Us</h1>
+                <p class="text-gray-200 max-w-2xl text-lg fade-in-up" style="animation-delay: 0.3s;">Submit a proposal to
+                    collaborate with the College of Computer & Multimedia Studies Extension Services.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 border-t-4 border-violet fade-in-up"
+            style="animation-delay: 0.4s;">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Partnership Request Letter Template</h2>
+                <p class="text-sm text-gray-600">Please fill out the letter template below with your organization's information.</p>
+            </div>
+
+            <form class="space-y-6" id="partnerForm" enctype="multipart/form-data">
+                <!-- Letter Template -->
+                <div class="bg-gray-50 border-2 border-gray-200 rounded-lg p-6 md:p-10 font-serif">
+                    <!-- Date -->
+                    <div class="mb-6">
+                        <label for="letterDate" class="block text-sm font-semibold text-gray-700 mb-1">Date <span class="text-red-500">*</span></label>
+                        <input type="date" id="letterDate" name="letterDate" required
+                            class="w-full md:w-64 px-4 py-2 bg-white border border-gray-300 rounded focus:outline-none focus:border-violet focus:ring-2 focus:ring-violet transition"
+                            value="">
+                    </div>
+
+                    <!-- Recipient -->
+                    <div class="mb-6">
+                        <div class="text-gray-700">
+                            <p class="font-semibold mb-1">To:</p>
+                            <p>College of Computer & Multimedia Studies Extension Services</p>
+                            <p>Camarines Norte State College</p>
+                            <p>Daet, Camarines Norte</p>
+                        </div>
+                    </div>
+
+                    <!-- Subject -->
+                    <div class="mb-6">
+                        <label for="subject" class="block text-sm font-semibold text-gray-700 mb-1">Subject: <span class="text-red-500">*</span></label>
+                        <input type="text" id="subject" name="subject" required
+                            class="w-full px-4 py-2 bg-white border border-gray-300 rounded focus:outline-none focus:border-violet focus:ring-2 focus:ring-violet transition"
+                            placeholder="Request for Partnership with CNSC Extension Services">
+                    </div>
+
+                    <!-- Salutation -->
+                    <div class="mb-4">
+                        <p class="text-gray-700">Dear Sir/Madam:</p>
+                    </div>
+
+                    <!-- Letter Body -->
+                    <div class="space-y-4 text-gray-700 leading-relaxed">
+                        <!-- Paragraph 1 -->
+                        <div>
+                            <p class="mb-2">I am writing on behalf of <span class="inline-block min-w-[200px]">
+                                <input type="text" id="orgName" name="orgName" required
+                                    class="w-full px-2 py-1 bg-white border-b-2 border-dashed border-gray-400 focus:outline-none focus:border-violet focus:border-solid transition text-center font-semibold"
+                                    placeholder="[Organization Name]">
+                            </span>, a <span class="inline-block min-w-[150px]">
+                                <select id="orgType" name="orgType" required
+                                    class="w-full px-2 py-1 bg-white border-b-2 border-dashed border-gray-400 focus:outline-none focus:border-violet focus:border-solid transition text-center font-semibold">
+                                    <option value="">[Select Type]</option>
+                                    <option value="Local Government Unit (LGU)">Local Government Unit (LGU)</option>
+                                    <option value="Industry Partner">Industry Partner</option>
+                                    <option value="Academic Institution">Academic Institution</option>
+                                    <option value="Non-Government Organization (NGO)">Non-Government Organization (NGO)</option>
+                                </select>
+                            </span> located at <span class="inline-block min-w-[250px]">
+                                <input type="text" id="address" name="address" required
+                                    class="w-full px-2 py-1 bg-white border-b-2 border-dashed border-gray-400 focus:outline-none focus:border-violet focus:border-solid transition text-center font-semibold"
+                                    placeholder="[Organization Address]">
+                            </span>.</p>
+                        </div>
+
+                        <!-- Paragraph 2 -->
+                        <div>
+                            <p class="mb-2">We are interested in establishing a partnership with the College of Computer & Multimedia Studies Extension Services to collaborate on the following areas:</p>
+                            <textarea id="collaboration" name="collaboration" rows="4" required
+                                class="w-full px-4 py-3 bg-white border-2 border-dashed border-gray-400 rounded focus:outline-none focus:border-violet focus:border-solid transition resize-none"
+                                placeholder="[Please describe the specific areas of collaboration, potential projects, or partnership goals. Include details about how your organization wishes to work with CNSC Extension Services...]"></textarea>
+                        </div>
+
+                        <!-- Paragraph 3 -->
+                        <div>
+                            <p class="mb-2">Through this partnership, we hope to achieve the following outcomes:</p>
+                            <textarea id="outcomes" name="outcomes" rows="3"
+                                class="w-full px-4 py-3 bg-white border-2 border-dashed border-gray-400 rounded focus:outline-none focus:border-violet focus:border-solid transition resize-none"
+                                placeholder="[Describe the expected outcomes, benefits, or impact of this partnership...]"></textarea>
+                        </div>
+
+                        <!-- Paragraph 4 -->
+                        <div>
+                            <p class="mb-2">We believe that this collaboration will be mutually beneficial and will contribute to the advancement of technology and community development in the Bicol Region.</p>
+                        </div>
+
+                        <!-- Paragraph 5 -->
+                        <div>
+                            <p class="mb-2">We are committed to working closely with your team to ensure the success of this partnership. We are open to discussing the terms and conditions of our collaboration at your earliest convenience.</p>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div>
+                            <p class="mb-2">Additional Information:</p>
+                            <textarea id="additionalInfo" name="additionalInfo" rows="2"
+                                class="w-full px-4 py-3 bg-white border-2 border-dashed border-gray-400 rounded focus:outline-none focus:border-violet focus:border-solid transition resize-none"
+                                placeholder="[Any additional information you would like to include...]"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Closing -->
+                    <div class="mt-8 space-y-6">
+                        <div>
+                            <p class="text-gray-700 mb-2">Thank you for considering our proposal. We look forward to your positive response.</p>
+                        </div>
+
+                        <div>
+                            <p class="text-gray-700 mb-6">Respectfully yours,</p>
+                            
+                            <!-- Signature Fields -->
+                            <div class="space-y-4">
+                                <div>
+                                    <input type="text" id="contactPerson" name="contactPerson" required
+                                        class="w-full md:w-80 px-4 py-2 bg-white border-b-2 border-gray-400 focus:outline-none focus:border-violet transition font-semibold"
+                                        placeholder="[Your Full Name]">
+                                    <p class="text-sm text-gray-600 mt-1">Signature</p>
+                                </div>
+                                
+                                <div>
+                                    <input type="text" id="position" name="position"
+                                        class="w-full md:w-80 px-4 py-2 bg-white border-b-2 border-gray-400 focus:outline-none focus:border-violet transition"
+                                        placeholder="[Your Position/Title]">
+                                    <p class="text-sm text-gray-600 mt-1">Position/Title</p>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                    <div>
+                                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email Address <span class="text-red-500">*</span></label>
+                                        <input type="email" id="email" name="email" required
+                                            class="w-full px-4 py-2 bg-white border border-gray-300 rounded focus:outline-none focus:border-violet focus:ring-2 focus:ring-violet transition"
+                                            placeholder="contact@organization.com">
+                                    </div>
+                                    <div>
+                                        <label for="phone" class="block text-sm font-semibold text-gray-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
+                                        <input type="tel" id="phone" name="phone" required
+                                            class="w-full px-4 py-2 bg-white border border-gray-300 rounded focus:outline-none focus:border-violet focus:ring-2 focus:ring-violet transition"
+                                            placeholder="+63 XXX XXX XXXX">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attachments Section -->
+                <div class="mt-8 pt-6 border-t-2 border-gray-300">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Attachments</h3>
+                    <p class="text-sm text-gray-600 mb-4">You may attach supporting documents such as organization profile, proposal documents, certificates, or other relevant files.</p>
+                    
+                    <div class="space-y-4">
+                        <!-- File Upload Area -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 hover:border-violet transition-colors">
+                            <div class="text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <label for="fileUpload" class="cursor-pointer">
+                                    <span class="mt-2 block text-sm font-semibold text-gray-900">
+                                        Click to upload files
+                                    </span>
+                                    <span class="mt-1 block text-xs text-gray-500">
+                                        PDF, DOC, DOCX, JPG, PNG (Max 10MB per file)
+                                    </span>
+                                </label>
+                                <input type="file" id="fileUpload" name="attachments[]" multiple
+                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                    class="hidden"
+                                    onchange="handleFileSelect(event)">
+                            </div>
+                        </div>
+
+                        <!-- File List Display -->
+                        <div id="fileList" class="space-y-2 hidden">
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Selected Files:</p>
+                            <div id="fileItems" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" id="submitButton"
+                        class="w-full bg-violet text-white font-bold py-4 rounded-lg hover:bg-violet-dark transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span id="submitButtonText">Submit Partnership Request</span>
+                        <span id="submitButtonLoader" class="hidden">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Submitting...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Note -->
+                <p class="text-xs text-gray-500 text-center mt-4">
+                    <span class="text-red-500">*</span> Required fields. Your partnership request will be reviewed by our team and
+                    we will contact you within 5-7 business days.
+                </p>
+            </form>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-purple-100 mt-12 w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 text-sm border-b pb-8 mb-6">
+
+                <div class="col-span-2 lg:col-span-1 space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="h-8 w-8 flex items-center justify-center text-lg font-bold "><img src="../logo.png"
+                                alt="">
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-gray-800 tracking-wider">CCMS Extension</p>
+                            <h2 class="text-lg font-extrabold violet-accent">CNSC</h2>
+                        </div>
+                    </div>
+                    <p class="text-gray-500 text-xs mt-2">
+                        Dedicated to extending knowledge and service to the community.
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wider mb-2">Features</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Programs</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Training
+                                Modules</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Events
+                                Calendar</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Media
+                                Kit</a></li>
+                    </ul>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wider mb-2">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Downloadable
+                                Forms</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Research
+                                Papers</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">University
+                                Manual</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Contact
+                                Directory</a></li>
+                    </ul>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wider mb-2">About</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Our
+                                History</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Mission,
+                                Vision</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Quality
+                                Policy</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Partners</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="space-y-3 col-span-2 md:col-span-1">
+                    <h3 class="font-bold text-gray-800 uppercase tracking-wider mb-2">Connect</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Alumni
+                                Network</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Career
+                                Opportunities</a></li>
+                        <li><a href="#"
+                                class="text-gray-600 hover:text-indigo-600 transition-colors duration-200 block">Feedback</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500">
+
+                <p class="order-2 sm:order-1 mt-4 sm:mt-0">&copy; <span id="current-year"></span> College of Computer &
+                    Multimedia Studies - CNSC <br> All rights
+                    reserved.</p>
+
+                <div class="flex space-x-4 order-1 sm:order-2">
+                    <a href="#" class="violet-accent hover:text-[#4C2684]" aria-label="Facebook">
+                        <svg fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16">
+                            <path
+                                d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z" />
+                        </svg>
+                    </a>
+                    <a href="#" class="violet-accent hover:text-[#4C2684]" aria-label="Twitter">
+                        <svg fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16">
+                            <path
+                                d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.28-.006-.42a6.685 6.685 0 0 0 1.625-1.763 6.7 6.7 0 0 1-1.875.514 3.3 3.3 0 0 0 1.345-1.897 6.7 6.7 0 0 1-2.087.793A3.3 3.3 0 0 0 7.846 3.05a3.298 3.298 0 0 0-3.374 3.037c0 .19 0 .37.006.55A9.324 9.324 0 0 1 .49 2.583a3.3 3.3 0 0 0 1.03 4.437 3.29 3.29 0 0 1-1.487-.407v.03a3.3 3.3 0 0 0 2.646 3.255 3.3 3.3 0 0 1-.84.103 3.33 3.33 0 0 1-.606-.055 3.3 3.3 0 0 0 3.05 2.28 6.69 6.69 0 0 1-4.394 1.23A6.874 6.874 0 0 1 0 14.856a9.42 9.42 0 0 0 5.026.144z" />
+                        </svg>
+                    </a>
+                    <a href="#" class="violet-accent hover:text-[#4C2684]" aria-label="Instagram">
+                        <svg fill="currentColor" class="w-5 h-5" viewBox="0 0 16 16">
+                            <path
+                                d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.429a3.29 3.29 0 0 0-1.025.794A3.29 3.29 0 0 0 .429 2.76C.222 3.269.087 3.85.048 4.703.01 5.556 0 5.829 0 8s.01 2.444.048 3.297c.04.853.174 1.434.381 1.943.206.51.488.963.928 1.403.44.44.893.722 1.403.928.51.206 1.091.341 1.943.381C5.556 15.99 5.829 16 8 16s2.444-.01 3.297-.048c.853-.04 1.434-.174 1.943-.381.51-.206.963-.488 1.403-.928.44-.44.722-.893.928-1.403.206-.51.34-1.091.381-1.943.038-.853.048-1.126.048-3.297s-.01-2.444-.048-3.297c-.04-.853-.174-1.434-.381-1.943a3.29 3.29 0 0 0-.928-1.403 3.29 3.29 0 0 0-1.403-.928C13.269.222 12.688.087 11.835.048 10.982.01 10.709 0 8 0zm0 2.163c4.444 0 5.268.017 5.766.04a1.8 1.8 0 0 1 1.154.441 1.8 1.8 0 0 1 .441 1.154c.023.497.04 1.32.04 5.766s-.017 5.268-.04 5.766a1.8 1.8 0 0 1-.441 1.154 1.8 1.8 0 0 1-1.154.441c-.497.023-1.32.04-5.766.04s-5.268-.017-5.766-.04a1.8 1.8 0 0 1-1.154-.441 1.8 1.8 0 0 1-.441-1.154c-.023-.497-.04-1.32-.04-5.766s.017-5.268.04-5.766a1.8 1.8 0 0 1 .441-1.154 1.8 1.8 0 0 1 1.154-.441c.497-.023 1.32-.04 5.766-.04zm0 1.635a4.195 4.195 0 1 0 0 8.39 4.195 4.195 0 0 0 0-8.39zm0 6.848a2.653 2.653 0 1 1 0-5.306 2.653 2.653 0 0 1 0 5.306zM13.438 4.438a.938.938 0 1 0 0-1.876.938.938 0 0 0 0 1.876z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="../JS/partner-form.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        </script>
+
+</body>
+
+</html>
+

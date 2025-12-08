@@ -6,9 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CNSC - Programs & Projects</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    
     <style>
+         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
@@ -64,14 +67,13 @@
 </head>
 
 <body>
-
     <header class="fixed top-0 left-0 w-full bg-white shadow-md z-50">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
 
             <!-- Logo -->
             <a href="index.html" class="flex items-center space-x-3 h-full">
                 <div class="h-10 w-10 rounded-full flex items-center justify-center text-xl font-bold">
-                    <img src="image.png" alt="CNSC Logo">
+                    <img src="logo.png" alt="CNSC Logo">
                 </div>
                 <div class="leading-none hidden sm:block">
                     <p class="text-xs font-bold text-gray-800 tracking-wider">CCMS Extension Services</p>
@@ -96,41 +98,25 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="history.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">History</a>
-                            <a href="mission-vision.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Mission &
+                            <a href="Home.html#mission-vision"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Mission
+                                &
                                 Vision</a>
-                            <a href="quality-policy.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Quality
-                                Policy</a>
+                            <a href="Home.html#upcoming-events"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Upcoming
+                                Events & News</a>
+                            <a href="Home.html#featured-projects"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Featured
+                                Projects</a>
                         </div>
                     </li>
 
                     <!-- Programs: Links to programs.html -->
                     <li class="relative group" tabindex="0">
-                        <a href="programs.html"
+                        <a href="Programs.html"
                             class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
                             Programs
-                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
-                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
                         </a>
-                        <div
-                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="executive-office.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Executive
-                                Office</a>
-                            <a href="governing-board.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Governing
-                                Board</a>
-                            <a href="org-chart.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Organizational
-                                Chart</a>
-                        </div>
                     </li>
 
                     <!-- News & Events: Links to news-events.html -->
@@ -147,13 +133,18 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="news-engineering.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Engineering</a>
-                            <a href="news-arts-sciences.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Arts &
-                                Sciences</a>
-                            <a href="news-agriculture.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Agriculture</a>
+                            <a href="News&Events.html#calendar"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Event
+                                Calendar</a>
+                            <a href="News&Events.html#upcomingEvents"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Upcoming
+                                Events</a>
+                            <a href="News&Events.html#newsArticles"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">News
+                                Articles</a>
+                            <a href="News&Events.html#gallery"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Event
+                                Gallery</a>
                         </div>
                     </li>
 
@@ -171,13 +162,14 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="requirements.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Requirements</a>
-                            <a href="application-form.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Application
-                                Form</a>
-                            <a href="scholarships.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Scholarships</a>
+                            <a href="Partnership.html#partnerOrg"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Partner
+                                Organizations</a>
+                            <a href="Partnership.html#moa"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">MOA</a>
+                            <a href="Partnership.html#moa"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Partner
+                                With Us</a>
                         </div>
                     </li>
 
@@ -186,24 +178,7 @@
                         <a href="Reports.html"
                             class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
                             Resources
-                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
-                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
                         </a>
-                        <div
-                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="journals.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Journals</a>
-                            <a href="call-for-papers.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Call for
-                                Papers</a>
-                            <a href="ethics-board.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Ethics
-                                Board</a>
-                        </div>
                     </li>
 
                     <!-- Contact Us: Links to contact.html -->
@@ -220,40 +195,100 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="contact-projects.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Projects</a>
-                            <a href="contact-partnerships.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Partnerships</a>
-                            <a href="contact-forms.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Forms</a>
+                            <a href="Contact.html#inquiry"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Inquiries</a>
+                            <a href="Contact.html#inquiry"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Location</a>
+                            <a href="Contact.html#extensionOffices"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Directory
+                                of Extension Offices</a>
                         </div>
                     </li>
 
                 </ul>
-                <!-- Search and Mobile Menu (Unchanged) -->
-                <button
-                    class="maroon-accent hover:text-red-900 p-2 rounded-full transition duration-150 focus:outline-none"
-                    aria-label="Search">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </button>
-                <button id="mobile-menu-button"
-                    class="lg:hidden p-2 text-gray-700 hover:text-[#5A2C9D] rounded-md focus:outline-none"
-                    aria-label="Toggle menu">
-                    <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
-                    <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
+                
+                <!-- Account Dropdown -->
+                <div class="relative group z-50">
+                    <!-- Trigger Icon -->
+                    <button
+                        class="p-2 text-gray-700 hover:text-[#5A2C9D] rounded-full transition duration-150 focus:outline-none flex items-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown Card -->
+                    <div
+                        class="dropdown-content absolute right-0 mt-2 w-64 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+
+                        <!-- Profile Info Header -->
+                        <div class="px-4 py-4 border-b border-gray-100 flex items-center space-x-3">
+                            <!-- Small Profile Icon -->
+                            <div
+                                class="h-10 w-10 rounded-full bg-purple-50 flex items-center justify-center text-[#5A2C9D] shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <!-- Name and Role (Dynamic - will be updated by JavaScript) -->
+                            <div class="overflow-hidden">
+                                <p id="profile-name" class="text-sm font-bold text-gray-900 truncate">Guest</p>
+                                <p id="profile-role" class="text-xs text-gray-500 truncate">Guest</p>
+                            </div>
+                        </div>
+
+                        <!-- Settings Link -->
+                        <a href="settings.html"
+                            class="block px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] flex items-center transition duration-150">
+                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Settings
+                        </a>
+
+                        <!-- Community Forum Link -->
+                        <a href="forum.html"
+                            class="block px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] flex items-center transition duration-150">
+                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                </path>
+                            </svg>
+                            Community Forum
+                        </a>
+
+                        <!-- Admin Panel Link (only for admin users) -->
+                        <a href="./HTML/Admin_Panel.html"
+                            class="block px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] flex items-center transition duration-150">
+                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Admin Panel
+                        </a>
+
+                        <!-- Logout/Login Link -->
+                        <a id="logout-login-link" href="HTML/LogIn.html"
+                            class="block px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg flex items-center transition duration-150">
+                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                </path>
+                            </svg>
+                            Login
+                        </a>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
@@ -810,7 +845,7 @@
 
                 <div class="col-span-2 lg:col-span-1 space-y-3">
                     <div class="flex items-center space-x-2">
-                        <div class="h-8 w-8 flex items-center justify-center text-lg font-bold "><img src="image.png"
+                        <div class="h-8 w-8 flex items-center justify-center text-lg font-bold "><img src="logo.png"
                                 alt="">
                         </div>
                         <div>
@@ -923,9 +958,7 @@
         </div>
     </footer>
 
-
-
-    <script>
+   <script>
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -1010,6 +1043,57 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
         </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Elements ---
+            const modal = document.getElementById('welcome-modal');
+            const guestBtn = document.getElementById('continue-guest-btn');
+
+            const loginView = document.getElementById('login-view');
+            const registerView = document.getElementById('register-view');
+
+            const toRegisterBtn = document.getElementById('to-register-btn');
+            const toLoginBtn = document.getElementById('to-login-btn');
+
+            const roleSelect = document.getElementById('role-select');
+            const adminNotice = document.getElementById('admin-notice');
+
+            // --- 1. Guest Mode (Close Modal) ---
+            guestBtn.addEventListener('click', () => {
+                modal.classList.remove('opacity-100');
+                modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 500);
+            });
+
+            // --- 2. Switch Views (Login <-> Register) ---
+            toRegisterBtn.addEventListener('click', () => {
+                loginView.classList.add('hidden');
+                registerView.classList.remove('hidden');
+            });
+
+            toLoginBtn.addEventListener('click', () => {
+                registerView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+            });
+
+            // --- 3. ROLE CHECK LOGIC ---
+            roleSelect.addEventListener('change', function () {
+                const selectedRole = this.value;
+
+                // Check if role is "faculty" or "coordinator"
+                if (selectedRole === 'faculty' || selectedRole === 'coordinator') {
+                    // Show Red Notice
+                    adminNotice.classList.remove('hidden');
+                    adminNotice.classList.add('block', 'animate-pulse'); // Optional pulse animation
+                } else {
+                    // Hide Red Notice
+                    adminNotice.classList.add('hidden');
+                    adminNotice.classList.remove('block', 'animate-pulse');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

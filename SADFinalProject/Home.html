@@ -9,111 +9,83 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- Use Inter Font -->
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
         body {
             font-family: 'Inter', sans-serif;
-
             background-image: url('banner.png');
-            /* Your specified background image */
             background-size: cover;
             background-attachment: fixed;
             background-color: #f8fafc;
-            /* Very light fallback background color */
             position: relative;
-            /* Needed for ::before pseudo-element positioning */
             z-index: 0;
-            /* Establishes a stacking context */
         }
 
-        /* NEW: Darkening Overlay for the Background Image */
+        /* Darkening Overlay for the Background Image */
         body::before {
             content: '';
             position: fixed;
-            /* Covers the entire viewport */
             inset: 0;
-            /* Shorthand for top, right, bottom, left: 0 */
             background-color: rgb(255, 255, 255);
-            /* Semi-transparent black overlay (adjust 0.5 for darker/lighter) */
             z-index: -1;
-            /* Puts the overlay behind the body content */
         }
-
 
         /* Custom Violet color for the logo/accents */
         .violet-accent {
             color: #5A2C9D;
-            /* Deep Indigo Violet */
         }
 
         .bg-violet {
             background-color: #5A2C9D;
         }
 
-
-
         .bg-violet-hover:hover {
             background-color: #4C2684;
-            /* Slightly darker violet on hover */
             color: white;
         }
 
         .group:hover>.dropdown-content,
         .group:focus>.dropdown-content,
         .group>.dropdown-content:not(.opacity-0) {
-            /* targets the JS open state */
             visibility: visible !important;
             opacity: 1 !important;
             display: block !important;
-            /* Block any Bootstrap display: none */
         }
 
-
-        /* --- HERO BANNER CONTAINER --- */
+        /* HERO BANNER CONTAINER */
         .hero-banner {
             position: relative;
-            /* Essential for positioning the text overlay */
             width: 90%;
-            /* Adjust to match the main content width of your page */
             max-width: 1200px;
-            /* Optional: Sets a maximum width for large screens */
             margin: 30px auto 40px auto;
-            /* Centers the banner and adds vertical space */
             overflow: hidden;
-            /* Ensures image corners don't stick out */
             border-radius: 12px;
-            /* Adds subtle rounded corners */
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-            /* Adds a slight shadow */
         }
 
-        /* --- IMAGE STYLING --- */
+        /* IMAGE STYLING */
         .hero-image {
             width: 100%;
             height: auto;
             display: block;
             filter: brightness(0.7);
-            /* Slightly darkens the image to make white text easier to read */
         }
 
-        /* --- TEXT CONTENT OVERLAY --- */
+        /* TEXT CONTENT OVERLAY */
         .banner-content {
             position: absolute;
             bottom: 0;
-            /* Positions the text at the bottom of the banner */
             left: 0;
             padding: 25px 40px;
             color: white;
-            /* Sets the text color to white */
-            /* Add a subtle gradient background for better text contrast */
             background: linear-gradient(to top, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
             width: 100%;
             box-sizing: border-box;
         }
 
-        /* --- TEXT STYLING --- */
+        /* TEXT STYLING */
         .banner-title {
             font-size: 2.2em;
             font-weight: bold;
@@ -127,7 +99,7 @@
             margin: 0;
         }
 
-        /* --- RESPONSIVENESS (Optional) --- */
+        /* RESPONSIVENESS */
         @media (max-width: 768px) {
             .banner-content {
                 padding: 15px 20px;
@@ -143,190 +115,53 @@
         }
 
         .hero-banner {
-            /* Ensures the banner scales up to a maximum width to match your site's content area */
             max-width: 1200px;
-            /* Adjust this value to match your main content area's width */
             width: 90%;
             margin: 30px auto;
-            /* Centers the banner and adds vertical breathing room */
         }
 
         .hero-banner img {
-            /* This makes the image stretch to fill the width of its container */
             width: 100%;
             height: auto;
-            /* Ensures the image doesn't get stretched vertically */
             display: block;
+        }
+
+        /* Role-specific text colors */
+        .text-role-admin {
+            color: #5A2C9D;
+            font-weight: bold;
+        }
+
+        .text-role-coordinator {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .text-role-faculty {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .text-role-guest {
+            color: #6b7280;
+        }
+
+        /* Status indicators */
+        .status-active {
+            color: #059669;
+        }
+
+        .status-pending {
+            color: #d97706;
+        }
+
+        .status-inactive {
+            color: #dc2626;
         }
     </style>
 </head>
 
 <body>
-
-
-    <!-- WELCOME / LOGIN / REGISTER MODAL -->
-    <div id="welcome-modal"
-        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity duration-500 opacity-100">
-
-        <!-- Modal Card -->
-        <div
-            class="bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row max-w-4xl w-[90%] md:w-[800px] overflow-hidden transform transition-all duration-500 scale-100 h-auto">
-
-            <!-- LEFT SIDE: Branding (Purple) -->
-            <div
-                class="w-full md:w-5/12 bg-[#5A2C9D] p-8 flex flex-col justify-center items-center text-center relative overflow-hidden">
-                <div class="absolute -top-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
-                <div class="absolute bottom-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
-
-                <div class="bg-white p-4 rounded-full shadow-lg mb-6 relative z-10">
-                    <img src="image.png" alt="CNSC Logo" class="w-16 h-16 object-contain">
-                </div>
-
-                <h2 class="text-2xl font-extrabold text-white mb-2 relative z-10">CCMS Extension</h2>
-                <p class="text-purple-200 text-sm relative z-10">Bridging Technology & Community</p>
-            </div>
-
-            <!-- RIGHT SIDE: Forms -->
-            <div class="w-full md:w-7/12 p-8 md:p-12 bg-white relative transition-all duration-300">
-
-                <!-- ============================== -->
-                <!-- VIEW 1: LOGIN FORM (Default)   -->
-                <!-- ============================== -->
-                <div id="login-view" class="transition-opacity duration-300 block">
-                    <div class="text-center mb-8">
-                        <h3 class="text-2xl font-bold text-gray-900">Welcome Back!</h3>
-                        <p class="text-sm text-gray-500">Log in to your institutional account.</p>
-                    </div>
-
-                    <form class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email Address</label>
-                            <input type="email"
-                                class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] focus:bg-white focus:ring-0 text-sm transition duration-200"
-                                placeholder="student@cnsc.edu.ph">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Password</label>
-                            <input type="password"
-                                class="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] focus:bg-white focus:ring-0 text-sm transition duration-200"
-                                placeholder="••••••••">
-                        </div>
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                            <label class="flex items-center cursor-pointer hover:text-gray-700"><input type="checkbox"
-                                    class="mr-2 rounded text-[#5A2C9D]"> Remember me</label>
-                            <a href="#" class="hover:text-[#5A2C9D] hover:underline">Forgot Password?</a>
-                        </div>
-                        <button type="button"
-                            class="w-full py-3 bg-[#5A2C9D] hover:bg-[#4C2684] text-white font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-0.5">Sign
-                            In</button>
-                    </form>
-
-                    <div class="mt-6 text-center text-sm text-gray-600">
-                        Don't have an account?
-                        <button id="to-register-btn"
-                            class="text-[#5A2C9D] font-bold hover:underline focus:outline-none">Sign Up</button>
-                    </div>
-                </div>
-
-                <!-- ============================== -->
-                <!-- VIEW 2: REGISTER FORM (Hidden) -->
-                <!-- ============================== -->
-                <div id="register-view" class="hidden transition-opacity duration-300">
-                    <div class="text-center mb-4">
-                        <h3 class="text-2xl font-bold text-gray-900">Create Account</h3>
-                        <p class="text-sm text-gray-500">Join the Extension Services Portal.</p>
-                    </div>
-
-                    <form class="space-y-3">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">First Name</label>
-                                <input type="text"
-                                    class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Last Name</label>
-                                <input type="text"
-                                    class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] text-sm">
-                            </div>
-                        </div>
-
-                        <!-- ROLE SELECTION DROPDOWN -->
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">I am a...</label>
-                            <select id="role-select"
-                                class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] text-sm cursor-pointer">
-                                <option value="public">Public User (Guest/Student)</option>
-                                <option value="faculty">Faculty Member</option>
-                                <option value="coordinator">Extension Coordinator</option>
-                            </select>
-                        </div>
-
-                        <!-- === RED NOTICE BOX (Hidden by default) === -->
-                        <div id="admin-notice" class="hidden bg-red-50 border-l-4 border-red-500 p-3 rounded-r-md">
-                            <div class="flex">
-                                <div class="flex-shrink-0">
-                                    <svg class="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-xs text-red-700 font-semibold">Approval Required</p>
-                                    <p class="text-xs text-red-600 mt-0.5">
-                                        This account type must be verified by an Administrator. You will not have access
-                                        until approved.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Email Address</label>
-                            <input type="email"
-                                class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Password</label>
-                            <input type="password"
-                                class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-[#5A2C9D] text-sm">
-                        </div>
-
-                        <button type="button"
-                            class="w-full py-3 bg-[#5A2C9D] hover:bg-[#4C2684] text-white font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 mt-2">Register</button>
-                    </form>
-
-                    <div class="mt-4 text-center text-sm text-gray-600">
-                        Already have an account?
-                        <button id="to-login-btn"
-                            class="text-[#5A2C9D] font-bold hover:underline focus:outline-none">Sign In</button>
-                    </div>
-                </div>
-
-                <!-- Shared: Divider -->
-                <div class="relative my-6">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-200"></div>
-                    </div>
-                    <div class="relative flex justify-center text-xs"><span
-                            class="px-2 bg-white text-gray-500">OR</span></div>
-                </div>
-
-                <!-- Shared: Guest Button -->
-                <button id="continue-guest-btn"
-                    class="w-full py-3 border-2 border-gray-200 hover:border-[#5A2C9D] text-gray-600 hover:text-[#5A2C9D] font-bold rounded-lg transition duration-300 flex items-center justify-center group">
-                    Continue as Guest
-                    <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition duration-300" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-
 
     <header class="fixed top-0 left-0 w-full bg-white shadow-md z-50">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -334,7 +169,7 @@
             <!-- Logo -->
             <a href="index.html" class="flex items-center space-x-3 h-full">
                 <div class="h-10 w-10 rounded-full flex items-center justify-center text-xl font-bold">
-                    <img src="image.png" alt="CNSC Logo">
+                    <img src="logo.png" alt="CNSC Logo">
                 </div>
                 <div class="leading-none hidden sm:block">
                     <p class="text-xs font-bold text-gray-800 tracking-wider">CCMS Extension Services</p>
@@ -359,14 +194,14 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="history.html"
+                            <a href="Home.html#mission-vision"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Mission
                                 &
                                 Vision</a>
-                            <a href="mission-vision.html"
+                            <a href="Home.html#upcoming-events"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Upcoming
                                 Events & News</a>
-                            <a href="quality-policy.html"
+                            <a href="Home.html#featured-projects"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Featured
                                 Projects</a>
                         </div>
@@ -374,25 +209,10 @@
 
                     <!-- Programs: Links to programs.html -->
                     <li class="relative group" tabindex="0">
-                        <a href="programs.html"
+                        <a href="Programs.html"
                             class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
                             Programs
-                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
-                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
                         </a>
-                        <div
-                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="executive-office.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Projects</a>
-                            <a href="governing-board.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]"></a>
-                            <a href="org-chart.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg"></a>
-                        </div>
                     </li>
 
                     <!-- News & Events: Links to news-events.html -->
@@ -409,16 +229,16 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="news-engineering.html"
+                            <a href="News&Events.html#calendar"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Event
                                 Calendar</a>
-                            <a href="news-arts-sciences.html"
+                            <a href="News&Events.html#upcomingEvents"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Upcoming
                                 Events</a>
-                            <a href="news-agriculture.html"
+                            <a href="News&Events.html#newsArticles"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">News
                                 Articles</a>
-                            <a href="news-agriculture.html"
+                            <a href="News&Events.html#gallery"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Event
                                 Gallery</a>
                         </div>
@@ -438,12 +258,12 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="requirements.html"
+                            <a href="Partnership.html#partnerOrg"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Partner
                                 Organizations</a>
-                            <a href="application-form.html"
+                            <a href="Partnership.html#moa"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">MOA</a>
-                            <a href="scholarships.html"
+                            <a href="Partnership.html#moa"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Partner
                                 With Us</a>
                         </div>
@@ -454,22 +274,7 @@
                         <a href="Reports.html"
                             class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
                             Resources
-                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
-                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7"></path>
-                            </svg>
                         </a>
-                        <div
-                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="journals.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Journals</a>
-                            <a href="call-for-papers.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Projects</a>
-                            <a href="ethics-board.html"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Archive</a>
-                        </div>
                     </li>
 
                     <!-- Contact Us: Links to contact.html -->
@@ -486,17 +291,18 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="contact-projects.html"
+                            <a href="Contact.html#inquiry"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Inquiries</a>
-                            <a href="contact-partnerships.html"
+                            <a href="Contact.html#inquiry"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Location</a>
-                            <a href="contact-forms.html"
+                            <a href="Contact.html#extensionOffices"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Directory
                                 of Extension Offices</a>
                         </div>
                     </li>
 
                 </ul>
+                
                 <!-- Account Dropdown -->
                 <div class="relative group z-50">
                     <!-- Trigger Icon -->
@@ -523,10 +329,10 @@
                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
                             </div>
-                            <!-- Name and Role -->
+                            <!-- Name and Role (Dynamic - will be updated by JavaScript) -->
                             <div class="overflow-hidden">
-                                <p class="text-sm font-bold text-gray-900 truncate">Juan Dela Cruz</p>
-                                <p class="text-xs text-gray-500 truncate">Administrator</p>
+                                <p id="profile-name" class="text-sm font-bold text-gray-900 truncate">Guest</p>
+                                <p id="profile-role" class="text-xs text-gray-500 truncate">Guest</p>
                             </div>
                         </div>
 
@@ -544,8 +350,8 @@
                         </a>
 
                         <!-- Community Forum Link -->
-                        <a href="communityForum.html"
-                            class="block px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg flex items-center transition duration-150">
+                        <a href="forum.html"
+                            class="block px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] flex items-center transition duration-150">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
@@ -554,15 +360,28 @@
                             Community Forum
                         </a>
 
+                        <!-- Admin Panel Link (only for admin users) -->
+                        <a href="./HTML/Admin_Panel.html"
+                            class="block px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] flex items-center transition duration-150">
+                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Admin Panel
+                        </a>
 
-                        <a href="login.html"
+                        <!-- Logout/Login Link -->
+                        <a id="logout-login-link" href="HTML/LogIn.html"
                             class="block px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg flex items-center transition duration-150">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
                                 </path>
                             </svg>
-                            Logout
+                            Login
                         </a>
                     </div>
                 </div>
@@ -587,12 +406,12 @@
                     </svg>
                 </button>
                 <div id="about-dropdown" class="mobile-dropdown-content mt-2 space-y-1 pl-4 hidden">
-                    <a href="#"
+                    <a href="Home.html#mission-vision"
                         class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">History</a>
-                    <a href="#"
+                    <a href="Home.html#mission-vision"
                         class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Mission
                         & Vision</a>
-                    <a href="#"
+                    <a href="Home.html#mission-vision"
                         class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Quality
                         Policy</a>
                 </div>
@@ -822,7 +641,7 @@
 
         <!-- 3. MISSION, VISION, AND CORE OBJECTIVES -->
         <section class="pb-16">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div id="mission-vision" class="grid grid-cols-1 md:grid-cols-3 gap-8 scroll-mt-32">
                 <!-- Vision Card -->
                 <div
                     class="bg-white rounded-2xl p-8 border-t-4 border-[#5A2C9D] shadow-lg hover:-translate-y-2 transition transform duration-300">
@@ -911,7 +730,7 @@
         </section>
 
         <div class="pb-16">
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div id="upcoming-events" class="grid grid-cols-1 lg:grid-cols-4 gap-8 scroll-mt-32">
 
                 <!-- LEFT COLUMN: News (75%) -->
                 <div class="lg:col-span-3">
@@ -1074,7 +893,7 @@
 
         <!-- 4.5 FEATURED PROJECTS SECTION -->
         <section class="py-16 bg-slate-50 mb-16 rounded-3xl">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="featured-projects" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
                 <!-- Section Header -->
                 <div class="text-center mb-12">
                     <span class="text-[#5A2C9D] font-bold tracking-wider uppercase text-sm">Our Impact</span>
@@ -1221,16 +1040,7 @@
             </div>
         </section>
 
-
-
-        <!-- 5. CONTENT GRID: NEWS & SIDEBAR -->
-
-
     </main>
-
-
-
-
 
     <footer class="bg-white border-t border-purple-100 mt-12 w-full">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -1239,7 +1049,7 @@
 
                 <div class="col-span-2 lg:col-span-1 space-y-3">
                     <div class="flex items-center space-x-2">
-                        <div class="h-8 w-8 flex items-center justify-center text-lg font-bold "><img src="image.png"
+                        <div class="h-8 w-8 flex items-center justify-center text-lg font-bold "><img src="logo.png"
                                 alt="">
                         </div>
                         <div>
@@ -1346,10 +1156,74 @@
         </div>
     </footer>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        </script>
 
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Your custom scripts -->
+    <script src="./JS/db_connection.js" type="module"></script>
+    <script src="./JS/user-profile.js" type="module"></script>
+    <script src="./JS/edit-mode.js" type="module"></script>
+    <script src="./JS/home-images.js" type="module"></script>
 
     <script>
+    // Check user status when page loads
+    document.addEventListener('DOMContentLoaded', async function() {
+        console.log("Checking user status...");
+        
+        // Wait a bit for user profile to load
+        setTimeout(async () => {
+            // Check if user profile functions are available
+            if (typeof window.userProfile !== 'undefined') {
+                // Refresh user profile
+                await window.userProfile.refreshUserProfile();
+                
+                const user = window.userProfile.getCurrentUser();
+                console.log("Current user:", user);
+                
+                if (user && user.role === 'admin') {
+                    console.log("Admin user detected on homepage");
+                    
+                    // Show admin indicator
+                    showAdminIndicator();
+                }
+            } else {
+                console.log("User profile not loaded yet");
+            }
+        }, 1000);
+    });
+    
+    function showAdminIndicator() {
+        // Add a small admin indicator
+        const indicator = document.createElement('div');
+        indicator.className = 'fixed top-4 left-4 z-50 bg-purple-600 text-white text-xs px-3 py-1 rounded-full shadow flex items-center';
+        indicator.innerHTML = `
+            <i class="bi bi-shield-check mr-1"></i>
+            <span>Admin Mode</span>
+        `;
+        document.body.appendChild(indicator);
+    }
+</script>
+
+    <script>
+
+        function isUserAdmin() {
+        // Check localStorage or your authentication system
+        const userRole = localStorage.getItem('userRole') || 'guest';
+        return userRole === 'admin';
+    }
+    
+    // Make it globally available
+    window.isUserAdmin = isUserAdmin;
         document.addEventListener('DOMContentLoaded', () => {
+            // Set current year in footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Mobile Menu Toggle Logic
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             const menuIconOpen = document.getElementById('menu-icon-open');
@@ -1357,11 +1231,15 @@
             const mobileDropdownButtons = document.querySelectorAll('.mobile-menu-item');
 
             // 1. Mobile Menu Toggle Logic
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-                menuIconOpen.classList.toggle('hidden');
-                menuIconClose.classList.toggle('hidden');
-            });
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    if (menuIconOpen && menuIconClose) {
+                        menuIconOpen.classList.toggle('hidden');
+                        menuIconClose.classList.toggle('hidden');
+                    }
+                });
+            }
 
             // 2. Mobile Dropdown Toggle Logic
             mobileDropdownButtons.forEach(button => {
@@ -1370,46 +1248,52 @@
                     const targetDropdown = document.getElementById(targetId);
                     const svgIcon = button.querySelector('svg');
 
-                    if (targetDropdown.classList.contains('hidden')) {
-                        // Close all other dropdowns
-                        document.querySelectorAll('.mobile-dropdown-content').forEach(dd => dd.classList.add('hidden'));
-                        document.querySelectorAll('.mobile-menu-item svg').forEach(svg => svg.classList.remove('rotate-180'));
+                    if (targetDropdown && svgIcon) {
+                        if (targetDropdown.classList.contains('hidden')) {
+                            // Close all other dropdowns
+                            document.querySelectorAll('.mobile-dropdown-content').forEach(dd => dd.classList.add('hidden'));
+                            document.querySelectorAll('.mobile-menu-item svg').forEach(svg => svg.classList.remove('rotate-180'));
 
-                        // Open the clicked one
-                        targetDropdown.classList.remove('hidden');
-                        svgIcon.classList.add('rotate-180');
-                    } else {
-                        // Close the clicked one
-                        targetDropdown.classList.add('hidden');
-                        svgIcon.classList.remove('rotate-180');
+                            // Open the clicked one
+                            targetDropdown.classList.remove('hidden');
+                            svgIcon.classList.add('rotate-180');
+                        } else {
+                            // Close the clicked one
+                            targetDropdown.classList.add('hidden');
+                            svgIcon.classList.remove('rotate-180');
+                        }
                     }
                 });
             });
 
-            // 3. Desktop Dropdown Logic (for touch/click fallbacks on group-based hover)
-            // This ensures the dropdown opens on click for touch devices, in addition to hover for mouse users.
+            // 3. Desktop Dropdown Logic
             const desktopDropdowns = document.querySelectorAll('#desktop-menu > li');
 
             desktopDropdowns.forEach(li => {
                 li.addEventListener('click', (event) => {
                     // Check if the current device is likely a touch device (or small screen)
                     if (window.innerWidth < 1024 || 'ontouchstart' in window) {
-                        event.stopPropagation(); // Stop propagation to prevent document click listener from firing immediately
+                        event.stopPropagation();
 
                         const dropdownContent = li.querySelector('.dropdown-content');
 
-                        if (dropdownContent.classList.contains('opacity-0')) {
-                            // Close all others
-                            desktopDropdowns.forEach(otherLi => {
-                                if (otherLi !== li) {
-                                    otherLi.querySelector('.dropdown-content').classList.add('opacity-0', 'invisible');
-                                }
-                            });
-                            // Open current
-                            dropdownContent.classList.remove('opacity-0', 'invisible');
-                        } else {
-                            // Close current
-                            dropdownContent.classList.add('opacity-0', 'invisible');
+                        if (dropdownContent) {
+                            if (dropdownContent.classList.contains('opacity-0')) {
+                                // Close all others
+                                desktopDropdowns.forEach(otherLi => {
+                                    if (otherLi !== li) {
+                                        const otherDropdown = otherLi.querySelector('.dropdown-content');
+                                        if (otherDropdown) {
+                                            otherDropdown.classList.add('opacity-0', 'invisible');
+                                        }
+                                    }
+                                });
+                                // Open current
+                                dropdownContent.classList.remove('opacity-0', 'invisible');
+                            } else {
+                                // Close current
+                                dropdownContent.classList.add('opacity-0', 'invisible');
+                            }
                         }
                     }
                 });
@@ -1418,74 +1302,48 @@
             // Close desktop dropdowns when clicking outside (for touch/click)
             document.addEventListener('click', (event) => {
                 if (window.innerWidth >= 1024 && 'ontouchstart' in window) {
-                    // Only relevant for touch/click on desktop view
                     desktopDropdowns.forEach(li => {
                         if (!li.contains(event.target)) {
-                            li.querySelector('.dropdown-content').classList.add('opacity-0', 'invisible');
+                            const dropdownContent = li.querySelector('.dropdown-content');
+                            if (dropdownContent) {
+                                dropdownContent.classList.add('opacity-0', 'invisible');
+                            }
                         }
                     });
                 }
             });
 
-        });
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-        </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Elements ---
-            const modal = document.getElementById('welcome-modal');
-            const guestBtn = document.getElementById('continue-guest-btn');
-
-            const loginView = document.getElementById('login-view');
-            const registerView = document.getElementById('register-view');
-
-            const toRegisterBtn = document.getElementById('to-register-btn');
-            const toLoginBtn = document.getElementById('to-login-btn');
-
-            const roleSelect = document.getElementById('role-select');
-            const adminNotice = document.getElementById('admin-notice');
-
-            // --- 1. Guest Mode (Close Modal) ---
-            guestBtn.addEventListener('click', () => {
-                modal.classList.remove('opacity-100');
-                modal.classList.add('opacity-0');
-                setTimeout(() => modal.classList.add('hidden'), 500);
-            });
-
-            // --- 2. Switch Views (Login <-> Register) ---
-            toRegisterBtn.addEventListener('click', () => {
-                loginView.classList.add('hidden');
-                registerView.classList.remove('hidden');
-            });
-
-            toLoginBtn.addEventListener('click', () => {
-                registerView.classList.add('hidden');
-                loginView.classList.remove('hidden');
-            });
-
-            // --- 3. ROLE CHECK LOGIC ---
-            roleSelect.addEventListener('change', function () {
-                const selectedRole = this.value;
-
-                // Check if role is "faculty" or "coordinator"
-                if (selectedRole === 'faculty' || selectedRole === 'coordinator') {
-                    // Show Red Notice
-                    adminNotice.classList.remove('hidden');
-                    adminNotice.classList.add('block', 'animate-pulse'); // Optional pulse animation
+            // Update profile icon based on user role
+            function updateProfileIcon(role) {
+                const profileIcon = document.querySelector('.h-10.w-10.rounded-full.bg-purple-50');
+                if (!profileIcon) return;
+                
+                // Clear existing classes
+                profileIcon.className = 'h-10 w-10 rounded-full flex items-center justify-center shrink-0';
+                
+                // Add base classes
+                profileIcon.classList.add('flex', 'items-center', 'justify-center', 'shrink-0');
+                
+                // Add role-specific styling
+                if (role === 'admin') {
+                    profileIcon.classList.add('bg-purple-100', 'text-purple-600');
+                } else if (role === 'coordinator') {
+                    profileIcon.classList.add('bg-blue-100', 'text-blue-600');
+                } else if (role === 'faculty') {
+                    profileIcon.classList.add('bg-green-100', 'text-green-600');
                 } else {
-                    // Hide Red Notice
-                    adminNotice.classList.add('hidden');
-                    adminNotice.classList.remove('block', 'animate-pulse');
+                    profileIcon.classList.add('bg-gray-100', 'text-gray-600');
+                }
+            }
+
+            // Listen for custom event when user profile is updated
+            document.addEventListener('userProfileUpdated', (event) => {
+                if (event.detail && event.detail.user) {
+                    updateProfileIcon(event.detail.user.role);
                 }
             });
         });
     </script>
 
 </body>
-
-
 </html>

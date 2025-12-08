@@ -1,20 +1,84 @@
-:root {
-    --primary-color: #3498db;
-    --admin-color: #e74c3c;
-    --faculty-color: #2ecc71;
-    --coordinator-color: #f39c12;
-    --public-color: #9b59b6;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
 }
 
 body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100% !important;
+    min-height: 100vh !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.login-wrapper {
+    display: flex !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+}
+
+/* Left Panel - Purple Background */
+.left-panel {
+    flex: 1 !important;
+    min-width: 50% !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white;
+    padding: 40px;
+}
+
+.logo-container {
+    background: white;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.logo-container img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    display: block;
+}
+
+.system-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.system-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    text-align: center;
+}
+
+/* Right Panel - Login Form */
+.right-panel {
+    flex: 1 !important;
+    min-width: 50% !important;
+    background: white !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 40px;
+    overflow-y: auto;
 }
 
 .login-container {
@@ -22,154 +86,59 @@ body {
     max-width: 450px;
 }
 
-.login-card {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    padding: 30px;
-    transition: transform 0.3s ease;
+.welcome-header {
+    margin-bottom: 40px;
 }
 
-.login-card:hover {
-    transform: translateY(-5px);
-}
-
-.login-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.login-header h2 {
-    color: var(--primary-color);
+.welcome-header h2 {
+    font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 5px;
+    color: #333;
+    margin-bottom: 8px;
 }
 
-.login-header p {
+.welcome-header p {
     color: #6c757d;
-    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
 }
 
 .form-control {
-    border-radius: 8px;
-    padding: 12px 15px;
+    padding: 14px 16px;
     border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
     transition: all 0.3s;
-    font-size: 14px;
 }
 
 .form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
 }
 
-.btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+.form-select {
+    padding: 14px 16px;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 12px;
-    font-weight: 600;
-    transition: all 0.3s;
-    font-size: 14px;
-}
-
-.btn-primary:hover {
-    background-color: #2980b9;
-    border-color: #2980b9;
-    transform: translateY(-2px);
-}
-
-.btn-outline-secondary {
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 13px;
+    font-size: 0.95rem;
     transition: all 0.3s;
 }
 
-.btn-outline-secondary:hover {
-    transform: translateY(-1px);
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
 }
 
-.demo-credentials {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    padding: 15px;
-    margin-top: 20px;
-    border: 1px solid #e9ecef;
-}
-
-.credential-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.credential-item {
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border-left: 4px solid transparent;
-    background: white;
-    border: 1px solid #dee2e6;
-}
-
-.credential-item:hover {
-    background-color: #e9ecef;
-    transform: translateX(5px);
-}
-
-.credential-item.active {
-    background-color: #e7f1ff;
-    border-color: var(--primary-color);
-}
-
-.credential-item[data-username="admin"] {
-    border-left-color: var(--admin-color);
-}
-
-.credential-item[data-username="faculty"] {
-    border-left-color: var(--faculty-color);
-}
-
-.credential-item[data-username="coordinator"] {
-    border-left-color: var(--coordinator-color);
-}
-
-.credential-item[data-username="public"] {
-    border-left-color: var(--public-color);
-}
-
-.role-badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-left: 5px;
-}
-
-.badge-admin {
-    background-color: var(--admin-color);
-    color: white;
-}
-
-.badge-faculty {
-    background-color: var(--faculty-color);
-    color: white;
-}
-
-.badge-coordinator {
-    background-color: var(--coordinator-color);
-    color: white;
-}
-
-.badge-public {
-    background-color: var(--public-color);
-    color: white;
-}
-
-/* Fixed Password Container Styles */
 .password-container {
     position: relative;
     display: flex;
@@ -177,7 +146,7 @@ body {
 }
 
 .password-container .form-control {
-    padding-right: 50px; /* Increased padding for toggle */
+    padding-right: 45px;
     width: 100%;
 }
 
@@ -188,56 +157,134 @@ body {
     transform: translateY(-50%);
     cursor: pointer;
     color: #6c757d;
-    background: none;
-    border: none;
     padding: 5px;
     z-index: 3;
+    background: none;
+    border: none;
     transition: color 0.3s;
 }
 
 .password-toggle:hover {
-    color: #495057;
+    color: #333;
 }
 
-/* Fix for validation icon overlap */
-.password-container .form-control.is-valid,
-.password-container .form-control.is-invalid {
-    padding-right: 70px; /* Extra padding when validation active */
-    background-position: right 40px center; /* Move validation icon left */
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
 }
 
-.password-container .form-control.is-valid ~ .password-toggle,
-.password-container .form-control.is-invalid ~ .password-toggle {
-    right: 30px; /* Move toggle left when validation active */
+.form-check-label {
+    font-size: 0.9rem;
+    color: #555;
 }
 
-.login-footer {
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.forgot-link {
+    color: #667eea;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+.btn-signin {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.btn-signin:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-signin:disabled {
+    opacity: 0.6;
+    transform: none !important;
+    cursor: not-allowed;
+}
+
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.btn-guest {
+    width: 100%;
+    padding: 12px;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    color: #555;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.btn-guest:hover {
+    border-color: #667eea;
+    color: #667eea;
+    background: #f8f9ff;
+}
+
+.signup-link {
     text-align: center;
     margin-top: 20px;
-    color: #6c757d;
     font-size: 0.9rem;
-    padding-top: 15px;
-    border-top: 1px solid #e9ecef;
+    color: #666;
 }
 
-/* Alert Styles */
+.signup-link a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
 .alert {
     border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
     border: none;
-    padding: 12px 15px;
-    margin-top: 15px;
-}
-
-.alert-success {
-    background-color: #d1edff;
-    color: #0c5460;
-    border-left: 4px solid #117a8b;
 }
 
 .alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border-left: 4px solid #dc3545;
+    background-color: #fee;
+    color: #c33;
+    border-left: 4px solid #c33;
+}
+
+.alert-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-left: 4px solid #4caf50;
 }
 
 .alert-info {
@@ -254,10 +301,11 @@ body {
 }
 
 .modal-header {
-    border-bottom: 1px solid #dee2e6;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border-radius: 15px 15px 0 0;
+    padding: 20px 24px;
+    border-bottom: none;
 }
 
 .modal-header .btn-close {
@@ -269,10 +317,35 @@ body {
     opacity: 1;
 }
 
-/* Form text adjustments */
-.form-text {
-    font-size: 0.8rem;
-    margin-top: 5px;
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e9ecef;
+}
+
+.modal-footer .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.modal-footer .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.modal-footer .btn-secondary {
+    padding: 10px 24px;
+    border-radius: 8px;
 }
 
 /* Loading spinner */
@@ -281,47 +354,105 @@ body {
     height: 1rem;
 }
 
-/* Checkbox styling */
-.form-check-input:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+/* Form text adjustments */
+.form-text {
+    font-size: 0.8rem;
+    margin-top: 5px;
+    color: #6c757d;
 }
 
-.form-check-label {
-    font-size: 14px;
-    color: #495057;
+/* Validation states */
+.form-control.is-valid {
+    border-color: #28a745;
+    padding-right: 45px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+    padding-right: 45px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.password-container .form-control.is-valid,
+.password-container .form-control.is-invalid {
+    padding-right: 70px;
+    background-position: right 40px center;
+}
+
+.password-container .form-control.is-valid ~ .password-toggle,
+.password-container .form-control.is-invalid ~ .password-toggle {
+    right: 30px;
 }
 
 /* Responsive Design */
+@media (max-width: 992px) {
+    .login-wrapper {
+        flex-direction: column;
+    }
+
+    .left-panel {
+        flex: 0 0 auto;
+        min-height: 300px;
+        min-width: 100%;
+    }
+
+    .right-panel {
+        flex: 1;
+        min-width: 100%;
+        overflow-y: auto;
+    }
+
+    .system-title {
+        font-size: 1.5rem;
+    }
+
+    .logo-container {
+        width: 140px;
+        height: 140px;
+    }
+
+    .logo-container img {
+        width: 90px;
+        height: 90px;
+    }
+}
+
 @media (max-width: 576px) {
     body {
-        padding: 10px;
+        overflow-y: auto;
     }
-    
-    .login-container {
-        max-width: 100%;
+
+    .login-wrapper {
+        min-height: 100vh;
+        height: auto;
     }
-    
-    .login-card {
+
+    .left-panel {
+        min-height: 250px;
         padding: 20px;
     }
-    
-    .password-toggle {
-        right: 10px;
+
+    .right-panel {
+        padding: 20px;
     }
-    
-    .password-container .form-control {
-        padding-right: 45px;
+
+    .welcome-header h2 {
+        font-size: 1.5rem;
     }
-    
-    .password-container .form-control.is-valid,
-    .password-container .form-control.is-invalid {
-        padding-right: 65px;
+
+    .system-title {
+        font-size: 1.3rem;
     }
-    
-    .password-container .form-control.is-valid ~ .password-toggle,
-    .password-container .form-control.is-invalid ~ .password-toggle {
-        right: 25px;
+
+    .login-container {
+        max-width: 100%;
     }
 }
 
@@ -344,18 +475,7 @@ body {
 /* Focus states for accessibility */
 .btn:focus,
 .form-control:focus,
-.form-check-input:focus {
-    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
-}
-
-/* Disabled state for buttons */
-.btn:disabled {
-    opacity: 0.6;
-    transform: none !important;
-    cursor: not-allowed;
-}
-
-/* Active state for credential items */
-.credential-item:active {
-    transform: scale(0.98);
+.form-check-input:focus,
+.form-select:focus {
+    outline: none;
 }
