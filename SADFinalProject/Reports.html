@@ -8,7 +8,8 @@
 
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <!-- Fonts -->
     <style>
@@ -107,7 +108,7 @@
                 <ul id="desktop-menu" class="hidden lg:flex items-center space-x-6 text-sm font-semibold text-gray-700">
 
                     <!-- Home: Links to index.html -->
-                    <li class="relative group" tabindex="0">
+                    <li class="nav-group group relative" tabindex="0">
                         <a href="Home.html"
                             class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
                             Home
@@ -119,7 +120,7 @@
                             </svg>
                         </a>
                         <div
-                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            class="nav-submenu absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
                             <a href="history.html"
                                 class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">History</a>
                             <a href="mission-vision.html"
@@ -866,6 +867,7 @@
 
 
     <script>
+        
         document.addEventListener('DOMContentLoaded', () => {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -946,11 +948,6 @@
 
         });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-        </script>
-
 </body>
 
 </html>
