@@ -484,7 +484,7 @@ async function signUp(email, password, fullName, username, role = 'public') {
         }
         
         // Validate role against allowed values
-        const allowedRoles = ['admin', 'faculty', 'coordinator', 'public'];
+        const allowedRoles = ['admin', 'faculty', 'coordinator', 'partner', 'public'];
         if (!allowedRoles.includes(role.toLowerCase())) {
             role = 'public'; // Default to public if invalid role
         }

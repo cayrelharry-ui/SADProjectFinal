@@ -72,12 +72,13 @@ export async function getUserStatistics() {
 }
 
 export async function getFileStatistics() {
-    try {
+   try {
+        // Change select('*') to select('file_size')
         const { data: files, error } = await supabase
             .from('uploaded_files')
-            .select('*');
+            .select('file_size'); 
         
-        if (error) throw error;
+        if (error) throw error; 
         
         const totalFiles = files.length;
         const totalSize = files.reduce((sum, file) => sum + (file.file_size || 0), 0);
@@ -100,17 +101,28 @@ export async function getFileStatistics() {
 
 export async function getRecentActivity() {
     try {
-        const { data: users } = await supabase
+        // Get recent users
+        const { data: users, error: usersError } = await supabase
             .from('users')
             .select('user_id, full_name, email, role, created_at')
             .order('created_at', { ascending: false })
             .limit(5);
         
-        const { data: files } = await supabase
+        if (usersError) throw usersError;
+
+        // Get recent files - FIXED query
+        const { data: files, error: filesError } = await supabase
             .from('uploaded_files')
-            .select('id, original_name, uploaded_by, uploaded_at, file_size')
+            .select('*, users!uploaded_by(full_name, email)')
             .order('uploaded_at', { ascending: false })
             .limit(5);
+        
+        if (filesError) {
+            console.error("Files error:", filesError);
+            throw filesError;
+        }
+        
+        console.log("Recent files:", files);
         
         return {
             recentUsers: users || [],
@@ -125,12 +137,13 @@ export async function getRecentActivity() {
         };
     }
 }
-
 export async function getStorageStatistics() {
     try {
-        const { data: files } = await supabase
+        const { data: files, error } = await supabase
             .from('uploaded_files')
             .select('file_size');
+
+        if (error) throw error; // ADDED: Check for error
         
         const totalUsed = files?.reduce((sum, file) => sum + (file.file_size || 0), 0) || 0;
         const storageLimit = 100 * 1024 * 1024; // 100MB
@@ -147,9 +160,7 @@ export async function getStorageStatistics() {
         console.error('Storage statistics error:', error);
         return {
             totalUsed: 0,
-            storageLimit: 100 * 1024 * 1024,
-            usagePercentage: 0,
-            topUsers: []
+            // ... (rest of the error return)
         };
     }
 }
@@ -170,10 +181,10 @@ export function updateStatisticsUI(stats) {
     updateElement('statStorageUsed', formatFileSize(stats.files.totalSize));
     updateElement('statRecentUploads', '0'); // Placeholder
     
-    // Update storage progress
-    const storageProgress = document.getElementById('storageProgress');
-    const storageUsed = document.getElementById('storageUsed');
-    const storageTotal = document.getElementById('storageTotal');
+    // Update storage progress in Analytics section
+    const storageProgress = document.getElementById('analyticsStorageProgress');
+    const storageUsed = document.getElementById('analyticsStorageUsed');
+    const storageTotal = document.getElementById('analyticsStorageTotal');
     
     if (storageProgress && storageUsed && storageTotal) {
         const percentage = stats.storage.usagePercentage;
@@ -181,6 +192,8 @@ export function updateStatisticsUI(stats) {
         storageProgress.textContent = `${percentage.toFixed(1)}% Used`;
         storageUsed.textContent = formatFileSize(stats.storage.totalUsed);
         storageTotal.textContent = formatFileSize(stats.storage.storageLimit);
+    } else {
+        console.warn("⚠️ Storage progress elements not found in Analytics");
     }
     
     // Update recent activity tables
@@ -197,39 +210,118 @@ function updateElement(id, value) {
 }
 
 function updateRecentActivity(activity) {
-    // Update recent users table
+    console.log("Updating recent activity:", activity);
+    
+    // Update recent users table in Analytics section
     const recentUsersBody = document.getElementById('recentUsersBody');
     if (recentUsersBody) {
+        console.log("Found recentUsersBody element in Analytics");
         if (activity.recentUsers.length === 0) {
             recentUsersBody.innerHTML = `
                 <tr>
-                    <td colspan="4" class="text-center text-muted">No recent users</td>
+                    <td colspan="4" class="text-center text-muted">No recent user activity</td>
                 </tr>
             `;
         } else {
             recentUsersBody.innerHTML = activity.recentUsers.map(user => `
                 <tr>
                     <td>
-                        <div class="d-flex align-items-center">
-                            <div class="avatar-sm">
-                                <span class="avatar-title bg-light rounded-circle">
-                                    ${user.full_name?.charAt(0)?.toUpperCase() || 'U'}
-                                </span>
-                            </div>
-                            <div class="ms-2">
-                                <div class="fw-semibold">${user.full_name || 'Unknown'}</div>
-                                <small class="text-muted">${user.email || 'No email'}</small>
-                            </div>
-                        </div>
+                        <i class="bi bi-person-circle me-2"></i>
+                        <span title="${user.email || 'No email'}">${user.full_name || 'Unknown User'}</span>
                     </td>
-                    <td><span class="badge bg-secondary">${user.role || 'user'}</span></td>
+                    <td><span class="badge bg-info">${user.role || 'user'}</span></td>
                     <td>${new Date(user.created_at).toLocaleDateString()}</td>
-                    <td>${new Date(user.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                    <td>${new Date(user.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
                 </tr>
             `).join('');
         }
+    } else {
+        console.warn("⚠️ recentUsersBody element not found - Analytics section might be hidden");
     }
     
+    // Update recent activity in Dashboard section
+    const dashboardRecentActivity = document.getElementById('recentActivity');
+    if (dashboardRecentActivity) {
+        console.log("Found recentActivity element in Dashboard");
+        if (activity.recentUsers.length === 0 && activity.recentFiles.length === 0) {
+            dashboardRecentActivity.innerHTML = `
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">No recent activity</h6>
+                    </div>
+                    <p class="mb-1">No users or files have been added recently.</p>
+                </div>
+            `;
+        } else {
+            let activityHTML = '';
+            
+            // Add recent users
+            activity.recentUsers.slice(0, 3).forEach(user => {
+                activityHTML += `
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1"><i class="bi bi-person-plus text-primary me-2"></i>New User Registered</h6>
+                            <small>${new Date(user.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
+                        </div>
+                        <p class="mb-1">${user.full_name || 'New user'} (${user.email || 'No email'}) joined as ${user.role || 'user'}.</p>
+                        <small class="text-muted">Registered on ${new Date(user.created_at).toLocaleDateString()}</small>
+                    </div>
+                `;
+            });
+            
+            // Add recent files
+            activity.recentFiles.slice(0, 3).forEach(file => {
+                const fileName = file.original_name || 'Unknown file';
+                const fileSize = formatFileSize(file.file_size || 0);
+                const uploaderName = file.users?.full_name || 'Unknown user';
+                
+                activityHTML += `
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1"><i class="bi ${getFileIcon(fileName)} text-success me-2"></i>File Uploaded</h6>
+                            <small>${new Date(file.uploaded_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
+                        </div>
+                        <p class="mb-1">${uploaderName} uploaded "${fileName}" (${fileSize}).</p>
+                        <small class="text-muted">Uploaded on ${new Date(file.uploaded_at).toLocaleDateString()}</small>
+                    </div>
+                `;
+            });
+            
+            dashboardRecentActivity.innerHTML = activityHTML;
+        }
+    } else {
+        console.warn("⚠️ recentActivity element not found - Dashboard section might not be loaded");
+    }
+    
+    // Update top users by storage (simplified for now)
+    const topUsersBody = document.getElementById('topUsersBody');
+    if (topUsersBody) {
+        console.log("Found topUsersBody element in Analytics");
+        topUsersBody.innerHTML = `
+            <tr>
+                <td colspan="3" class="text-center text-muted">
+                    Storage analysis coming soon
+                </td>
+            </tr>
+        `;
+    }
+    
+    // Update file types table
+    const fileTypesBody = document.getElementById('fileTypesBody');
+    if (fileTypesBody) {
+        console.log("Found fileTypesBody element in Analytics");
+        // For now, show a placeholder
+        fileTypesBody.innerHTML = `
+            <tr>
+                <td colspan="3" class="text-center text-muted">
+                    File type analysis coming soon
+                </td>
+            </tr>
+        `;
+    }
+    
+    console.log("✅ Recent activity updated");
+}
     // Update recent files table
     const recentFilesBody = document.getElementById('recentFilesBody');
     if (recentFilesBody) {
@@ -260,7 +352,6 @@ function updateRecentActivity(activity) {
             `).join('');
         }
     }
-}
 
 // ============================================
 // CHART FUNCTIONS (Optional - comment out if not using charts)

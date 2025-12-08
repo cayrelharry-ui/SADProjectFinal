@@ -332,78 +332,39 @@ async function loadPendingApprovals() {
     }
 }
 
+// In your Admin_Panel.js loadAnalyticsSection function
 async function loadAnalyticsSection() {
-    console.log("📊 Loading analytics section...");
-    
-    const analyticsSection = document.getElementById('analytics-section');
-    if (!analyticsSection) {
-        console.error("Analytics section not found!");
-        return;
-    }
-    
-    // Get the card body inside analytics section
-    const cardBody = analyticsSection.querySelector('.card-body');
-    if (!cardBody) {
-        console.error("Card body not found in analytics section!");
-        return;
-    }
-    
-    // Show loading state
-    cardBody.innerHTML = `
-        <div class="text-center py-5">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading statistics...</span>
-            </div>
-            <p class="mt-3">Loading statistics...</p>
-        </div>
-    `;
-    
     try {
-        // Load statistics
-        const result = await loadStatistics();
+        console.log("Loading analytics section...");
         
-        if (result.success) {
-            console.log("✅ Statistics loaded:", result.data);
-            
-            // Update the UI with statistics
-            updateStatisticsUI(result.data);
-            
-            // Try to draw charts (will fail silently if Chart.js not loaded)
-            try {
-                drawCharts(result.data.users, result.data.files);
-            } catch (chartError) {
-                console.log("Charts not available:", chartError.message);
-            }
-            
-            showStatus('Statistics loaded successfully', 'success');
-        } else {
-            console.error("❌ Failed to load statistics:", result.error);
-            cardBody.innerHTML = `
-                <div class="alert alert-danger m-3">
-                    <i class="bi bi-exclamation-triangle"></i> 
-                    Failed to load statistics: ${result.error || 'Unknown error'}
-                    <br>
-                    <button class="btn btn-sm btn-primary mt-2" onclick="loadAnalyticsSection()">
-                        Try Again
-                    </button>
-                </div>
-            `;
-            showStatus('Failed to load statistics', 'error');
+        // Make sure the section is visible first
+        const analyticsSection = document.getElementById('analytics-section');
+        if (!analyticsSection) {
+            console.error("❌ Analytics section element not found!");
+            return;
         }
         
+        console.log("Analytics section found, checking for elements...");
+        console.log("recentUsersBody exists:", !!document.getElementById('recentUsersBody'));
+        console.log("topUsersBody exists:", !!document.getElementById('topUsersBody'));
+        console.log("fileTypesBody exists:", !!document.getElementById('fileTypesBody'));
+        
+        // Now load statistics
+        const result = await loadStatistics();
+        if (result.success) {
+            updateStatisticsUI(result.data);
+            drawCharts(result.data.users, result.data.files);
+            
+            // Update last updated time
+            const lastUpdated = document.getElementById('lastUpdated');
+            if (lastUpdated) {
+                lastUpdated.textContent = new Date().toLocaleString();
+            }
+        } else {
+            console.error('Failed to load statistics:', result.error);
+        }
     } catch (error) {
-        console.error('❌ Analytics section error:', error);
-        cardBody.innerHTML = `
-            <div class="alert alert-danger m-3">
-                <i class="bi bi-exclamation-triangle"></i> 
-                Error loading analytics: ${error.message}
-                <br>
-                <button class="btn btn-sm btn-primary mt-2" onclick="loadAnalyticsSection()">
-                    Try Again
-                </button>
-            </div>
-        `;
-        showStatus('Error loading analytics', 'error');
+        console.error('Analytics section error:', error);
     }
 }
 // Global function to load uploaded files
