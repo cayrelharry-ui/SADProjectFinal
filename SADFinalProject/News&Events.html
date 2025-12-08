@@ -15,105 +15,71 @@
 
         body {
             font-family: 'Inter', sans-serif;
-
             background-image: url('banner.png');
-            /* Your specified background image */
             background-size: cover;
             background-attachment: fixed;
             background-color: #f8fafc;
-            /* Very light fallback background color */
             position: relative;
-            /* Needed for ::before pseudo-element positioning */
             z-index: 0;
-            /* Establishes a stacking context */
         }
 
-        /* NEW: Darkening Overlay for the Background Image */
         body::before {
             content: '';
             position: fixed;
-            /* Covers the entire viewport */
             inset: 0;
-            /* Shorthand for top, right, bottom, left: 0 */
             background-color: rgb(255, 255, 255);
-            /* Semi-transparent black overlay (adjust 0.5 for darker/lighter) */
             z-index: -1;
-            /* Puts the overlay behind the body content */
         }
 
-
-        /* Custom Violet color for the logo/accents */
         .violet-accent {
             color: #5A2C9D;
-            /* Deep Indigo Violet */
         }
 
         .bg-violet {
             background-color: #5A2C9D;
         }
 
-
-
         .bg-violet-hover:hover {
             background-color: #4C2684;
-            /* Slightly darker violet on hover */
             color: white;
         }
 
         .group:hover>.dropdown-content,
         .group:focus>.dropdown-content,
         .group>.dropdown-content:not(.opacity-0) {
-            /* targets the JS open state */
             visibility: visible !important;
             opacity: 1 !important;
             display: block !important;
-            /* Block any Bootstrap display: none */
         }
 
-
-        /* --- HERO BANNER CONTAINER --- */
         .hero-banner {
             position: relative;
-            /* Essential for positioning the text overlay */
             width: 90%;
-            /* Adjust to match the main content width of your page */
             max-width: 1200px;
-            /* Optional: Sets a maximum width for large screens */
             margin: 30px auto 40px auto;
-            /* Centers the banner and adds vertical space */
             overflow: hidden;
-            /* Ensures image corners don't stick out */
             border-radius: 12px;
-            /* Adds subtle rounded corners */
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-            /* Adds a slight shadow */
         }
 
-        /* --- IMAGE STYLING --- */
         .hero-image {
             width: 100%;
             height: auto;
             display: block;
             filter: brightness(0.7);
-            /* Slightly darkens the image to make white text easier to read */
         }
 
-        /* --- TEXT CONTENT OVERLAY --- */
         .banner-content {
             position: absolute;
             bottom: 0;
-            /* Positions the text at the bottom of the banner */
             left: 0;
             padding: 25px 40px;
             color: white;
-            /* Sets the text color to white */
-            /* Add a subtle gradient background for better text contrast */
             background: linear-gradient(to top, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
             width: 100%;
             box-sizing: border-box;
         }
 
-        /* --- TEXT STYLING --- */
         .banner-title {
             font-size: 2.2em;
             font-weight: bold;
@@ -127,7 +93,6 @@
             margin: 0;
         }
 
-        /* --- RESPONSIVENESS (Optional) --- */
         @media (max-width: 768px) {
             .banner-content {
                 padding: 15px 20px;
@@ -143,97 +108,88 @@
         }
 
         .hero-banner {
-            /* Ensures the banner scales up to a maximum width to match your site's content area */
             max-width: 1200px;
-            /* Adjust this value to match your main content area's width */
             width: 90%;
             margin: 30px auto;
-            /* Centers the banner and adds vertical breathing room */
         }
 
         .hero-banner img {
-            /* This makes the image stretch to fill the width of its container */
             width: 100%;
             height: auto;
-            /* Ensures the image doesn't get stretched vertically */
             display: block;
         }
-        /* Edit button styles for events */
-.edit-event-btn {
-    display: none !important;
-    transition: all 0.2s ease;
-    min-width: 28px;
-    min-height: 28px;
-}
 
-.edit-event-btn:hover {
-    transform: scale(1.1);
-    background-color: rgba(90, 44, 157, 0.1) !important;
-}
+        .edit-event-btn {
+            display: none !important;
+            transition: all 0.2s ease;
+            min-width: 28px;
+            min-height: 28px;
+        }
 
-.edit-event-btn.visible {
-    display: flex !important;
-}
+        .edit-event-btn:hover {
+            transform: scale(1.1);
+            background-color: rgba(90, 44, 157, 0.1) !important;
+        }
 
-/* User role indicator */
-.user-role-indicator {
-    font-size: 0.7rem;
-    padding: 0.1rem 0.4rem;
-    border-radius: 0.25rem;
-    margin-left: 0.5rem;
-    font-weight: bold;
-}
+        .edit-event-btn.visible {
+            display: flex !important;
+        }
 
-.role-admin { background-color: #ef4444; color: white; }
-.role-faculty { background-color: #8b5cf6; color: white; }
-.role-coordinator { background-color: #10b981; color: white; }
-.role-student { background-color: #f59e0b; color: white; }
-.role-guest { background-color: #6b7280; color: white; }
+        .user-role-indicator {
+            font-size: 0.7rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 0.25rem;
+            margin-left: 0.5rem;
+            font-weight: bold;
+        }
 
-/* Event edit controls */
-.event-controls {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
+        .role-admin { background-color: #ef4444; color: white; }
+        .role-faculty { background-color: #8b5cf6; color: white; }
+        .role-coordinator { background-color: #10b981; color: white; }
+        .role-student { background-color: #f59e0b; color: white; }
+        .role-guest { background-color: #6b7280; color: white; }
 
-.event-item:hover .event-controls {
-    opacity: 1;
-}
+        .event-controls {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
 
-/* User menu styles */
-#user-menu-container:hover #user-dropdown,
-#user-menu-container:focus-within #user-dropdown {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
+        .event-item:hover .event-controls {
+            opacity: 1;
+        }
 
-#user-dropdown {
-    min-width: 200px;
-}
+        #user-menu-container:hover #user-dropdown,
+        #user-menu-container:focus-within #user-dropdown {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
 
-/* Modal overlay */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
+        #user-dropdown {
+            min-width: 200px;
+        }
 
-.modal-content {
-    background: white;
-    border-radius: 1rem;
-    padding: 2rem;
-    max-width: 500px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-}
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
     </style>
 </head>
 
@@ -241,11 +197,9 @@
 
     <header class="fixed top-0 left-0 w-full bg-white shadow-md z-50">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-
-            <!-- Logo -->
             <a href="index.html" class="flex items-center space-x-3 h-full">
                 <div class="h-10 w-10 rounded-full flex items-center justify-center text-xl font-bold">
-                    <img src="logo.png" alt="CNSC Logo">
+                    <img src="logo.png" alt="CNSC Logo" data-db-section="logo" data-db-position="1">
                 </div>
                 <div class="leading-none hidden sm:block">
                     <p class="text-xs font-bold text-gray-800 tracking-wider">CCMS Extension Services</p>
@@ -255,8 +209,6 @@
 
             <div class="flex items-center space-x-6">
                 <ul id="desktop-menu" class="hidden lg:flex items-center space-x-6 text-sm font-semibold text-gray-700">
-
-                    <!-- Home: Links to index.html -->
                     <li class="relative group" tabindex="0">
                         <a href="Home.html"
                             class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
@@ -270,20 +222,17 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="Home.html#mission-vision"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Mission
-                                &
+                            <a href="history.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">History</a>
+                            <a href="mission-vision.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Mission &
                                 Vision</a>
-                            <a href="Home.html#upcoming-events"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Upcoming
-                                Events & News</a>
-                            <a href="Home.html#featured-projects"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Featured
-                                Projects</a>
+                            <a href="quality-policy.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Quality
+                                Policy</a>
                         </div>
                     </li>
 
-                    <!-- Programs: Links to programs.html -->
                     <li class="relative group" tabindex="0">
                         <a href="programs.html"
                             class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
@@ -291,7 +240,6 @@
                         </a>
                     </li>
 
-                    <!-- News & Events: Links to news-events.html -->
                     <li class="relative group" tabindex="0">
                         <a href="News&Events.html"
                             class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
@@ -305,22 +253,16 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="News&Events.html#calendar"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Event
-                                Calendar</a>
-                            <a href="News&Events.html#upcomingEvents"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Upcoming
-                                Events</a>
-                            <a href="News&Events.html#newsArticles"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">News
-                                Articles</a>
-                            <a href="News&Events.html#gallery"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Event
-                                Gallery</a>
+                            <a href="news-engineering.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Engineering</a>
+                            <a href="news-arts-sciences.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Arts &
+                                Sciences</a>
+                            <a href="news-agriculture.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Agriculture</a>
                         </div>
                     </li>
 
-                    <!-- Partnerships: Links to partnerships.html -->
                     <li class="relative group" tabindex="0">
                         <a href="Partnership.html"
                             class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
@@ -334,26 +276,40 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="Partnership.html#partnerOrg"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Partner
-                                Organizations</a>
-                            <a href="Partnership.html#moa"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">MOA</a>
-                            <a href="Partnership.html#moa"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Partner
-                                With Us</a>
+                            <a href="requirements.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Requirements</a>
+                            <a href="application-form.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Application
+                                Form</a>
+                            <a href="scholarships.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Scholarships</a>
                         </div>
                     </li>
 
-                    <!-- Resources: Links to resources.html -->
                     <li class="relative group" tabindex="0">
                         <a href="Reports.html"
                             class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
                             Resources
+                            <svg class="ml-1 w-3 h-3 transition-transform duration-300 group-hover:rotate-180 group-hover:text-[#5A2C9D]"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </a>
+                        <div
+                            class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
+                            <a href="journals.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Journals</a>
+                            <a href="call-for-papers.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Call for
+                                Papers</a>
+                            <a href="ethics-board.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Ethics
+                                Board</a>
+                        </div>
+                    </li>
 
-                    <!-- Contact Us: Links to contact.html -->
                     <li class="relative group" tabindex="0">
                         <a href="Contact.html"
                             class="menu-item flex items-center px-2 py-5 transition duration-150 ease-in-out hover:text-[#5A2C9D] focus:outline-none">
@@ -367,18 +323,16 @@
                         </a>
                         <div
                             class="dropdown-content absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-focus:opacity-100 group-hover:visible group-focus:visible transition duration-300 ease-in-out">
-                            <a href="Contact.html#inquiry"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Inquiries</a>
-                            <a href="Contact.html#inquiry"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Location</a>
-                            <a href="Contact.html#extensionOffices"
-                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Directory
-                                of Extension Offices</a>
+                            <a href="contact-projects.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-t-lg">Projects</a>
+                            <a href="contact-partnerships.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D]">Partnerships</a>
+                            <a href="contact-forms.html"
+                                class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] rounded-b-lg">Forms</a>
                         </div>
                     </li>
-
                 </ul>
-                <!-- Search and Mobile Menu (Unchanged) -->
+
                 <button
                     class="maroon-accent hover:text-red-900 p-2 rounded-full transition duration-150 focus:outline-none"
                     aria-label="Search">
@@ -389,34 +343,34 @@
                     </svg>
                 </button>
 
-                <!-- Replace the entire user-menu-container div with this: -->
-<div class="relative group" id="user-menu-container">
-    <button id="user-menu-button"
-            class="flex items-center space-x-2 p-2 text-gray-700 hover:text-[#5A2C9D] focus:outline-none">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-        </svg>
-        <span id="user-status" class="text-sm font-medium">Guest</span>
-        <span id="user-role-badge" class="user-role-indicator role-guest hidden">Guest</span>
-    </button>
-    
-    <div id="user-dropdown"
-         class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible transition duration-300 ease-in-out z-50">
-        <div id="logout-option" class="p-2">
-            <div class="px-4 py-2 text-sm text-gray-600">
-                Logged in as: <span id="current-role" class="font-semibold">Guest</span>
-            </div>
-            <button onclick="window.newsEventsCalendar?.login()"
-                    class="w-full text-left px-4 py-2 text-[#5A2C9D] hover:bg-purple-50 rounded-b-lg flex items-center">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                </svg>
-                Login
-            </button>
-        </div>
-    </div>
-</div>
+                <div class="relative group" id="user-menu-container">
+                    <button id="user-menu-button"
+                            class="flex items-center space-x-2 p-2 text-gray-700 hover:text-[#5A2C9D] focus:outline-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span id="user-status" class="text-sm font-medium">Guest</span>
+                        <span id="user-role-badge" class="user-role-indicator role-guest hidden">Guest</span>
+                    </button>
+                    
+                    <div id="user-dropdown"
+                         class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible transition duration-300 ease-in-out z-50">
+                        <div id="logout-option" class="p-2">
+                            <div class="px-4 py-2 text-sm text-gray-600">
+                                Logged in as: <span id="current-role" class="font-semibold">Guest</span>
+                            </div>
+                            <button onclick="window.newsEventsCalendar?.login()"
+                                    class="w-full text-left px-4 py-2 text-[#5A2C9D] hover:bg-purple-50 rounded-b-lg flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                                </svg>
+                                Login
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <button id="mobile-menu-button"
                     class="lg:hidden p-2 text-gray-700 hover:text-[#5A2C9D] rounded-md focus:outline-none"
                     aria-label="Toggle menu">
@@ -435,12 +389,10 @@
         </nav>
     </header>
 
-    <!-- Mobile Menu (Drops down when toggled) -->
+    <!-- Mobile Menu -->
     <div id="mobile-menu"
         class="hidden fixed top-20 left-0 w-full bg-white lg:hidden shadow-lg z-40 border-t border-gray-200">
         <div class="px-2 pt-2 pb-3 space-y-1">
-
-            <!-- Mobile Item with Dropdown -->
             <div class="border-b border-gray-100 pb-2">
                 <button data-target="about-dropdown"
                     class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
@@ -462,7 +414,6 @@
                 </div>
             </div>
 
-            <!-- Repeated structure for other links -->
             <div class="border-b border-gray-100 pb-2">
                 <button data-target="admin-dropdown"
                     class="mobile-menu-item flex justify-between items-center w-full px-3 py-2 text-gray-700 hover:bg-red-50 hover:text-maroon-accent rounded-md text-base font-medium">
@@ -564,7 +515,6 @@
                         class="block px-3 py-1 text-sm text-gray-600 hover:text-maroon-accent hover:bg-red-50 rounded-md">Forms</a>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -573,7 +523,10 @@
         <div class="h-[400px] relative overflow-hidden">
             <!-- Placeholder Background Image -->
             <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop"
-                alt="Handshake" class="w-full h-full object-cover">
+                alt="Handshake" 
+                data-db-section="hero" 
+                data-db-position="1"
+                class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-r from-violet-900/90 to-violet-600/70"></div>
 
             <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
@@ -610,107 +563,104 @@
                 class="px-6 py-2 bg-white text-orange-600 font-bold rounded-full shadow-sm hover:bg-gray-50 transition">Register
                 Now</a>
         </div>
-        </div>
 
         <!-- 2. MAIN GRID: CALENDAR & UPCOMING EVENTS -->
-<div id="calendar" class="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-16 scroll-mt-32">
-
-    <!-- LEFT COLUMN: Dynamic Calendar View -->
-    <div class="xl:col-span-2">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-full">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-[#5A2C9D] flex items-center">
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                        </path>
-                    </svg>
-                    Event Calendar
-                </h3>
-                <div class="flex items-center space-x-4">
-                    <button id="prev-month-btn" class="p-1 hover:bg-gray-100 rounded transition-colors">
-                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </button>
-                    <span id="current-month-year" class="font-bold text-gray-700 text-lg">November 2025</span>
-                    <button id="next-month-btn" class="p-1 hover:bg-gray-100 rounded transition-colors">
-                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </button>
-                    <button id="today-btn" class="text-sm text-[#5A2C9D] font-bold hover:text-[#4a2482] ml-2">
-                        Today
-                    </button>
-                </div>
-            </div>
-
-            <!-- Weekday Headers -->
-            <div class="grid grid-cols-7 gap-2 mb-4 text-center">
-                <div class="text-gray-400 text-xs font-bold uppercase p-2">Sun</div>
-                <div class="text-gray-400 text-xs font-bold uppercase p-2">Mon</div>
-                <div class="text-gray-400 text-xs font-bold uppercase p-2">Tue</div>
-                <div class="text-gray-400 text-xs font-bold uppercase p-2">Wed</div>
-                <div class="text-gray-400 text-xs font-bold uppercase p-2">Thu</div>
-                <div class="text-gray-400 text-xs font-bold uppercase p-2">Fri</div>
-                <div class="text-gray-400 text-xs font-bold uppercase p-2">Sat</div>
-            </div>
-
-            <!-- Dynamic Calendar Grid (will be populated by JavaScript) -->
-            <div id="calendar-grid" class="grid grid-cols-7 gap-2 text-sm">
-                <!-- Calendar days will be inserted here by JavaScript -->
-            </div>
-
-            <!-- Calendar Controls -->
-            <div class="mt-6 pt-6 border-t border-gray-100">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-[#5A2C9D] rounded mr-2"></div>
-                            <span class="text-xs text-gray-600">Event</span>
-                        </div>
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-red-500 rounded mr-2"></div>
-                            <span class="text-xs text-gray-600">Today</span>
+        <div id="calendar" class="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-16 scroll-mt-32">
+            <div class="xl:col-span-2">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-full">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-bold text-[#5A2C9D] flex items-center">
+                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            Event Calendar
+                        </h3>
+                        <div class="flex items-center space-x-4">
+                            <button id="prev-month-btn" class="p-1 hover:bg-gray-100 rounded transition-colors">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            <span id="current-month-year" class="font-bold text-gray-700 text-lg">November 2025</span>
+                            <button id="next-month-btn" class="p-1 hover:bg-gray-100 rounded transition-colors">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                            <button id="today-btn" class="text-sm text-[#5A2C9D] font-bold hover:text-[#4a2482] ml-2">
+                                Today
+                            </button>
                         </div>
                     </div>
-                    <button id="add-event-btn" 
-                            class="px-4 py-2 bg-[#5A2C9D] text-white text-sm font-bold rounded-lg hover:bg-[#4a2482] transition-colors flex items-center">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+
+                    <!-- Weekday Headers -->
+                    <div class="grid grid-cols-7 gap-2 mb-4 text-center">
+                        <div class="text-gray-400 text-xs font-bold uppercase p-2">Sun</div>
+                        <div class="text-gray-400 text-xs font-bold uppercase p-2">Mon</div>
+                        <div class="text-gray-400 text-xs font-bold uppercase p-2">Tue</div>
+                        <div class="text-gray-400 text-xs font-bold uppercase p-2">Wed</div>
+                        <div class="text-gray-400 text-xs font-bold uppercase p-2">Thu</div>
+                        <div class="text-gray-400 text-xs font-bold uppercase p-2">Fri</div>
+                        <div class="text-gray-400 text-xs font-bold uppercase p-2">Sat</div>
+                    </div>
+
+                    <!-- Dynamic Calendar Grid -->
+                    <div id="calendar-grid" class="grid grid-cols-7 gap-2 text-sm">
+                        <!-- Calendar days will be inserted here by JavaScript -->
+                    </div>
+
+                    <!-- Calendar Controls -->
+                    <div class="mt-6 pt-6 border-t border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-[#5A2C9D] rounded mr-2"></div>
+                                    <span class="text-xs text-gray-600">Event</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-red-500 rounded mr-2"></div>
+                                    <span class="text-xs text-gray-600">Today</span>
+                                </div>
+                            </div>
+                            <button id="add-event-btn" 
+                                    class="px-4 py-2 bg-[#5A2C9D] text-white text-sm font-bold rounded-lg hover:bg-[#4a2482] transition-colors flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Add Event
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Upcoming Activities & Registration -->
+            <div id="upcomingEvents" class="xl:col-span-1 space-y-6 scroll-mt-32">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4 border-l-4 border-[#5A2C9D] pl-3">Upcoming Activities</h3>
+                    <div class="space-y-4" id="upcoming-events-list">
+                        <!-- Upcoming events will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Quick Archive Link -->
+                <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 text-center">
+                    <h4 class="text-sm font-semibold text-gray-600 mb-2">Looking for past events?</h4>
+                    <a href="#"
+                        class="text-[#5A2C9D] text-sm font-bold hover:underline flex items-center justify-center">
+                        Browse Event Archive
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                         </svg>
-                        Add Event
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- RIGHT COLUMN: Upcoming Activities & Registration (Keep this as is) -->
-    <div id="upcomingEvents" class="xl:col-span-1 space-y-6 scroll-mt-32">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-xl font-bold text-gray-900 mb-4 border-l-4 border-[#5A2C9D] pl-3">Upcoming Activities</h3>
-            <div class="space-y-4" id="upcoming-events-list">
-                <!-- Upcoming events will be inserted here -->
-            </div>
-        </div>
-
-        <!-- Quick Archive Link -->
-        <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 text-center">
-            <h4 class="text-sm font-semibold text-gray-600 mb-2">Looking for past events?</h4>
-            <a href="#"
-                class="text-[#5A2C9D] text-sm font-bold hover:underline flex items-center justify-center">
-                Browse Event Archive
-                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                </svg>
-            </a>
-        </div>
-    </div>
-</div>
 
         <!-- 3. LATEST NEWS ARTICLES -->
         <div class="mb-16">
@@ -721,7 +671,11 @@
                 <div
                     class="flex flex-col md:flex-row bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition">
                     <div class="md:w-1/3">
-                        <img src="pro2.webp" alt="News" class="h-full w-full object-cover">
+                        <img src="pro2.webp" 
+                             data-db-section="articles" 
+                             data-db-position="1"
+                             alt="News" 
+                             class="h-full w-full object-cover">
                     </div>
                     <div class="p-6 md:w-2/3 flex flex-col justify-center">
                         <div class="text-sm text-gray-500 mb-2">October 28, 2025 • <span>Community</span></div>
@@ -737,7 +691,11 @@
                 <div
                     class="flex flex-col md:flex-row bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition">
                     <div class="md:w-1/3">
-                        <img src="pro1.avif" alt="News" class="h-full w-full object-cover">
+                        <img src="pro1.avif" 
+                             data-db-section="articles" 
+                             data-db-position="2"
+                             alt="News" 
+                             class="h-full w-full object-cover">
                     </div>
                     <div class="p-6 md:w-2/3 flex flex-col justify-center">
                         <div class="text-sm text-gray-500 mb-2">October 24, 2025 • <span>Campus Life</span></div>
@@ -770,7 +728,10 @@
                 <!-- Gallery Item 1 (Large) -->
                 <div class="col-span-2 row-span-2 relative group rounded-xl overflow-hidden">
                     <img src="pro2.webp"
-                        class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Event">
+                        data-db-section="gallery" 
+                        data-db-position="1"
+                        class="w-full h-full object-cover transition duration-500 group-hover:scale-110" 
+                        alt="Event">
                     <div
                         class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-center justify-center">
                         <div
@@ -784,7 +745,10 @@
                 <!-- Gallery Item 2 -->
                 <div class="relative group rounded-xl overflow-hidden h-48">
                     <img src="pro3.webp"
-                        class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Event">
+                        data-db-section="gallery" 
+                        data-db-position="2"
+                        class="w-full h-full object-cover transition duration-500 group-hover:scale-110" 
+                        alt="Event">
                     <div
                         class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-center justify-center">
                         <div class="text-white opacity-0 group-hover:opacity-100 transition duration-300">
@@ -800,7 +764,10 @@
                 <!-- Gallery Item 3 -->
                 <div class="relative group rounded-xl overflow-hidden h-48">
                     <img src="pro2.webp"
-                        class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Event">
+                        data-db-section="gallery" 
+                        data-db-position="3"
+                        class="w-full h-full object-cover transition duration-500 group-hover:scale-110" 
+                        alt="Event">
                     <div
                         class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-center justify-center">
                         <div class="text-white opacity-0 group-hover:opacity-100 transition duration-300">
@@ -812,7 +779,10 @@
                 <!-- Gallery Item 4 (Wide) -->
                 <div class="col-span-2 relative group rounded-xl overflow-hidden h-48">
                     <img src="pro1.avif"
-                        class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Event">
+                        data-db-section="gallery" 
+                        data-db-position="4"
+                        class="w-full h-full object-cover transition duration-500 group-hover:scale-110" 
+                        alt="Event">
                     <div
                         class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300 flex items-center justify-center">
                         <div class="text-white opacity-0 group-hover:opacity-100 transition duration-300 text-center">
@@ -827,17 +797,13 @@
 
     </main>
 
-
-
     <footer class="bg-white border-t border-purple-100 mt-12 w-full">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 text-sm border-b pb-8 mb-6">
-
                 <div class="col-span-2 lg:col-span-1 space-y-3">
                     <div class="flex items-center space-x-2">
-                        <div class="h-8 w-8 flex items-center justify-center text-lg font-bold "><img src="logo.png"
-                                alt="">
+                        <div class="h-8 w-8 flex items-center justify-center text-lg font-bold ">
+                            <img src="logo.png" alt="CNSC Logo" data-db-section="logo" data-db-position="2">
                         </div>
                         <div>
                             <p class="text-xs font-bold text-gray-800 tracking-wider">CCMS Extension</p>
@@ -920,10 +886,8 @@
             </div>
 
             <div id="gallery" class="flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 scroll-mt-32">
-
                 <p class="order-2 sm:order-1 mt-4 sm:mt-0">&copy; <span id="current-year"></span> College of Computer &
-                    Multimedia Studies - CNSC <br> All rights
-                    reserved.</p>
+                    Multimedia Studies - CNSC <br> All rights reserved.</p>
 
                 <div class="flex space-x-4 order-1 sm:order-2">
                     <a href="#" class="violet-accent hover:text-[#4C2684]" aria-label="Facebook">
@@ -948,8 +912,6 @@
             </div>
         </div>
     </footer>
-
-
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -989,39 +951,32 @@
                 });
             });
 
-            // 3. Desktop Dropdown Logic (for touch/click fallbacks on group-based hover)
-            // This ensures the dropdown opens on click for touch devices, in addition to hover for mouse users.
+            // 3. Desktop Dropdown Logic
             const desktopDropdowns = document.querySelectorAll('#desktop-menu > li');
 
             desktopDropdowns.forEach(li => {
                 li.addEventListener('click', (event) => {
-                    // Check if the current device is likely a touch device (or small screen)
                     if (window.innerWidth < 1024 || 'ontouchstart' in window) {
-                        event.stopPropagation(); // Stop propagation to prevent document click listener from firing immediately
-
+                        event.stopPropagation();
                         const dropdownContent = li.querySelector('.dropdown-content');
 
                         if (dropdownContent.classList.contains('opacity-0')) {
-                            // Close all others
                             desktopDropdowns.forEach(otherLi => {
                                 if (otherLi !== li) {
                                     otherLi.querySelector('.dropdown-content').classList.add('opacity-0', 'invisible');
                                 }
                             });
-                            // Open current
                             dropdownContent.classList.remove('opacity-0', 'invisible');
                         } else {
-                            // Close current
                             dropdownContent.classList.add('opacity-0', 'invisible');
                         }
                     }
                 });
             });
 
-            // Close desktop dropdowns when clicking outside (for touch/click)
+            // Close desktop dropdowns when clicking outside
             document.addEventListener('click', (event) => {
                 if (window.innerWidth >= 1024 && 'ontouchstart' in window) {
-                    // Only relevant for touch/click on desktop view
                     desktopDropdowns.forEach(li => {
                         if (!li.contains(event.target)) {
                             li.querySelector('.dropdown-content').classList.add('opacity-0', 'invisible');
@@ -1033,14 +988,24 @@
         });
     </script>
 
+    <!-- Scripts in CORRECT ORDER -->
+    <!-- 1. Bootstrap FIRST (UI framework) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-         <script src="./JS/user-profile.js" type="module"></script>
+    </script>
+
+    <!-- 2. Supabase SECOND (database) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- 3. Your custom scripts IN THIS ORDER: -->
+    <script src="./JS/db_connection.js" type="module"></script>
+    <script src="./JS/user-profile.js" type="module"></script>
+    <script src="./JS/news-events-calendar.js" type="module"></script>
     <script src="./JS/edit-mode.js" type="module"></script>
     <script src="./JS/home-images.js" type="module"></script>
-    <script src="./JS/news-events-calendar.js" type="module"></script>
+    <script type="module" src="./JS/image-page-editor.js"></script>
+    <!-- Add this new file -->
+    <script type="module" src="./JS/update-page-images.js"></script>
 
 </body>
 

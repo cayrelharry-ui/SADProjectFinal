@@ -336,18 +336,7 @@
                             </div>
                         </div>
 
-                        <!-- Settings Link -->
-                        <a href="settings.html"
-                            class="block px-4 py-3 text-sm text-gray-700 hover:bg-purple-50 hover:text-[#5A2C9D] flex items-center transition duration-150">
-                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                                </path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                            Settings
-                        </a>
+                       
 
                         <!-- Admin Panel Link (only for admin users) -->
                         <a href="./HTML/Admin_Panel.html"
@@ -730,7 +719,7 @@
                                     New</span>
                                 <h2 class="text-3xl font-bold text-gray-900">Upcoming Events & News</h2>
                             </div>
-                            <a href="News&Events.html#upcomingEvents"
+                            <a href="#"
                                 class="text-sm font-bold text-[#5A2C9D] hover:text-[#4a2482] flex items-center group">
                                 View All
                                 <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition" fill="none"
@@ -764,43 +753,9 @@
                                         Skill Enhancement Workshop</h3>
                                     <p class="text-gray-600 text-sm line-clamp-3 mb-4">Join our free workshop on MS Word
                                         & MS Excel this Saturday at the Main Hall.</p>
-                                    <a href="#" id="readStoryBtn"
+                                    <a href="#"
                                         class="inline-block text-[#5A2C9D] font-bold text-sm hover:underline">Read Full
                                         Story</a>
-
-                                    <!-- Modal / Popup -->
-                                    <div id="storyModal" class="fixed inset-0 bg-black/50 hidden justify-center items-center z-50">
-                                        <div class="bg-white rounded-2xl max-w-3xl w-full mx-4 overflow-y-auto max-h-[90vh] shadow-lg relative">
-                                            
-                                            <!-- Close Button -->
-                                            <button id="closeModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
-                                            
-                                            <!-- Modal Content -->
-                                            <div class="p-6">
-                                                <h2 class="text-2xl font-extrabold text-[#5A2C9D] mb-4">Youth Forum</h2>
-                                                <img src="Projects/Youth Forum/YouthForumPic1.png" alt="Youth Forum" class="w-full h-60 object-cover rounded-lg mb-4 brightness-75">
-
-                                                <p class="mb-4">
-                                                    The Youth Forum brought together young leaders from various municipalities to discuss sustainable environmental practices. The event focused on fostering unity, encouraging diversity, and empowering the youth to take active roles in community development.
-                                                </p>
-
-                                                <h3 class="font-bold text-[#5A2C9D] mb-2">Highlights</h3>
-                                                <ul class="list-disc pl-5 mb-4">
-                                                    <li>Workshops on environmental sustainability and community engagement.</li>
-                                                    <li>Panel discussions with experts from government and non-government organizations.</li>
-                                                    <li>Collaborative projects and interactive activities for attendees.</li>
-                                                </ul>
-
-                                                <h3 class="font-bold text-[#5A2C9D] mb-2">Gallery</h3>
-                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                                    <img src="Projects/Youth Forum/YouthForumPic2.png" alt="Image 2" class="rounded-lg">
-                                                    <img src="Projects/Youth Forum/YouthForumPic3.png" alt="Image 3" class="rounded-lg">
-                                                </div>
-
-                                                <button id="closeModalBtn" class="mt-4 px-6 py-2 bg-[#5A2C9D] hover:bg-[#4a2482] text-white font-semibold rounded-full transition">Close</button>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
@@ -1050,7 +1005,7 @@
 
                 <!-- View All Button -->
                 <div class="text-center mt-12">
-                    <a href="Programs.html"
+                    <a href="#"
                         class="group inline-flex items-center px-8 py-3 border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold rounded-full hover:bg-[#5A2C9D] hover:text-white transition duration-300">
                         Explore All Projects
                         <svg class="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition duration-300"
@@ -1367,37 +1322,6 @@
             });
         });
     </script>
-
-    <script>
-    const modal = document.getElementById('storyModal');
-    const openBtn = document.getElementById('readStoryBtn');
-    const closeBtn = document.getElementById('closeModal');
-    const closeBtn2 = document.getElementById('closeModalBtn');
-
-    openBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    });
-
-    closeBtn.addEventListener('click', () => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    });
-
-    closeBtn2.addEventListener('click', () => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    });
-
-    // Close modal on clicking outside content
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-    });
-</script>
 
 </body>
 </html>
