@@ -172,3 +172,56 @@
 .card-header {
     border-bottom: 1px solid rgba(0,0,0,0.125);
 }
+
+/* Edit Mode Styles */
+.edit-mode-active {
+    cursor: text !important;
+}
+
+.edit-mode-active .editable-content:hover {
+    background-color: rgba(90, 44, 157, 0.05) !important;
+    transition: background-color 0.2s ease;
+}
+
+.edit-mode-active .editable-content:focus {
+    background-color: rgba(90, 44, 157, 0.1) !important;
+    outline: 2px solid #5A2C9D !important;
+}
+
+/* Edit Toolbar Styles */
+#edit-toolbar {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Edit Button Animation */
+#edit-mode-toggle {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(90, 44, 157, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(90, 44, 157, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(90, 44, 157, 0);
+    }
+}
+
+#edit-mode-toggle.editing {
+    animation: none;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+}

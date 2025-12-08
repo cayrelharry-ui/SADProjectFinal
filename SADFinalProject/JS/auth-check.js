@@ -80,9 +80,9 @@ import { getCurrentUser } from './db_connection.js';
             'public': '../HTML/Public_Dashboard.html',
             'partner':'../HTML/Partner_Panel.html'
         };
-
-        const redirectUrl = redirectMap[userRole] || '../index.html';
-
+        
+        const redirectUrl = redirectMap[userRole] || './LogIn.html';
+        
         // Only redirect if not already on the correct page
         if (!currentPath.includes(redirectUrl.replace('../', '').replace('.html', ''))) {
             setTimeout(() => {
