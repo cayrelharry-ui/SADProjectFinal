@@ -1054,6 +1054,7 @@ if (projectForm) {
 
             alert('Project successfully created!');
             projectForm.reset();
+            loadAdminProjects();
             
             // Reset proponents UI
             document.getElementById('proponents-container').innerHTML = `
@@ -1071,6 +1072,166 @@ if (projectForm) {
         }
     });
 }
+// ============================================
+// ADMIN PROJECT LIST LOGIC
+// ============================================
+
+// Store projects for modal access
+window.adminProjects = [];
+
+// Load projects when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadAdminProjects();
+});
+
+// Make functions global so HTML buttons can call them
+window.loadAdminProjects = async function() {
+    const container = document.getElementById('admin-projects-grid');
+    if (!container) return;
+
+    try {
+        const { data: projects, error } = await supabase
+            .from('projects')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!projects || projects.length === 0) {
+            container.innerHTML = '<div class="col-12 text-center text-muted py-5">No projects found. Create one above!</div>';
+            return;
+        }
+
+        // Store globally
+        window.adminProjects = projects;
+        container.innerHTML = '';
+
+        projects.forEach((proj, index) => {
+            // Status Badge Color
+            let badgeClass = 'bg-primary';
+            if (proj.status === 'Ongoing') badgeClass = 'bg-success';
+            if (proj.status === 'Proposed') badgeClass = 'bg-warning text-dark';
+
+            // Formatting
+            const startYear = proj.start_date ? new Date(proj.start_date).getFullYear() : 'TBA';
+            const image = proj.image_url || 'https://placehold.co/600x400?text=No+Image';
+
+            // Bootstrap Card matching Programs.html design
+            const html = `
+            <div class="col-md-6 col-xl-4">
+                <div class="card h-100 shadow-sm border-0 hover-shadow transition">
+                    <!-- Image Header -->
+                    <div class="position-relative" style="height: 200px; overflow: hidden;">
+                        <img src="${image}" class="w-100 h-100 object-fit-cover">
+                        <span class="position-absolute top-0 end-0 m-3 badge ${badgeClass} text-uppercase shadow-sm">
+                            ${proj.status}
+                        </span>
+                        <div class="position-absolute bottom-0 start-0 w-100 p-3" 
+                             style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
+                            <span class="badge bg-primary">${proj.location || 'General'}</span>
+                        </div>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold text-dark mb-2">${proj.title}</h5>
+                        <p class="card-text text-muted small text-truncate-3 mb-4 flex-fill">
+                            ${proj.description || 'No description.'}
+                        </p>
+
+                        <div class="border-top pt-3 mt-auto">
+                            <div class="d-flex justify-content-between small text-muted mb-3">
+                                <span><strong>Start:</strong> ${startYear}</span>
+                                <span><strong>Fund:</strong> ${proj.funding_agency || 'N/A'}</span>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="d-grid gap-2 d-md-flex">
+                                <button onclick="openAdminModal(${index})" class="btn btn-outline-primary btn-sm flex-grow-1">
+                                    <i class="bi bi-eye"></i> View Details
+                                </button>
+                                <button onclick="deleteProject(${proj.project_id})" class="btn btn-danger btn-sm flex-grow-1">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        });
+
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = `<div class="col-12 text-center text-danger">Error loading projects: ${err.message}</div>`;
+    }
+};
+
+// Delete Project Function
+window.deleteProject = async function(id) {
+    if (!confirm("Are you sure you want to delete this project? This cannot be undone.")) return;
+
+    try {
+        const { error } = await supabase
+            .from('projects')
+            .delete()
+            .eq('project_id', id);
+
+        if (error) throw error;
+
+        alert("Project deleted successfully.");
+        loadAdminProjects(); // Refresh list
+
+    } catch (err) {
+        alert("Error deleting project: " + err.message);
+    }
+};
+
+// Open Detail Modal
+window.openAdminModal = function(index) {
+    const proj = window.adminProjects[index];
+    if (!proj) return;
+
+    // Populate Data
+    document.getElementById('adm-modal-title').innerText = proj.title;
+    document.getElementById('adm-modal-image').src = proj.image_url || '';
+    document.getElementById('adm-modal-desc').innerText = proj.description;
+    document.getElementById('adm-modal-objectives').innerText = proj.objectives;
+    document.getElementById('adm-modal-timeline').innerText = `${proj.start_date} to ${proj.end_date}`;
+    document.getElementById('adm-modal-location').innerText = proj.location;
+    document.getElementById('adm-modal-funding').innerText = proj.funding_agency;
+    document.getElementById('adm-modal-beneficiaries').innerText = proj.beneficiaries;
+
+    // Status Badge
+    const statusEl = document.getElementById('adm-modal-status');
+    statusEl.innerText = proj.status;
+    statusEl.className = 'badge mb-2 ' + (
+        proj.status === 'Ongoing' ? 'bg-success' : 
+        proj.status === 'Proposed' ? 'bg-warning text-dark' : 'bg-primary'
+    );
+
+    // Proponents
+    const propContainer = document.getElementById('adm-modal-proponents');
+    propContainer.innerHTML = '';
+    if (proj.proponents && Array.isArray(proj.proponents)) {
+        proj.proponents.forEach(name => {
+            propContainer.insertAdjacentHTML('beforeend', `
+                <div class="col-md-6">
+                    <div class="p-3 border rounded bg-white d-flex align-items-center">
+                        <div class="bg-light rounded-circle p-2 me-3 text-primary"><i class="bi bi-person"></i></div>
+                        <strong>${name}</strong>
+                    </div>
+                </div>
+            `);
+        });
+    } else {
+        propContainer.innerHTML = '<p class="text-muted small">No proponents listed.</p>';
+    }
+
+    // Show Modal
+    new bootstrap.Modal(document.getElementById('adminProjectModal')).show();
+};
 
 });
 window.loadAnalyticsSection = loadAnalyticsSection;
