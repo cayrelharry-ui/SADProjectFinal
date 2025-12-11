@@ -63,18 +63,17 @@
     <header class="absolute top-0 left-0 w-full bg-transparent z-40">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
 
-            <!-- 1. LOGO LEFT SIDE (Unchanged) -->
-            <a href="#" class="flex items-center space-x-3 h-full">
-                <div class="h-10 w-10 p-1.5 bg-white/20 rounded-full backdrop-blur-sm">
-                    <div
-                        class="w-full h-full bg-white rounded-full flex items-center justify-center text-cnsc-violet font-bold text-xs">
-                        LOGO</div>
-                </div>
-                <div class="leading-none hidden sm:block">
-                    <p class="text-xs font-bold text-white tracking-wider">CCMS Extension Services</p>
-                    <h1 class="text-xl font-extrabold text-white">CNSC</h1>
-                </div>
-            </a>
+           <!-- 1. LOGO LEFT SIDE -->
+<a href="#" class="flex items-center space-x-3 h-full">
+    <!-- Logo Container -->
+    <div class="flex items-center justify-center">
+        <img src="../logo.png" alt="CNSC Logo" class="h-12 w-auto object-contain">
+    </div>
+    <div class="leading-none hidden sm:block">
+        <p class="text-xs font-bold text-white tracking-wider">CCMS Extension Services</p>
+        <h1 class="text-xl font-extrabold text-white">CNSC</h1>
+    </div>
+</a>
 
             <!-- 2. RIGHT SIDE CONTAINER (Holds both Bell & Profile) -->
             <div class="flex items-center h-full gap-4">
@@ -168,17 +167,17 @@
                             </button>
                         </div>
                         <!-- Footer -->
-                        <div class="p-2 border-t border-gray-100">
-                            <button onclick="confirm('Are you sure you want to logout?')"
-                                class="w-full flex items-center px-3 py-2 text-sm font-bold text-red-600 rounded-lg hover:bg-red-50 transition">
-                                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-                                    </path>
-                                </svg>
-                                Sign Out
-                            </button>
-                        </div>
+<div class="p-2 border-t border-gray-100">
+    <button onclick="handleLogout()"
+        class="w-full flex items-center px-3 py-2 text-sm font-bold text-red-600 rounded-lg hover:bg-red-50 transition">
+        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+            </path>
+        </svg>
+        Sign Out
+    </button>
+</div>
                     </div>
                 </div>
 
@@ -2043,6 +2042,90 @@
             await sbClient.from('notifications').update({ is_read: true }).eq('recipient', currentUser);
             fetchNotifications(); // Refresh UI
         }
+
+        // --- LOGOUT FUNCTIONALITY ---
+async function handleLogout() {
+    // Show confirmation dialog
+    const confirmLogout = confirm("Are you sure you want to sign out?");
+    
+    if (!confirmLogout) {
+        return; // User cancelled
+    }
+    
+    try {
+        // If you're using Supabase Auth, uncomment this:
+        // if (sbClient && sbClient.auth) {
+        //     const { error } = await sbClient.auth.signOut();
+        //     if (error) throw error;
+        // }
+        
+        // Clear any local session data
+        localStorage.removeItem('user_session');
+        sessionStorage.removeItem('user_session');
+        
+        // Clear user-related global variables
+        currentUser = null;
+        currentProfileDbId = null;
+        currentUserEmail = null;
+        
+        // Show logout success message
+        showLogoutToast();
+        
+        // Redirect to login page after a brief delay
+        setTimeout(() => {
+            window.location.href = "../HTML/LogIn.html"; // Change this to your actual login page
+        }, 1000);
+        
+    } catch (error) {
+        console.error("Logout error:", error);
+        alert("Error during logout. Please try again.");
+    }
+}
+
+// Optional: Add a nice logout toast notification
+function showLogoutToast() {
+    const toast = document.createElement('div');
+    toast.className = "fixed top-5 right-5 bg-green-600 text-white px-6 py-4 rounded-lg shadow-2xl flex items-center gap-3 z-[200] animate-fade-in";
+    toast.innerHTML = `
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <div>
+            <p class="font-bold text-sm">Successfully logged out</p>
+            <p class="text-xs text-white/80">Redirecting to login...</p>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    
+    // Remove toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.add('animate-fade-out');
+        setTimeout(() => toast.remove(), 500);
+    }, 2500);
+}
+
+// Add fade animations to CSS
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fade-out {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+    }
+    
+    .animate-fade-in {
+        animation: fade-in 0.3s ease-out forwards;
+    }
+    
+    .animate-fade-out {
+        animation: fade-out 0.3s ease-out forwards;
+    }
+`;
+document.head.appendChild(style);
 
         // --- SEND NOTIFICATION & EMAIL (The Core Logic) ---
 
