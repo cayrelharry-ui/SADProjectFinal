@@ -483,13 +483,6 @@ async function loadAllRequests() {
             return;
         }
 
-        // In loadAllRequests function, after getting all requests:
-        if (user && user.email && filteredRequests.length > 0) {
-            filteredRequests = filteredRequests.filter(req =>
-                req.email === user.email
-            );
-        }
-
         // Get filter values
         const statusFilter = document.getElementById('statusFilter')?.value || '';
         const searchQuery = document.getElementById('searchRequests')?.value || '';
@@ -514,8 +507,17 @@ async function loadAllRequests() {
             throw error;
         }
 
-        // Apply search filter locally
+        // Start with the raw data
         let filteredRequests = data || [];
+
+        // Limit to the current user if applicable
+        if (user && user.email && filteredRequests.length > 0) {
+            filteredRequests = filteredRequests.filter(req =>
+                req.email === user.email
+            );
+        }
+
+        // Apply search filter locally
         if (searchQuery) {
             const searchLower = searchQuery.toLowerCase();
             filteredRequests = filteredRequests.filter(req =>
@@ -1023,11 +1025,15 @@ window.openNewRequestModal = openNewRequestModal;
 window.loadAllRequests = loadAllRequests;
 window.viewRequestDetails = viewRequestDetails;
 
-// Initialize Supabase client globally
+// Initialize Supabase client globally (without overwriting the library)
 const SUPABASE_URL = 'https://fkdqenrxfanpgmtogiig.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDA1NzksImV4cCI6MjA4MDMxNjU3OX0.NSA57GQcxnCpLnqMVlDpf_lvfggb2H-IGGTBL_XYQ4I';
 
-// Initialize Supabase client
-window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+if (!window.supabase || !window.supabase.createClient) {
+    console.error('Supabase JS library is not loaded. Please ensure the CDN script is included before Partner_Panel.js.');
+}
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+window.supabaseClient = supabase;
 
 console.log('Partner Panel loaded successfully!');
