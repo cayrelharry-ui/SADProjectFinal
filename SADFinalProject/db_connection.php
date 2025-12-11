@@ -2,15 +2,20 @@
 // includes/db_connection.php
 
 // --- SUPABASE CONFIGURATION ---
-// Base URL for your Supabase project's REST API
-const SUPABASE_URL = "https://fkdqenrxfanpgmtogiig.supabase.co";
+// Prefer environment variables; fall back to the project values if not set.
+if (!defined('SUPABASE_URL')) {
+    define('SUPABASE_URL', getenv('SUPABASE_URL') ?: 'https://fkdqenrxfanpgmtogiig.supabase.co');
+}
 
-// Key for public access, used for safe data retrieval where RLS is active.
-// const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDA1NzksImV4cCI6MjA4MDMxNjU3OX0.NSA57GQcxnCpLnqMVlDpf_lvfggb2H-IGGTBL_XYQ4I";
+// Public anon key (safe to expose only in browser contexts with RLS).
+if (!defined('ANON_KEY')) {
+    define('ANON_KEY', getenv('SUPABASE_ANON_KEY') ?: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDA1NzksImV4cCI6MjA4MDMxNjU3OX0.NSA57GQcxnCpLnqMVlDpf_lvfggb2H-IGGTBL_XYQ4I');
+}
 
-// Key for server-side operations that require full access (like fetching hashed passwords).
-// WARNING: This key MUST NOT be exposed on the client-side!
-const SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NDc0MDU3OSwiZXhwIjoyMDgwMzE2NTc5fQ.iMaiBWpQxgC9X7dxDDdoQOwr6Qt0lbPex1JTnCCZS1w";
+// Service role key must remain server-side only.
+if (!defined('SERVICE_ROLE_KEY')) {
+    define('SERVICE_ROLE_KEY', getenv('SUPABASE_SERVICE_ROLE_KEY') ?: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NDc0MDU3OSwiZXhwIjoyMDgwMzE2NTc5fQ.iMaiBWpQxgC9X7dxDDdoQOwr6Qt0lbPex1JTnCCZS1w');
+}
 
 
 /**
