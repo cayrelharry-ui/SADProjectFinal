@@ -7,6 +7,7 @@
 // --- 1. CONFIGURATION ---
 const SUPABASE_URL = 'https://fkdqenrxfanpgmtogiig.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDA1NzksImV4cCI6MjA4MDMxNjU3OX0.NSA57GQcxnCpLnqMVlDpf_lvfggb2H-IGGTBL_XYQ4I';
+const SUPABASE_JS_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
 
 // Debug mode
 const DEBUG = true;
@@ -40,7 +41,7 @@ async function initializeSupabase() {
             
             // Create and load script
             const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1';
+            script.src = SUPABASE_JS_CDN;
             
             // Wait for script to load
             await new Promise((resolve, reject) => {
@@ -93,7 +94,7 @@ async function initializeSupabase() {
 function createMockSupabase() {
     console.warn("⚠️ Using mock Supabase client - real database operations will fail");
     console.warn("⚠️ Please ensure Supabase library is loaded in your HTML file:");
-    console.warn('   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1"></script>');
+    console.warn(`   <script src="${SUPABASE_JS_CDN}"></script>`);
     
     return {
         from: () => ({
