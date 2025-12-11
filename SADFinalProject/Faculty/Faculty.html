@@ -287,9 +287,10 @@
                         <select id="status-filter" onchange="applyFilters()"
                             class="px-4 py-2 bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                             <option value="All">Status: All</option>
-                            <option value="New">New</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Completed">Completed</option>
+                            <option value="pending">Pending</option>
+                            <option value="reviewed">Reviewed</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
                         </select>
 
                         <div class="relative w-full md:w-64">
@@ -781,6 +782,55 @@
         </div>
     </div>
 
+    <!-- PARTNER REQUEST DETAIL MODAL -->
+    <div id="details-modal" class="fixed inset-0 z-[120] hidden" aria-modal="true" role="dialog">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+
+        <!-- Panel -->
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4">
+                <div id="modal-content"
+                    class="relative w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all scale-95 opacity-0">
+
+                    <!-- Header -->
+                    <div class="px-6 py-4 border-b border-gray-200 flex items-start justify-between">
+                        <div>
+                            <p id="modal-meta" class="text-xs text-gray-500 mb-1">From: —</p>
+                            <h3 id="modal-title" class="text-xl font-bold text-gray-900">Partnership Request</h3>
+                        </div>
+                        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">✕</button>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="px-6 py-5 space-y-4">
+                        <div id="modal-description" class="text-sm text-gray-700 whitespace-pre-wrap">
+                            Loading details...
+                        </div>
+
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-800 mb-2">Attachments</h4>
+                            <div id="modal-attachments" class="space-y-2 text-sm text-gray-700">
+                                <span class="text-gray-400 italic">No attachments.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-2">
+                        <button id="modal-claim-btn"
+                            class="hidden px-4 py-2 bg-blue-600 text-white font-bold rounded-lg text-sm hover:bg-blue-700"
+                            type="button">Claim</button>
+                        <button onclick="closeModal()"
+                            class="px-4 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg text-sm hover:bg-gray-300">Close</button>
+                        <button onclick="print()" class="px-4 py-2 bg-[#5A2C9D] text-white font-bold rounded-lg text-sm hover:bg-[#4C2684]">Print / Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
             (function () {
@@ -793,8 +843,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabaseUrl = 'https://ixupbyyoxubpylffklrf.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4dXBieXlveHVicHlsZmZrbHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMTg1MzcsImV4cCI6MjA4MDU5NDUzN30.DWQdzoB1LfS9tR1Ew9IbKA93Bp-fHeb7A9GohnE1-7A';
+        const supabaseUrl = 'https://fkdqenrxfanpgmtogiig.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDA1NzksImV4cCI6MjA4MDMxNjU3OX0.NSA57GQcxnCpLnqMVlDpf_lvfggb2H-IGGTBL_XYQ4I';
 
         let sbClient;
         try {
@@ -846,6 +896,30 @@
             fetchPartnerOpps();
         }
 
+        function normalizeStatus(status) {
+            const s = (status || '').toLowerCase();
+            if (s === 'in progress' || s === 'in_progress') return 'in progress';
+            if (s === 'completed') return 'completed';
+            if (s === 'reviewed') return 'reviewed';
+            if (s === 'approved') return 'approved';
+            if (s === 'rejected') return 'rejected';
+            return s || 'pending';
+        }
+
+        function statusBadge(status) {
+            const s = normalizeStatus(status);
+            const base = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
+            switch (s) {
+                case 'pending': return `<span class="${base} bg-yellow-100 text-yellow-800">Pending</span>`;
+                case 'reviewed': return `<span class="${base} bg-blue-100 text-blue-800">Reviewed</span>`;
+                case 'approved': return `<span class="${base} bg-green-100 text-green-800">Approved</span>`;
+                case 'rejected': return `<span class="${base} bg-red-100 text-red-800">Rejected</span>`;
+                case 'in progress': return `<span class="${base} bg-orange-100 text-orange-800">In Progress</span>`;
+                case 'completed': return `<span class="${base} bg-gray-100 text-gray-800">Completed</span>`;
+                default: return `<span class="${base} bg-gray-100 text-gray-800">${status || 'Pending'}</span>`;
+            }
+        }
+
         async function fetchPartnerOpps() {
             const tbody = document.getElementById('partner-opps-body');
             const searchVal = document.getElementById('search-input').value;
@@ -857,72 +931,104 @@
             try {
                 if (!sbClient) throw new Error("Database client not initialized");
 
-                // Start building the query
-                let query = sbClient
+                // Fetch opportunities (faculty side)
+                const { data: oppData, error: oppError } = await sbClient
                     .from('partner_opportunities')
                     .select('*')
                     .order('created_at', { ascending: false });
 
-                // 1. Apply Category Filter (Assuming 'type' or checking Title/Description)
+                if (oppError) throw oppError;
+
+                // Fetch partner requests directly so they also appear
+                const { data: reqData, error: reqError } = await sbClient
+                    .from('partnership_requests')
+                    .select('*')
+                    .order('submitted_at', { ascending: false });
+
+                if (reqError) {
+                    console.warn('Unable to fetch partnership requests:', reqError.message);
+                }
+
+                // Map requests into the same shape used by the table
+                const mappedRequests = (reqData || []).map(r => ({
+                    id: `req-${r.request_id}`,
+                    title: r.subject || 'Partnership Request',
+                    description: r.additional_info || r.collaboration || '',
+                    partner_organization: r.org_name,
+                    partner_type: r.org_type || 'Applicant',
+                    created_at: r.submitted_at || r.created_at || new Date().toISOString(),
+                    status: normalizeStatus(r.status),
+                    claimed_by: null,
+                    attachment_urls: []
+                }));
+
+                // Combine both sources
+                let combined = [...mappedRequests, ...(oppData || [])];
+
+                // Apply category filter (client-side)
                 if (activeCategory !== 'All') {
-                    // If you have a 'category' column, use: .eq('category', activeCategory)
-                    // Fallback: Search the keyword in the title
-                    query = query.ilike('title', `%${activeCategory}%`);
+                    combined = combined.filter(item =>
+                        (item.title || '').toLowerCase().includes(activeCategory.toLowerCase())
+                    );
                 }
 
-                // 2. Apply Status Filter
+                // Apply status filter (client-side)
                 if (statusVal !== 'All') {
-                    query = query.eq('status', statusVal);
+                    combined = combined.filter(item => normalizeStatus(item.status) === statusVal.toLowerCase());
                 }
 
-                // 3. Apply Text Search
+                // Apply text search (client-side)
                 if (searchVal) {
-                    // Search in Title OR Partner Organization
-                    query = query.or(`title.ilike.%${searchVal}%,partner_organization.ilike.%${searchVal}%`);
+                    const s = searchVal.toLowerCase();
+                    combined = combined.filter(item =>
+                        (item.title && item.title.toLowerCase().includes(s)) ||
+                        (item.partner_organization && item.partner_organization.toLowerCase().includes(s))
+                    );
                 }
-
-                const { data, error } = await query;
-                if (error) throw error;
 
                 tbody.innerHTML = '';
 
-                if (!data || data.length === 0) {
+                if (!combined || combined.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No matching opportunities found.</td></tr>`;
                     return;
                 }
 
-                data.forEach(opp => {
+                combined.forEach(opp => {
                     const dateStr = new Date(opp.created_at).toLocaleDateString();
                     const safeData = encodeURIComponent(JSON.stringify(opp));
-
 
                     let typeBadge = opp.partner_type === 'Existing Partner'
                         ? `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">Partner</span>`
                         : `<span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">Applicant</span>`;
 
-                    let statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">New</span>`;
+                    const displayStatus = normalizeStatus(opp.status);
+                    let statusBadgeHtml = statusBadge(displayStatus);
 
                     let btnHtml = '';
 
-                    if (opp.status === 'In Progress') {
-                        // GET THE NAME OF WHO IS DRAFTING
+                    const isRequest = String(opp.id || '').startsWith('req-');
+
+                    if (!isRequest && displayStatus === 'in progress') {
                         const drafterName = opp.claimed_by || "Unknown Faculty";
 
-                        statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">In Progress</span>`;
-
-                        // ADDED TITLE ATTRIBUTE HERE
+                        statusBadgeHtml = statusBadge('in progress');
                         btnHtml = `
                             <button disabled class="px-3 py-1.5 bg-gray-100 text-gray-400 border border-gray-200 font-bold text-xs rounded cursor-not-allowed flex items-center h-8" title="Currently being drafted by: ${drafterName}">
                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                 Being Drafted
                             </button>
                         `;
-                    } else if (opp.status === 'Completed') {
-                        statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Completed</span>`;
+                    } else if (!isRequest && displayStatus === 'completed') {
+                        statusBadgeHtml = statusBadge('completed');
                         btnHtml = `
                             <button disabled class="px-3 py-1.5 bg-gray-100 text-gray-400 border border-gray-200 font-bold text-xs rounded cursor-not-allowed h-8">
                                 Completed
                             </button>
+                        `;
+                    } else if (isRequest) {
+                        // For raw partner requests, show view-only
+                        btnHtml = `
+                            <button onclick="openModal('partner', '${safeData}')" class="py-1.5 font-bold text-gray-500 hover:text-cnsc-violet text-xs uppercase tracking-wider">Details</button>
                         `;
                     } else {
                         btnHtml = `
@@ -935,12 +1041,11 @@
                     const row = `
                 <tr class="border-b hover:bg-gray-50 transition">
                     <td class="px-6 py-4 font-bold text-gray-900 align-middle">${opp.title}</td>
-                    <td class="px-6 py-4 align-middle"><div class="flex items-center"><span class="font-medium text-gray-700">${opp.partner_organization}</span>${typeBadge}</div></td>
+                    <td class="px-6 py-4 align-middle"><div class="flex items-center"><span class="font-medium text-gray-700">${opp.partner_organization || '—'}</span>${typeBadge}</div></td>
                     <td class="px-6 py-4 align-middle">${dateStr}</td>
-                    <td class="px-6 py-4 align-middle">${statusBadge}</td>
+                    <td class="px-6 py-4 align-middle">${statusBadgeHtml}</td>
                     <td class="px-6 py-4 align-middle text-left">
                         <div class="flex justify-start items-center gap-3">
-                            <button onclick="openModal('partner', '${safeData}')" class="py-1.5 font-bold text-gray-500 hover:text-cnsc-violet text-xs uppercase tracking-wider">Details</button>
                             ${btnHtml}
                         </div>
                     </td>
@@ -995,86 +1100,11 @@
             fetchMyProposals();
         }
 
-        // 4. MY PROPOSALS LOGIC
+        // 4. MY PROPOSALS LOGIC (placeholder: partner requests are shown in Partner tab)
         async function fetchMyProposals() {
             const tbody = document.getElementById('my-proposals-body');
-            // Ensure we are targeting the new tbody inside the new HTML structure
             if (!tbody) return;
-
-            try {
-                let query = sbClient.from('extension_proposals').select('*').order('created_at', { ascending: false });
-
-                if (typeof showArchived !== 'undefined' && showArchived) {
-                    query = query.eq('status', 'Archived');
-                } else {
-                    query = query.neq('status', 'Archived');
-                }
-
-                const { data, error } = await query;
-                if (error) throw error;
-
-                tbody.innerHTML = '';
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">${typeof showArchived !== 'undefined' && showArchived ? "Trash is empty." : "No active proposals found."}</td></tr>`;
-                    return;
-                }
-
-                data.forEach(proposal => {
-                    const dateStr = new Date(proposal.created_at).toLocaleDateString();
-                    let statusClass = 'bg-yellow-100 text-yellow-800';
-                    let canEdit = true, canDelete = true;
-
-                    if (proposal.status === 'Approved') { statusClass = 'bg-green-100 text-green-800'; canEdit = false; canDelete = false; }
-                    if (proposal.status === 'Revision Requested') statusClass = 'bg-red-100 text-red-800';
-
-                    const safeData = encodeURIComponent(JSON.stringify(proposal));
-                    let actionsHtml = '';
-
-                    if (typeof showArchived !== 'undefined' && showArchived) {
-                        actionsHtml = `
-                    <button onclick="restoreProposal('${proposal.id}')" class="text-green-600 hover:text-green-800 font-bold text-sm mr-2">Restore</button>
-                    <button onclick="openDeleteModal('${proposal.id}')" class="text-red-500 hover:text-red-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
-                `;
-                    } else {
-                        // --- FIX HERE: Changed openModal -> openProjectModal ---
-                        actionsHtml = `
-                    <button onclick="openProjectModal('${safeData}')" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 text-gray-500 transition" title="View Details">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                    </button>
-                `;
-
-                        if (canEdit) {
-                            actionsHtml += `
-                        <a href="SubmitProposal.html?id=${proposal.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-purple-50 text-cnsc-violet transition" title="Edit">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                        </a>`;
-                        }
-                        if (canDelete) {
-                            actionsHtml += `
-                        <button onclick="openDeleteModal('${proposal.id}')" class="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-red-50 text-red-500 transition" title="Delete">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        </button>`;
-                        }
-                    }
-
-                    const row = `
-                <tr class="border-b hover:bg-gray-50 transition">
-                    <td class="px-6 py-4 font-bold text-gray-900 align-middle">${proposal.title}</td>
-                    <td class="px-6 py-4 align-middle">${dateStr}</td>
-                    <td class="px-6 py-4 align-middle"><span class="px-3 py-1 text-xs font-bold rounded-full ${statusClass}">${proposal.status}</span></td>
-                    <td class="px-6 py-4 align-middle text-right">
-                        <div class="flex justify-end items-center gap-2">
-                            ${actionsHtml}
-                        </div>
-                    </td>
-                </tr>
-            `;
-                    tbody.insertAdjacentHTML('beforeend', row);
-                });
-            } catch (error) {
-                console.error(error);
-                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-red-500 bg-red-50"><strong>Error:</strong> ${error.message}</td></tr>`;
-            }
+            tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">Proposals are managed from the Partner tab. Nothing to show here.</td></tr>`;
         }
 
 
@@ -1085,9 +1115,9 @@
         function openDeleteModal(id) { selectedProposalId = id; deleteModal.classList.remove('hidden'); setTimeout(() => { deleteModalContent.classList.remove('scale-95', 'opacity-0'); deleteModalContent.classList.add('scale-100', 'opacity-100'); }, 10); }
         function closeDeleteModal() { selectedProposalId = null; deleteModalContent.classList.remove('scale-100', 'opacity-100'); deleteModalContent.classList.add('scale-95', 'opacity-0'); setTimeout(() => { deleteModal.classList.add('hidden'); }, 300); }
 
-        async function confirmArchive() { if (!selectedProposalId) return; await sbClient.from('extension_proposals').update({ status: 'Archived' }).eq('id', selectedProposalId); closeDeleteModal(); fetchMyProposals(); }
-        async function confirmHardDelete() { if (!selectedProposalId) return; if (!confirm("Are you sure?")) return; await sbClient.from('extension_proposals').delete().eq('id', selectedProposalId); closeDeleteModal(); fetchMyProposals(); }
-        async function restoreProposal(id) { if (!confirm("Restore?")) return; await sbClient.from('extension_proposals').update({ status: 'Pending' }).eq('id', id); fetchMyProposals(); }
+        async function confirmArchive() { closeDeleteModal(); }
+        async function confirmHardDelete() { if (!confirm("Are you sure?")) return; closeDeleteModal(); }
+        async function restoreProposal(id) { fetchMyProposals(); }
 
         const modal = document.getElementById('details-modal');
         const modalContent = document.getElementById('modal-content');
@@ -1095,8 +1125,60 @@
         function openModal(type, encodedData) {
             try {
                 const data = JSON.parse(decodeURIComponent(encodedData));
-                document.getElementById('modal-title').textContent = data.title;
-                document.getElementById('modal-description').textContent = data.description || data.rationale || "No description.";
+                const title = data.title || data.subject || 'Partnership Request';
+                document.getElementById('modal-title').textContent = title;
+
+                const description =
+                    data.description ||
+                    data.additional_info ||
+                    data.collaboration ||
+                    data.rationale ||
+                    "No description.";
+
+                // Build a richer, card-style view for partner requests
+                if (type === 'partner') {
+                    const statusHtml = statusBadge(data.status || 'pending');
+                    const org = data.org_name || data.partner_organization || '—';
+                    const orgType = data.org_type || '—';
+                    const letterDate = data.letter_date ? new Date(data.letter_date).toLocaleDateString() : '—';
+                    const created = data.created_at || data.submitted_at || data.letter_date;
+                    const createdStr = created ? new Date(created).toLocaleDateString() : '—';
+
+                    const detailHtml = `
+                        <div class="space-y-4">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-100">${orgType}</span>
+                                ${statusHtml}
+                                <span class="text-xs text-gray-500">Submitted: ${createdStr}</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-800">
+                                <div class="space-y-2 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                    <div><strong>Organization:</strong> ${org}</div>
+                                    <div><strong>Contact:</strong> ${data.contact_person || '—'} ${data.position ? `(${data.position})` : ''}</div>
+                                    <div><strong>Email:</strong> ${data.email || '—'}</div>
+                                    <div><strong>Phone:</strong> ${data.phone || '—'}</div>
+                                    <div><strong>Address:</strong> ${data.address || '—'}</div>
+                                </div>
+                                <div class="space-y-2 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                    <div><strong>Letter Date:</strong> ${letterDate}</div>
+                                    <div><strong>Collaboration:</strong> ${data.collaboration || '—'}</div>
+                                    <div><strong>Outcomes:</strong> ${data.outcomes || '—'}</div>
+                                    <div><strong>Additional Info:</strong> ${data.additional_info || '—'}</div>
+                                </div>
+                            </div>
+
+                            <div class="text-sm text-gray-900">
+                                <h4 class="font-bold mb-1">Letter / Description</h4>
+                                <div class="p-4 bg-white border border-gray-100 rounded-xl shadow-sm whitespace-pre-wrap">${description}</div>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('modal-description').innerHTML = detailHtml;
+                } else {
+                    document.getElementById('modal-description').textContent = description;
+                }
+
                 const modalAtt = document.getElementById('modal-attachments'); modalAtt.innerHTML = '';
 
                 const urls = data.attachment_urls || [];
@@ -1108,8 +1190,10 @@
 
                 const modalMeta = document.getElementById('modal-meta'); const claimBtn = document.getElementById('modal-claim-btn');
                 if (type === 'partner') {
-                    modalMeta.textContent = `From: ${data.partner_organization} | Date: ${new Date(data.created_at).toLocaleDateString()}`;
-                    claimBtn.classList.remove('hidden'); claimBtn.onclick = () => claimAndPrepare(data.id);
+                    const org = data.org_name || data.partner_organization || '—';
+                    const created = data.created_at || data.submitted_at || data.letter_date;
+                    modalMeta.textContent = `From: ${org} | Date: ${created ? new Date(created).toLocaleDateString() : '—'}`;
+                    claimBtn.classList.add('hidden'); // partner requests are view-only here
                 } else {
                     modalMeta.textContent = `Status: ${data.status} | Date: ${new Date(data.created_at).toLocaleDateString()}`;
                     claimBtn.classList.add('hidden');
@@ -1159,6 +1243,11 @@
                 fetchHandledProjects();
             }
         }
+
+        // Initial load: ensure partner opportunities are fetched once the page is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPartnerOpps();
+        });
 
         // --- DATA FETCHING FUNCTIONS ---
 
@@ -1220,52 +1309,76 @@
         // 2. PARTNER PROPOSALS (With "Drafted By" Tooltip Restored)
         async function fetchPartnerOpps() {
             const tbody = document.getElementById('partner-opps-body');
+            const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase();
+            const statusVal = document.getElementById('status-filter')?.value || 'All';
             tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400 animate-pulse">Loading proposals...</td></tr>`;
 
-            const { data, error } = await sbClient
-                .from('partner_opportunities')
-                .select('*')
-                .neq('status', 'Completed')
-                .order('created_at', { ascending: false });
+            try {
+                // Partnership requests (from partners) — single source of truth
+                const { data: reqData, error: reqErr } = await sbClient
+                    .from('partnership_requests')
+                    .select('*')
+                    .order('submitted_at', { ascending: false });
 
-            if (error || !data.length) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No active partner proposals.</td></tr>`;
-                return;
-            }
+                if (reqErr) throw reqErr;
 
-            tbody.innerHTML = data.map(opp => {
-                const safeData = encodeURIComponent(JSON.stringify(opp));
-                const dateStr = new Date(opp.created_at).toLocaleDateString();
+                let items = (reqData || []).map(r => ({
+                    id: `req-${r.request_id}`,
+                    title: r.subject || 'Partnership Request',
+                    partner_organization: r.org_name || '—',
+                    created_at: r.submitted_at || r.created_at || new Date().toISOString(),
+                    status: normalizeStatus(r.status || 'pending'),
+                    description: r.additional_info || r.collaboration || '',
+                    attachment_urls: r.attachment_urls || [],
+                    raw: r
+                }));
 
-                let btnHtml = '';
-
-                // --- RESTORED TOOLTIP LOGIC ---
-                if (opp.status === 'In Progress') {
-                    const drafterName = opp.claimed_by || "Unknown Faculty";
-                    btnHtml = `
-                <button disabled class="px-3 py-1 bg-orange-50 border border-orange-100 text-orange-400 text-xs rounded font-bold cursor-not-allowed flex items-center gap-1" title="Currently being drafted by: ${drafterName}">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                    Drafting...
-                </button>`;
-                } else {
-                    btnHtml = `<button onclick="startDrafting('${opp.id}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded font-bold transition shadow-sm">Draft This</button>`;
+                // Status filter
+                if (statusVal !== 'All') {
+                    items = items.filter(item => normalizeStatus(item.status) === statusVal.toLowerCase());
                 }
 
-                return `
+                // Text search
+                if (searchVal) {
+                    items = items.filter(item =>
+                        (item.title && item.title.toLowerCase().includes(searchVal)) ||
+                        (item.partner_organization && item.partner_organization.toLowerCase().includes(searchVal))
+                    );
+                }
+
+                // Sort newest first
+                items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+                if (!items.length) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No partner proposals found.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = items.map(item => {
+                    const safeData = encodeURIComponent(JSON.stringify(item.raw || item));
+                    const dateStr = new Date(item.created_at).toLocaleDateString();
+                    const statusHtml = statusBadge(item.status);
+
+                    const btnHtml = `<button onclick="openModal('partner', '${safeData}')" class="text-xs font-bold text-gray-500 uppercase hover:text-blue-600 tracking-wider">View</button>`;
+
+                    return `
             <tr class="border-b hover:bg-blue-50 transition">
-                <td class="px-6 py-4 font-bold text-gray-900 align-middle">${opp.title}</td>
-                <td class="px-6 py-4 text-gray-600 align-middle">${opp.partner_organization}</td>
+                <td class="px-6 py-4 font-bold text-gray-900 align-middle">${item.title}</td>
+                <td class="px-6 py-4 text-gray-600 align-middle">${item.partner_organization || '—'}</td>
                 <td class="px-6 py-4 align-middle">${dateStr}</td>
-                <td class="px-6 py-4 align-middle"><span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-bold">${opp.status}</span></td>
+                <td class="px-6 py-4 align-middle">${statusHtml}</td>
                 <td class="px-6 py-4 align-middle">
                     <div class="flex items-center gap-3">
-                        <button onclick="openModal('partner', '${safeData}')" class="text-xs font-bold text-gray-500 uppercase hover:text-blue-600 tracking-wider">Details</button>
                         ${btnHtml}
                     </div>
                 </td>
             </tr>
         `;
-            }).join('');
+                }).join('');
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500 bg-red-50"><strong>Error loading data:</strong><br>${err.message}</td></tr>`;
+            }
         }
 
 
