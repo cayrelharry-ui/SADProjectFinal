@@ -459,6 +459,7 @@
                     // Upload files if any
                     let uploadedFiles = [];
                     let failedFiles = [];
+                    let attachmentUrls = [];
 
                     if (files && files.length > 0) {
                         console.log(`Starting upload of ${files.length} file(s)...`);
@@ -520,6 +521,11 @@
                                             .from('uploads')
                                             .getPublicUrl(filePath);
 
+                                        // Track URL for faculty view
+                                        if (publicUrl) {
+                                            attachmentUrls.push(publicUrl);
+                                        }
+
                                         // Insert into uploaded_files table
                                         const fileMetadata = {
                                             original_name: file.name,
@@ -573,6 +579,31 @@
                                 uploadedFiles.push(`${files[i].name} (upload skipped - ${error.message})`);
                             }
                         }
+                    }
+
+                    // Mirror into partner_opportunities so faculty can see the request
+                    try {
+                        const opportunityPayload = {
+                            title: partnershipData.subject || 'Partnership Request',
+                            description: partnershipData.additional_info || partnershipData.collaboration || '',
+                            partner_organization: partnershipData.org_name,
+                            partner_type: partnershipData.org_type || 'Applicant',
+                            status: 'New',
+                            created_at: partnershipData.submitted_at,
+                            attachment_urls: attachmentUrls
+                        };
+
+                        const { error: oppError } = await supabase
+                            .from('partner_opportunities')
+                            .insert([opportunityPayload]);
+
+                        if (oppError) {
+                            console.warn('Failed to mirror request into partner_opportunities:', oppError.message);
+                        } else {
+                            console.log('Mirrored partnership request into partner_opportunities for faculty visibility.');
+                        }
+                    } catch (mirrorError) {
+                        console.warn('Mirror to partner_opportunities failed:', mirrorError);
                     }
 
                     // Success - notify parent window and reset form
