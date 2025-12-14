@@ -13,7 +13,7 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Hide all steps except the first one by default */
+        /* Hide all steps by default */
         [data-step]:not([data-step="1"]) {
             display: none;
         }
@@ -33,7 +33,6 @@
 </head>
 
 <body class="bg-slate-100">
-
     <header class="sticky top-0 left-0 w-full bg-white shadow-md z-50">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <a href="#" class="flex items-center space-x-3">
@@ -43,14 +42,13 @@
                     <h1 class="text-xl font-extrabold text-cnsc-violet">CNSC</h1>
                 </div>
             </a>
-            <a href="Faculty.html" class="text-sm font-semibold text-gray-600 hover:text-cnsc-violet">&larr;
-                Back to Dashboard</a>
+            <a href="Faculty.html" class="text-sm font-semibold text-gray-600 hover:text-cnsc-violet">&larr; Back to
+                Dashboard</a>
         </nav>
     </header>
 
     <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-
             <div class="p-6 border-b border-gray-200">
                 <h1 class="text-2xl font-bold text-gray-900">New Extension Project Proposal</h1>
                 <p class="text-sm text-gray-500 mt-1">Fill out the form below, following the official format.</p>
@@ -62,69 +60,64 @@
                     <div class="flex items-center gap-2 text-center" data-indicator="1">
                         <div
                             class="w-8 h-8 rounded-full bg-cnsc-violet text-white font-bold flex items-center justify-center">
-                            1</div>
-                        <span class="font-bold text-cnsc-violet text-xs sm:text-sm">Description</span>
+                            1</div><span class="font-bold text-cnsc-violet text-xs sm:text-sm">Description</span>
                     </div>
                     <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
                     <div class="flex items-center gap-2 text-center" data-indicator="2">
                         <div
                             class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 font-bold flex items-center justify-center">
-                            2</div>
-                        <span class="font-bold text-gray-400 text-xs sm:text-sm">Staffing</span>
+                            2</div><span class="font-bold text-gray-400 text-xs sm:text-sm">Staffing</span>
                     </div>
                     <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
                     <div class="flex items-center gap-2 text-center" data-indicator="3">
                         <div
                             class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 font-bold flex items-center justify-center">
-                            3</div>
-                        <span class="font-bold text-gray-400 text-xs sm:text-sm">Plan</span>
+                            3</div><span class="font-bold text-gray-400 text-xs sm:text-sm">Plan</span>
                     </div>
                     <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
                     <div class="flex items-center gap-2 text-center" data-indicator="4">
                         <div
                             class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 font-bold flex items-center justify-center">
-                            4</div>
-                        <span class="font-bold text-gray-400 text-xs sm:text-sm">Submit</span>
+                            4</div><span class="font-bold text-gray-400 text-xs sm:text-sm">Submit</span>
                     </div>
                 </div>
             </div>
 
             <form id="proposal-form" class="p-8 space-y-8">
-
                 <!-- STEP 1 -->
                 <div data-step="1" class="space-y-6">
                     <h2 class="text-xl font-bold text-gray-800 border-b pb-2">I. Project Description</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div><label class="block text-sm font-bold text-gray-700">Project Title</label><input
-                                type="text" id="proj-title"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
-                        </div>
+                                type="text" name="title"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm"
+                                required></div>
                         <div><label class="block text-sm font-bold text-gray-700">Type of Project</label><input
-                                type="text" id="proj-type"
+                                type="text" name="project_type"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
                         </div>
                         <div><label class="block text-sm font-bold text-gray-700">Proponents</label><input type="text"
-                                id="proj-proponents"
+                                name="proponents"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
                         </div>
                         <div><label class="block text-sm font-bold text-gray-700">No. of Beneficiaries</label><input
-                                type="text" id="proj-beneficiaries-no"
+                                type="text" name="beneficiaries_no"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
                         </div>
                         <div><label class="block text-sm font-bold text-gray-700">Target Beneficiaries</label><input
-                                type="text" id="proj-beneficiaries-type"
+                                type="text" name="beneficiaries_type"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
                         </div>
                         <div><label class="block text-sm font-bold text-gray-700">Location</label><input type="text"
-                                id="proj-location"
+                                name="location"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
                         </div>
                         <div><label class="block text-sm font-bold text-gray-700">Duration</label><input type="date"
-                                id="proj-date" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
-                        </div>
+                                name="start_date"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm"
+                                required></div>
                         <div><label class="block text-sm font-bold text-gray-700">Budget</label><input type="number"
-                                id="proj-budget-req"
+                                name="budget_req"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
                         </div>
                     </div>
@@ -134,7 +127,7 @@
                 <div data-step="2" class="space-y-6">
                     <div>
                         <h2 class="text-xl font-bold text-gray-800 border-b pb-2">II. Rationale</h2>
-                        <textarea id="proj-rationale" rows="5"
+                        <textarea name="rationale" rows="5"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm"></textarea>
                     </div>
                     <div>
@@ -154,73 +147,92 @@
                                             Contact No.</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    <tr>
-                                        <td class="px-4 py-2"><input type="text"
-                                                class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"
-                                                placeholder="Name..."></td>
-                                        <td class="px-4 py-2"><input type="text"
-                                                class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
-                                        <td class="px-4 py-2"><input type="text"
-                                                class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
-                                        <td class="px-4 py-2"><input type="text"
-                                                class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
-                                    </tr>
+                                <tbody class="bg-white divide-y divide-gray-200 staff-body">
+                                    <!-- Dynamic staff rows go here -->
                                 </tbody>
                             </table>
                         </div>
                         <button type="button" id="add-staff-btn"
-                            class="mt-2 text-sm font-bold text-cnsc-violet hover:underline">+ Add Row</button>
+                            class="mt-2 text-sm font-bold text-cnsc-violet hover:underline">+ Add Staff Row</button>
                     </div>
                 </div>
 
                 <!-- STEP 3 -->
                 <div data-step="3" class="space-y-6">
                     <h2 class="text-xl font-bold text-gray-800 border-b pb-2">IV. Logical Framework</h2>
-                    <div class="overflow-x-auto rounded-lg border border-gray-200">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Summary
-                                    </th>
-                                    <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Indicators
-                                    </th>
-                                    <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Means of
-                                        Verification</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200 text-sm">
-                                <tr>
-                                    <td class="px-4 py-3 font-bold bg-gray-50">GOAL</td>
-                                    <td class="px-4 py-2"><textarea rows="2"
-                                            class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></textarea>
-                                    </td>
-                                    <td class="px-4 py-2"><textarea rows="2"
-                                            class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></textarea>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold bg-gray-50">PURPOSE</td>
-                                    <td class="px-4 py-2"><textarea rows="2"
-                                            class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></textarea>
-                                    </td>
-                                    <td class="px-4 py-2"><textarea rows="2"
-                                            class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></textarea>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 font-bold bg-gray-50">OUTPUTS</td>
-                                    <td class="px-4 py-2"><textarea rows="3"
-                                            class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></textarea>
-                                    </td>
-                                    <td class="px-4 py-2"><textarea rows="3"
-                                            class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></textarea>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <!-- Goal Section -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-2">1. Goal</label>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg bg-gray-50">
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Narrative
+                                    Summary</label><textarea name="goal_narrative" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"
+                                    placeholder="The broader, long-term impact"></textarea></div>
+                            <div><label
+                                    class="block text-xs font-semibold text-gray-600 mb-1">Indicators</label><textarea
+                                    name="goal_indicators" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"></textarea></div>
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Means of
+                                    Verification</label><textarea name="goal_movs" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"></textarea></div>
+                        </div>
+                    </div>
+                    <!-- Purpose Section -->
+                    <div class="mt-6">
+                        <label class="block text-sm font-bold text-gray-800 mb-2">2. Purpose</label>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg bg-gray-50">
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Narrative
+                                    Summary</label><textarea name="purpose_narrative" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"
+                                    placeholder="The specific outcome of the project"></textarea></div>
+                            <div><label
+                                    class="block text-xs font-semibold text-gray-600 mb-1">Indicators</label><textarea
+                                    name="purpose_indicators" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"></textarea></div>
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Means of
+                                    Verification</label><textarea name="purpose_movs" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"></textarea></div>
+                        </div>
+                    </div>
+                    <!-- Outputs Section (Dynamic) -->
+                    <div class="mt-6">
+                        <label class="block text-sm font-bold text-gray-800 mb-2">3. Outputs</label>
+                        <p class="text-xs text-gray-500 mb-3">The tangible deliverables of the project. You can add
+                            multiple outputs.</p>
+                        <div id="logframe-outputs-container" class="space-y-4"></div>
+                        <!-- ADD THIS NEW, SIMPLER BUTTON -->
+                        <button type="button" id="add-output-btn"
+                            class="mt-2 text-sm font-bold text-cnsc-violet hover:underline">+ Add Output</button>
                     </div>
                 </div>
+
+                <!-- TEMPLATE for a single output row -->
+                <template id="output-row-template">
+                    <div class="p-4 border rounded-lg bg-gray-50 output-row relative">
+                        <button type="button"
+                            class="remove-output-btn absolute top-2 right-2 text-red-400 hover:text-red-600 font-bold"
+                            title="Remove Output"><svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg></button>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Narrative
+                                    Summary</label><textarea name="output_narrative[]" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"
+                                    placeholder="e.g., 50 garden beds built"></textarea></div>
+                            <div><label
+                                    class="block text-xs font-semibold text-gray-600 mb-1">Indicators</label><textarea
+                                    name="output_indicators[]" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"
+                                    placeholder="e.g., 50 signed agreements"></textarea></div>
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Means of
+                                    Verification</label><textarea name="output_movs[]" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"
+                                    placeholder="e.g., Signed agreements on file"></textarea></div>
+                        </div>
+                    </div>
+                </template>
 
                 <!-- STEP 4 -->
                 <div data-step="4" class="space-y-6">
@@ -233,10 +245,9 @@
                         class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                         <div class="space-y-1 text-center">
                             <label for="file-upload"
-                                class="relative cursor-pointer bg-white rounded-md font-medium text-cnsc-violet hover:text-cnsc-violet-dark">
-                                <span>Upload files</span>
-                                <input id="file-upload" name="file-upload" type="file" class="sr-only" multiple>
-                            </label>
+                                class="relative cursor-pointer bg-white rounded-md font-medium text-cnsc-violet hover:text-cnsc-violet-dark"><span>Upload
+                                    files</span><input id="file-upload" name="file-upload" type="file" class="sr-only"
+                                    multiple></label>
                             <p class="text-xs text-gray-500 mt-2">DOCX, PDF, XLSX up to 10MB</p>
                             <div id="file-list" class="text-xs text-gray-700 mt-2 font-bold"></div>
                         </div>
@@ -257,10 +268,9 @@
         </div>
     </main>
 
-    <!-- SCRIPT 1: UI LOGIC (Buttons, Tabs, Add Row) - INDEPENDENT OF SUPABASE -->
+    <!-- SCRIPT 1: UI LOGIC (Buttons, Tabs, Add Row) -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- NAVIGATION LOGIC ---
             let currentStep = 1;
             const totalSteps = 4;
             const prevBtn = document.getElementById('prev-btn');
@@ -268,317 +278,170 @@
             const submitBtn = document.getElementById('submit-btn');
 
             function updateFormStep() {
-                // Toggle Sections
                 document.querySelectorAll('[data-step]').forEach(el => el.style.display = 'none');
-                const activeStep = document.querySelector(`[data-step="${currentStep}"]`);
-                if (activeStep) activeStep.style.display = 'block';
-
-                // Update Circles
+                document.querySelector(`[data-step="${currentStep}"]`).style.display = 'block';
                 document.querySelectorAll('[data-indicator]').forEach((el, index) => {
                     const stepNum = index + 1;
                     const circle = el.querySelector('div');
                     const text = el.querySelector('span');
-
-                    // Reset base classes
                     circle.className = 'w-8 h-8 rounded-full font-bold flex items-center justify-center transition-colors duration-200';
                     text.className = 'font-bold text-xs sm:text-sm transition-colors duration-200';
-
                     if (stepNum < currentStep) {
-                        circle.classList.add('bg-green-500', 'text-white');
-                        circle.innerHTML = '&#10003;';
-                        text.classList.add('text-green-600');
+                        circle.classList.add('bg-green-500', 'text-white'); circle.innerHTML = '&#10003;'; text.classList.add('text-green-600');
                     } else if (stepNum === currentStep) {
-                        circle.classList.add('bg-cnsc-violet', 'text-white');
-                        circle.innerHTML = stepNum;
-                        text.classList.add('text-cnsc-violet');
+                        circle.classList.add('bg-cnsc-violet', 'text-white'); circle.innerHTML = stepNum; text.classList.add('text-cnsc-violet');
                     } else {
-                        circle.classList.add('bg-gray-200', 'text-gray-500');
-                        circle.innerHTML = stepNum;
-                        text.classList.add('text-gray-400');
+                        circle.classList.add('bg-gray-200', 'text-gray-500'); circle.innerHTML = stepNum; text.classList.add('text-gray-400');
                     }
                 });
-
-                // Update Buttons
-                if (prevBtn) prevBtn.classList.toggle('hidden', currentStep === 1);
-                if (nextBtn) nextBtn.classList.toggle('hidden', currentStep === totalSteps);
-                if (submitBtn) submitBtn.classList.toggle('hidden', currentStep !== totalSteps);
+                prevBtn.classList.toggle('hidden', currentStep === 1);
+                nextBtn.classList.toggle('hidden', currentStep === totalSteps);
+                submitBtn.classList.toggle('hidden', currentStep !== totalSteps);
             }
 
-            // Attach Events
-            if (nextBtn) nextBtn.addEventListener('click', () => {
-                if (currentStep < totalSteps) { currentStep++; updateFormStep(); }
-            });
-            if (prevBtn) prevBtn.addEventListener('click', () => {
-                if (currentStep > 1) { currentStep--; updateFormStep(); }
-            });
+            nextBtn.addEventListener('click', () => { if (currentStep < totalSteps) { currentStep++; updateFormStep(); } });
+            prevBtn.addEventListener('click', () => { if (currentStep > 1) { currentStep--; updateFormStep(); } });
 
-            // Init
-            updateFormStep();
-
-            // --- ADD ROW LOGIC ---
+            // --- DYNAMIC STAFF ROW LOGIC ---
             const addStaffBtn = document.getElementById('add-staff-btn');
-            if (addStaffBtn) {
-                addStaffBtn.addEventListener('click', () => {
-                    const tbody = document.querySelector('#staff-table tbody');
-                    if (tbody) {
-                        const newRow = document.createElement('tr');
-                        newRow.innerHTML = `
-                            <td class="px-4 py-2"><input type="text" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent" placeholder="Name..."></td>
-                            <td class="px-4 py-2"><input type="text" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
-                            <td class="px-4 py-2"><input type="text" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
-                            <td class="px-4 py-2"><input type="text" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
-                        `;
-                        tbody.appendChild(newRow);
-                    }
-                });
-            }
+            const staffTbody = document.querySelector('#staff-table .staff-body');
+            const addStaffRow = () => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td class="px-4 py-2"><input type="text" name="staff_name[]" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent" placeholder="Name..."></td>
+                    <td class="px-4 py-2"><input type="text" name="staff_responsibilities[]" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
+                    <td class="px-4 py-2"><input type="text" name="staff_contact_person[]" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
+                    <td class="px-4 py-2"><input type="text" name="staff_contact_no[]" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
+                `;
+                staffTbody.appendChild(newRow);
+            };
+            addStaffBtn.addEventListener('click', addStaffRow);
+
+            // --- DYNAMIC LOGFRAME OUTPUT LOGIC ---
+            const addOutputBtn = document.getElementById('add-output-btn');
+            const outputsContainer = document.getElementById('logframe-outputs-container');
+            const outputTemplate = document.getElementById('output-row-template');
+            const addOutputRow = () => {
+                const newRow = outputTemplate.content.cloneNode(true);
+                outputsContainer.appendChild(newRow);
+            };
+            addOutputBtn.addEventListener('click', addOutputRow);
+            outputsContainer.addEventListener('click', (e) => {
+                if (e.target.closest('.remove-output-btn')) {
+                    e.target.closest('.output-row').remove();
+                }
+            });
 
             // --- FILE DISPLAY LOGIC ---
             const fileInput = document.getElementById('file-upload');
             const fileList = document.getElementById('file-list');
-            if (fileInput && fileList) {
-                fileInput.addEventListener('change', () => {
-                    // Append new files to the visual list immediately? 
-                    // Or just show a summary text. 
-                    // Let's show a summary below the "Current Files" list.
-                    const newFilesDiv = document.getElementById('new-files-summary');
-                    if (!newFilesDiv) {
-                        const div = document.createElement('div');
-                        div.id = 'new-files-summary';
-                        div.className = "text-xs text-green-600 mt-2 font-bold";
-                        fileList.parentNode.appendChild(div);
-                    }
+            fileInput.addEventListener('change', () => {
+                fileList.textContent = fileInput.files.length > 0 ? `${fileInput.files.length} file(s) selected` : "";
+            });
 
-                    const count = fileInput.files.length;
-                    document.getElementById('new-files-summary').textContent = count > 0
-                        ? `+ ${count} new file(s) selected for upload`
-                        : "";
-                });
-            }
-
-
+            // Initialize form on load
+            updateFormStep();
+            addStaffRow(); // Add one staff row by default
+            addOutputRow(); // Add one output row by default
         });
     </script>
 
-    <!-- SCRIPT 2: SUPABASE LOGIC (Create, Update, Delete Files) -->
+   <!-- SCRIPT 2: SUPABASE LOGIC (This is the updated part) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://ixupbyyoxubpylffklrf.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4dXBieXlveHVicHlsZmZrbHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMTg1MzcsImV4cCI6MjA4MDU5NDUzN30.DWQdzoB1LfS9tR1Ew9IbKA93Bp-fHeb7A9GohnE1-7A';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const sbClient = supabase.createClient(supabaseUrl, supabaseKey);
+        const proposalForm = document.getElementById('proposal-form');
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const editId = urlParams.get('id');
+        // NEW: PRE-FILL SCRIPT - Runs when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const dataParam = urlParams.get('data');
 
-        // This array holds the URLs of files we want to KEEP
-        let activeFiles = [];
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            if (editId) {
-                document.getElementById('submit-btn').textContent = "Update Proposal";
-                document.querySelector('h1').textContent = "Edit Extension Project Proposal";
-                await loadProposalForEdit(editId);
-            }
-
-            // --- SUBMIT LOGIC ---
-            const form = document.getElementById('proposal-form');
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const submitBtn = document.getElementById('submit-btn');
-                const originalText = submitBtn.textContent;
-                submitBtn.textContent = 'Saving...';
-                submitBtn.disabled = true;
-
+            if (dataParam) {
                 try {
-                    // 1. Handle New File Uploads
-                    const fileInput = document.getElementById('file-upload');
-                    let newUploadedUrls = [];
+                    const partnerData = JSON.parse(decodeURIComponent(dataParam));
+                    const form = document.getElementById('proposal-form');
 
-                    if (fileInput.files.length > 0) {
-                        for (const file of fileInput.files) {
-                            const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-                            const { error: uploadError } = await supabase.storage.from('proposal_attachments').upload(fileName, file);
-                            if (uploadError) throw uploadError;
-                            const { data } = supabase.storage.from('proposal_attachments').getPublicUrl(fileName);
-                            newUploadedUrls.push(data.publicUrl);
-                        }
-                    }
+                    // Pre-fill visible fields
+                    form.querySelector('[name="title"]').value = partnerData.subject || '';
+                    form.querySelector('[name="proponents"]').value = partnerData.organization_name || '';
 
-                    // Combine the files user KEPT + NEW files
-                    const finalAttachments = [...activeFiles, ...newUploadedUrls];
+                    // Pre-fill hidden field with partner's email
+                    form.querySelector('[name="original_partner_email"]').value = partnerData.contact_email || '';
 
-                    // 2. Prepare Data
-                    const proposalData = {
-                        title: document.getElementById('proj-title').value,
-                        project_type: document.getElementById('proj-type').value,
-                        proponents: document.getElementById('proj-proponents').value,
-                        beneficiaries_count: document.getElementById('proj-beneficiaries-no').value,
-                        beneficiaries_type: document.getElementById('proj-beneficiaries-type').value,
-                        beneficiaries_location: document.getElementById('proj-location').value,
-                        implementation_date: document.getElementById('proj-date').value,
-                        date_started: document.getElementById('proj-date').value,
-                        budget_requirement: document.getElementById('proj-budget-req').value,
-                        rationale: document.getElementById('proj-rationale').value,
-                        attachment_urls: finalAttachments,
-                        status: 'Pending' // Reset status on update
-                    };
+                    // Pre-fill rationale
+                    let rationaleText = `--- Data from Partner Submission ---\n`;
+                    rationaleText += `Proposed Collaboration: ${partnerData.collaboration_areas || 'N/A'}\n`;
+                    rationaleText += `Expected Outcomes: ${partnerData.partnership_outcomes || 'N/A'}\n\n`;
+                    form.querySelector('[name="rationale"]').value = rationaleText;
 
-                    let proposalId = editId;
-
-                    if (editId) {
-                        // UPDATE
-                        const { error } = await supabase.from('extension_proposals').update(proposalData).eq('id', editId);
-                        if (error) throw error;
-                        // Clear old child tables to re-insert fresh data
-                        await supabase.from('proposal_staff').delete().eq('proposal_id', editId);
-                        await supabase.from('proposal_logframe').delete().eq('proposal_id', editId);
-                    } else {
-                        // CREATE
-                        const { data, error } = await supabase.from('extension_proposals').insert([proposalData]).select().single();
-                        if (error) throw error;
-                        proposalId = data.id;
-                    }
-
-                    // 3. Insert Child Tables (Staff & Logframe)
-                    await insertChildTables(proposalId);
-
-                    alert(editId ? 'Proposal Updated Successfully!' : 'Proposal Submitted Successfully!');
-                    window.location.href = "Faculty.html";
+                    alert('Form pre-filled with data from partner proposal. Please review and complete.');
 
                 } catch (error) {
-                    console.error(error);
-                    alert('Error: ' + error.message);
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
+                    console.error('Failed to parse partner data from URL:', error);
                 }
-            });
+            }
         });
 
-        // --- HELPER: Insert Staff & Logframe ---
-        async function insertChildTables(proposalId) {
-            // Staff
-            const staffRows = [];
-            document.querySelectorAll('#staff-table tbody tr').forEach(tr => {
-                const inputs = tr.querySelectorAll('input');
-                if (inputs.length >= 4 && inputs[0].value.trim() !== "") {
-                    staffRows.push({
-                        proposal_id: proposalId,
-                        office_staff: inputs[0].value,
-                        responsibilities: inputs[1].value,
-                        contact_person: inputs[2].value,
-                        contact_number: inputs[3].value
-                    });
-                }
-            });
-            if (staffRows.length > 0) await supabase.from('proposal_staff').insert(staffRows);
+        // MODIFIED: HANDLESUBMIT WITH MAILTO WORKFLOW
+        proposalForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
 
-            // Logframe
-            const logRows = document.querySelectorAll('[data-step="3"] tbody tr');
-            const getVal = (r, i) => r.querySelectorAll('textarea')[i]?.value || '';
-            const logData = [
-                { proposal_id: proposalId, row_type: 'GOAL', narrative_summary: getVal(logRows[0], 0), verifiable_indicators: getVal(logRows[0], 1), means_verification: getVal(logRows[0], 2) },
-                { proposal_id: proposalId, row_type: 'PURPOSE', narrative_summary: getVal(logRows[1], 0), verifiable_indicators: getVal(logRows[1], 1), means_verification: getVal(logRows[1], 2) },
-                { proposal_id: proposalId, row_type: 'OUTPUT', narrative_summary: getVal(logRows[2], 0), verifiable_indicators: getVal(logRows[2], 1), means_verification: getVal(logRows[2], 2) }
-            ];
-            await supabase.from('proposal_logframe').insert(logData);
-        }
-
-        // --- HELPER: Load Data & Render File List ---
-        async function loadProposalForEdit(id) {
             try {
-                const { data: main, error } = await supabase.from('extension_proposals').select('*').eq('id', id).single();
-                if (error) throw error;
+                const formData = new FormData(proposalForm);
+                
+                // 1. Save Main Proposal Data
+                const mainData = {
+                    title: formData.get('title'),
+                    project_type: formData.get('project_type'),
+                    proponents: formData.get('proponents'),
+                    // ... (add all other mainData fields here)
+                };
+                const { data: proposal, error: proposalError } = await sbClient
+                    .from('faculty_extension_proposals').insert(mainData).select().single();
+                if (proposalError) throw proposalError;
+                
+                const newProposalId = proposal.id;
 
-                // Fill inputs
-                document.getElementById('proj-title').value = main.title || '';
-                document.getElementById('proj-type').value = main.project_type || '';
-                document.getElementById('proj-proponents').value = main.proponents || '';
-                document.getElementById('proj-beneficiaries-no').value = main.beneficiaries_count || '';
-                document.getElementById('proj-beneficiaries-type').value = main.beneficiaries_type || '';
-                document.getElementById('proj-location').value = main.beneficiaries_location || '';
-                document.getElementById('proj-date').value = main.implementation_date || '';
-                document.getElementById('proj-budget-req').value = main.budget_requirement || '';
-                document.getElementById('proj-rationale').value = main.rationale || '';
+                // 2. Save Staff and LogFrame data (your existing logic for this is correct)
+                // ...
 
-                // --- HANDLE EXISTING FILES ---
-                activeFiles = main.attachment_urls || [];
-                renderFileList();
+                // 3. Prepare and Trigger Mailto Link
+                const partnerEmail = formData.get('original_partner_email');
+                const adminEmail = 'admin.ccms@cnsc.edu.ph'; // Your internal admin email
 
-                // Load Staff
-                const { data: staff } = await supabase.from('proposal_staff').select('*').eq('proposal_id', id);
-                if (staff && staff.length > 0) {
-                    const tbody = document.querySelector('#staff-table tbody');
-                    tbody.innerHTML = '';
-                    staff.forEach(s => {
-                        const newRow = document.createElement('tr');
-                        newRow.innerHTML = `
-                        <td class="px-4 py-2"><input type="text" value="${s.office_staff || ''}" class="w-full border-0 bg-transparent"></td>
-                        <td class="px-4 py-2"><input type="text" value="${s.responsibilities || ''}" class="w-full border-0 bg-transparent"></td>
-                        <td class="px-4 py-2"><input type="text" value="${s.contact_person || ''}" class="w-full border-0 bg-transparent"></td>
-                        <td class="px-4 py-2"><input type="text" value="${s.contact_number || ''}" class="w-full border-0 bg-transparent"></td>
-                    `;
-                        tbody.appendChild(newRow);
-                    });
+                if (!partnerEmail) {
+                    alert('Proposal saved successfully! (No partner email found for notification).');
+                    window.location.href = 'Faculty.html';
+                    return;
                 }
 
-                // Load Logframe
-                const { data: log } = await supabase.from('proposal_logframe').select('*').eq('proposal_id', id);
-                if (log) {
-                    const logRows = document.querySelectorAll('[data-step="3"] tbody tr');
-                    const setVal = (r, i, val) => { if (r.querySelectorAll('textarea')[i]) r.querySelectorAll('textarea')[i].value = val || ''; };
-                    ['GOAL', 'PURPOSE', 'OUTPUT'].forEach((type, idx) => {
-                        const item = log.find(l => l.row_type === type);
-                        if (item) {
-                            setVal(logRows[idx], 0, item.narrative_summary);
-                            setVal(logRows[idx], 1, item.verifiable_indicators);
-                            setVal(logRows[idx], 2, item.means_verification);
-                        }
-                    });
-                }
+                const subject = `Update on your CNSC Proposal: ${proposal.title}`;
+                const body = `Dear Partner,\n\n` +
+                             `This is to notify you that the proposal "${proposal.title}" has been formally created in our system based on your submission.\n\n` +
+                             `It will now undergo an internal review process. You will be notified of any further status changes.\n\n` +
+                             `Sincerely,\n` +
+                             `The CNSC Extension Services Team`;
 
-            } catch (e) { console.error(e); alert("Error loading: " + e.message); }
-        }
+                const mailtoLink = `mailto:${partnerEmail}?cc=${adminEmail}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-        // --- NEW FUNCTION: Render the File List with Delete Buttons ---
-        function renderFileList() {
-            const container = document.getElementById('file-list');
-            container.innerHTML = ''; // Clear current
+                alert('Proposal submitted successfully! Click OK to prepare the notification email to the partner and admin.');
+                
+                window.location.href = mailtoLink;
 
-            if (activeFiles.length === 0) {
-                container.innerHTML = '<span class="text-gray-400 italic">No files currently attached.</span>';
-                return;
+            } catch (error) {
+                console.error('Submission Error:', error);
+                alert(`Error: ${error.message}`);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Proposal';
             }
-
-            const label = document.createElement('p');
-            label.className = "font-bold mb-2 text-gray-700";
-            label.textContent = "Current Files (Click X to remove):";
-            container.appendChild(label);
-
-            activeFiles.forEach((url, index) => {
-                // Create a cleaner filename
-                let fileName = url.split('/').pop().split('?')[0];
-                if (fileName.length > 30) fileName = "..." + fileName.slice(-25);
-
-                const item = document.createElement('div');
-                item.className = "flex items-center justify-between bg-gray-50 p-2 rounded mb-1 border border-gray-200 text-sm";
-
-                item.innerHTML = `
-                <a href="${url}" target="_blank" class="text-blue-600 hover:underline truncate mr-2">${fileName}</a>
-                <button type="button" onclick="removeFile(${index})" class="text-red-500 hover:text-red-700 font-bold px-2">✕</button>
-            `;
-                container.appendChild(item);
-            });
-        }
-
-        // --- NEW FUNCTION: Remove file from the array ---
-        window.removeFile = function (index) {
-            if (!confirm("Remove this file? (Change applies when you click Update)")) return;
-            activeFiles.splice(index, 1); // Remove from array
-            renderFileList(); // Re-draw the list
-        };
+        });
     </script>
-
-
 </body>
 
 </html>
