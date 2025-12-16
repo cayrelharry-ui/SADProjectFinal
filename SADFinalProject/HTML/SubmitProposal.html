@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit New Proposal | CCMS Extension Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Hide all steps by default */
+        [data-step]:not([data-step="1"]) {
+            display: none;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cnsc-violet': '#5A2C9D',
+                        'cnsc-violet-dark': '#4C2684',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-slate-100">
+    <header class="sticky top-0 left-0 w-full bg-white shadow-md z-50">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center space-x-3">
+                <!-- Changed from div to img tag for logo.png -->
+                <img src="../logo.png" alt="CNSC Logo" class="h-10 w-10 rounded-full object-cover">
+                <div class="leading-none hidden sm:block">
+                    <p class="text-xs font-bold text-gray-800 tracking-wider">CCMS Extension Services</p>
+                    <h1 class="text-xl font-extrabold text-cnsc-violet">CNSC</h1>
+                </div>
+            </a>
+            <a href="Faculty.html" class="text-sm font-semibold text-gray-600 hover:text-cnsc-violet">&larr; Back to
+                Dashboard</a>
+        </nav>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div class="p-6 border-b border-gray-200">
+                <h1 class="text-2xl font-bold text-gray-900">New Extension Project Proposal</h1>
+                <p class="text-sm text-gray-500 mt-1">Fill out the form below, following the official format.</p>
+            </div>
+
+            <!-- Step Indicators -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-center" data-indicator="1">
+                        <div
+                            class="w-8 h-8 rounded-full bg-cnsc-violet text-white font-bold flex items-center justify-center">
+                            1</div><span class="font-bold text-cnsc-violet text-xs sm:text-sm">Description</span>
+                    </div>
+                    <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
+                    <div class="flex items-center gap-2 text-center" data-indicator="2">
+                        <div
+                            class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 font-bold flex items-center justify-center">
+                            2</div><span class="font-bold text-gray-400 text-xs sm:text-sm">Staffing</span>
+                    </div>
+                    <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
+                    <div class="flex items-center gap-2 text-center" data-indicator="3">
+                        <div
+                            class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 font-bold flex items-center justify-center">
+                            3</div><span class="font-bold text-gray-400 text-xs sm:text-sm">Plan</span>
+                    </div>
+                    <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
+                    <div class="flex items-center gap-2 text-center" data-indicator="4">
+                        <div
+                            class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 font-bold flex items-center justify-center">
+                            4</div><span class="font-bold text-gray-400 text-xs sm:text-sm">Submit</span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="proposal-form" class="p-8 space-y-8">
+                <!-- STEP 1 -->
+                <div data-step="1" class="space-y-6">
+                    <h2 class="text-xl font-bold text-gray-800 border-b pb-2">I. Project Description</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label class="block text-sm font-bold text-gray-700">Project Title</label><input
+                                type="text" name="title"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm"
+                                required></div>
+                        <div><label class="block text-sm font-bold text-gray-700">Type of Project</label><input
+                                type="text" name="project_type"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
+                        </div>
+                        <div><label class="block text-sm font-bold text-gray-700">Proponents</label><input type="text"
+                                name="proponents"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
+                        </div>
+                        <div><label class="block text-sm font-bold text-gray-700">No. of Beneficiaries</label><input
+                                type="text" name="beneficiaries_no"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
+                        </div>
+                        <div><label class="block text-sm font-bold text-gray-700">Target Beneficiaries</label><input
+                                type="text" name="beneficiaries_type"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
+                        </div>
+                        <div><label class="block text-sm font-bold text-gray-700">Location</label><input type="text"
+                                name="location"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
+                        </div>
+                        <div><label class="block text-sm font-bold text-gray-700">Duration</label><input type="date"
+                                name="start_date"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm"
+                                required></div>
+                        <div><label class="block text-sm font-bold text-gray-700">Budget</label><input type="number"
+                                name="budget_req"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2 -->
+                <div data-step="2" class="space-y-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800 border-b pb-2">II. Rationale</h2>
+                        <textarea name="rationale" rows="5"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm"></textarea>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800 border-b pb-2">III. Project Organization & Staffing
+                        </h2>
+                        <div class="overflow-x-auto rounded-lg border border-gray-200 mt-4">
+                            <table class="min-w-full divide-y divide-gray-200" id="staff-table">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">
+                                            Office/Staff</th>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">
+                                            Responsibilities</th>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">
+                                            Contact Person</th>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">
+                                            Contact No.</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200 staff-body">
+                                    <!-- Dynamic staff rows go here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" id="add-staff-btn"
+                            class="mt-2 text-sm font-bold text-cnsc-violet hover:underline">+ Add Staff Row</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3 -->
+                <div data-step="3" class="space-y-6">
+                    <h2 class="text-xl font-bold text-gray-800 border-b pb-2">IV. Logical Framework</h2>
+                    <!-- Goal Section -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800 mb-2">1. Goal</label>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg bg-gray-50">
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Narrative
+                                    Summary</label><textarea name="goal_narrative" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"
+                                    placeholder="The broader, long-term impact"></textarea></div>
+                            <div><label
+                                    class="block text-xs font-semibold text-gray-600 mb-1">Indicators</label><textarea
+                                    name="goal_indicators" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"></textarea></div>
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Means of
+                                    Verification</label><textarea name="goal_movs" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"></textarea></div>
+                        </div>
+                    </div>
+                    <!-- Purpose Section -->
+                    <div class="mt-6">
+                        <label class="block text-sm font-bold text-gray-800 mb-2">2. Purpose</label>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg bg-gray-50">
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Narrative
+                                    Summary</label><textarea name="purpose_narrative" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"
+                                    placeholder="The specific outcome of the project"></textarea></div>
+                            <div><label
+                                    class="block text-xs font-semibold text-gray-600 mb-1">Indicators</label><textarea
+                                    name="purpose_indicators" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"></textarea></div>
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Means of
+                                    Verification</label><textarea name="purpose_movs" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"></textarea></div>
+                        </div>
+                    </div>
+                    <!-- Outputs Section (Dynamic) -->
+                    <div class="mt-6">
+                        <label class="block text-sm font-bold text-gray-800 mb-2">3. Outputs</label>
+                        <p class="text-xs text-gray-500 mb-3">The tangible deliverables of the project. You can add
+                            multiple outputs.</p>
+                        <div id="logframe-outputs-container" class="space-y-4"></div>
+                        <!-- ADD THIS NEW, SIMPLER BUTTON -->
+                        <button type="button" id="add-output-btn"
+                            class="mt-2 text-sm font-bold text-cnsc-violet hover:underline">+ Add Output</button>
+                    </div>
+                </div>
+
+                <!-- TEMPLATE for a single output row -->
+                <template id="output-row-template">
+                    <div class="p-4 border rounded-lg bg-gray-50 output-row relative">
+                        <button type="button"
+                            class="remove-output-btn absolute top-2 right-2 text-red-400 hover:text-red-600 font-bold"
+                            title="Remove Output"><svg class="w-6 h-6" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg></button>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Narrative
+                                    Summary</label><textarea name="output_narrative[]" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"
+                                    placeholder="e.g., 50 garden beds built"></textarea></div>
+                            <div><label
+                                    class="block text-xs font-semibold text-gray-600 mb-1">Indicators</label><textarea
+                                    name="output_indicators[]" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"
+                                    placeholder="e.g., 50 signed agreements"></textarea></div>
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Means of
+                                    Verification</label><textarea name="output_movs[]" rows="3"
+                                    class="w-full text-sm border-gray-300 rounded-md shadow-sm"
+                                    placeholder="e.g., Signed agreements on file"></textarea></div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- STEP 4 -->
+                <div data-step="4" class="space-y-6">
+                    <h2 class="text-xl font-bold text-gray-800 border-b pb-2">V. Attachments</h2>
+                    <div class="p-4 bg-blue-50 border-l-4 border-blue-500">
+                        <p class="text-sm text-blue-700">Please attach the Gantt Chart, Detailed Budget, and Monitoring
+                            Plan.</p>
+                    </div>
+                    <div
+                        class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                        <div class="space-y-1 text-center">
+                            <label for="file-upload"
+                                class="relative cursor-pointer bg-white rounded-md font-medium text-cnsc-violet hover:text-cnsc-violet-dark"><span>Upload
+                                    files</span><input id="file-upload" name="file-upload" type="file" class="sr-only"
+                                    multiple></label>
+                            <p class="text-xs text-gray-500 mt-2">DOCX, PDF, XLSX up to 10MB</p>
+                            <div id="file-list" class="text-xs text-gray-700 mt-2 font-bold"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="pt-6 border-t border-gray-200 flex justify-between items-center">
+                    <button type="button" id="prev-btn"
+                        class="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold rounded-lg transition hidden">Previous</button>
+                    <button type="button" id="next-btn"
+                        class="ml-auto px-5 py-2 bg-cnsc-violet hover:bg-cnsc-violet-dark text-white font-bold rounded-lg shadow-md hover:shadow-lg transition">Next</button>
+                    <button type="submit" id="submit-btn"
+                        class="ml-auto px-5 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition hidden">Submit
+                        Proposal</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- SCRIPT 1: UI LOGIC (Buttons, Tabs, Add Row) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentStep = 1;
+            const totalSteps = 4;
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const submitBtn = document.getElementById('submit-btn');
+
+            function updateFormStep() {
+                document.querySelectorAll('[data-step]').forEach(el => el.style.display = 'none');
+                document.querySelector(`[data-step="${currentStep}"]`).style.display = 'block';
+                document.querySelectorAll('[data-indicator]').forEach((el, index) => {
+                    const stepNum = index + 1;
+                    const circle = el.querySelector('div');
+                    const text = el.querySelector('span');
+                    circle.className = 'w-8 h-8 rounded-full font-bold flex items-center justify-center transition-colors duration-200';
+                    text.className = 'font-bold text-xs sm:text-sm transition-colors duration-200';
+                    if (stepNum < currentStep) {
+                        circle.classList.add('bg-green-500', 'text-white'); circle.innerHTML = '&#10003;'; text.classList.add('text-green-600');
+                    } else if (stepNum === currentStep) {
+                        circle.classList.add('bg-cnsc-violet', 'text-white'); circle.innerHTML = stepNum; text.classList.add('text-cnsc-violet');
+                    } else {
+                        circle.classList.add('bg-gray-200', 'text-gray-500'); circle.innerHTML = stepNum; text.classList.add('text-gray-400');
+                    }
+                });
+                prevBtn.classList.toggle('hidden', currentStep === 1);
+                nextBtn.classList.toggle('hidden', currentStep === totalSteps);
+                submitBtn.classList.toggle('hidden', currentStep !== totalSteps);
+            }
+
+            nextBtn.addEventListener('click', () => { if (currentStep < totalSteps) { currentStep++; updateFormStep(); } });
+            prevBtn.addEventListener('click', () => { if (currentStep > 1) { currentStep--; updateFormStep(); } });
+
+            // --- DYNAMIC STAFF ROW LOGIC ---
+            const addStaffBtn = document.getElementById('add-staff-btn');
+            const staffTbody = document.querySelector('#staff-table .staff-body');
+            const addStaffRow = () => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td class="px-4 py-2"><input type="text" name="staff_name[]" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent" placeholder="Name..."></td>
+                    <td class="px-4 py-2"><input type="text" name="staff_responsibilities[]" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
+                    <td class="px-4 py-2"><input type="text" name="staff_contact_person[]" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
+                    <td class="px-4 py-2"><input type="text" name="staff_contact_no[]" class="w-full border-0 focus:ring-0 sm:text-sm bg-transparent"></td>
+                `;
+                staffTbody.appendChild(newRow);
+            };
+            addStaffBtn.addEventListener('click', addStaffRow);
+
+            // --- DYNAMIC LOGFRAME OUTPUT LOGIC ---
+            const addOutputBtn = document.getElementById('add-output-btn');
+            const outputsContainer = document.getElementById('logframe-outputs-container');
+            const outputTemplate = document.getElementById('output-row-template');
+            const addOutputRow = () => {
+                const newRow = outputTemplate.content.cloneNode(true);
+                outputsContainer.appendChild(newRow);
+            };
+            addOutputBtn.addEventListener('click', addOutputRow);
+            outputsContainer.addEventListener('click', (e) => {
+                if (e.target.closest('.remove-output-btn')) {
+                    e.target.closest('.output-row').remove();
+                }
+            });
+
+            // --- FILE DISPLAY LOGIC ---
+            const fileInput = document.getElementById('file-upload');
+            const fileList = document.getElementById('file-list');
+            fileInput.addEventListener('change', () => {
+                fileList.textContent = fileInput.files.length > 0 ? `${fileInput.files.length} file(s) selected` : "";
+            });
+
+            // Initialize form on load
+            updateFormStep();
+            addStaffRow(); // Add one staff row by default
+            addOutputRow(); // Add one output row by default
+        });
+    </script>
+
+   <!-- SCRIPT 2: SUPABASE LOGIC (This is the updated part) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://ixupbyyoxubpylffklrf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4dXBieXlveHVicHlsZmZrbHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMTg1MzcsImV4cCI6MjA4MDU5NDUzN30.DWQdzoB1LfS9tR1Ew9IbKA93Bp-fHeb7A9GohnE1-7A';
+        const sbClient = supabase.createClient(supabaseUrl, supabaseKey);
+        const proposalForm = document.getElementById('proposal-form');
+
+        // NEW: PRE-FILL SCRIPT - Runs when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const dataParam = urlParams.get('data');
+
+            if (dataParam) {
+                try {
+                    const partnerData = JSON.parse(decodeURIComponent(dataParam));
+                    const form = document.getElementById('proposal-form');
+
+                    // Pre-fill visible fields
+                    form.querySelector('[name="title"]').value = partnerData.subject || '';
+                    form.querySelector('[name="proponents"]').value = partnerData.organization_name || '';
+
+                    // Pre-fill hidden field with partner's email
+                    form.querySelector('[name="original_partner_email"]').value = partnerData.contact_email || '';
+
+                    // Pre-fill rationale
+                    let rationaleText = `--- Data from Partner Submission ---\n`;
+                    rationaleText += `Proposed Collaboration: ${partnerData.collaboration_areas || 'N/A'}\n`;
+                    rationaleText += `Expected Outcomes: ${partnerData.partnership_outcomes || 'N/A'}\n\n`;
+                    form.querySelector('[name="rationale"]').value = rationaleText;
+
+                    alert('Form pre-filled with data from partner proposal. Please review and complete.');
+
+                } catch (error) {
+                    console.error('Failed to parse partner data from URL:', error);
+                }
+            }
+        });
+
+        // MODIFIED: HANDLESUBMIT WITH MAILTO WORKFLOW
+        proposalForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            try {
+                const formData = new FormData(proposalForm);
+                
+                // 1. Save Main Proposal Data
+                const mainData = {
+                    title: formData.get('title'),
+                    project_type: formData.get('project_type'),
+                    proponents: formData.get('proponents'),
+                    // ... (add all other mainData fields here)
+                };
+                const { data: proposal, error: proposalError } = await sbClient
+                    .from('faculty_extension_proposals').insert(mainData).select().single();
+                if (proposalError) throw proposalError;
+                
+                const newProposalId = proposal.id;
+
+                // 2. Save Staff and LogFrame data (your existing logic for this is correct)
+                // ...
+
+                // 3. Prepare and Trigger Mailto Link
+                const partnerEmail = formData.get('original_partner_email');
+                const adminEmail = 'admin.ccms@cnsc.edu.ph'; // Your internal admin email
+
+                if (!partnerEmail) {
+                    alert('Proposal saved successfully! (No partner email found for notification).');
+                    window.location.href = 'Faculty.html';
+                    return;
+                }
+
+                const subject = `Update on your CNSC Proposal: ${proposal.title}`;
+                const body = `Dear Partner,\n\n` +
+                             `This is to notify you that the proposal "${proposal.title}" has been formally created in our system based on your submission.\n\n` +
+                             `It will now undergo an internal review process. You will be notified of any further status changes.\n\n` +
+                             `Sincerely,\n` +
+                             `The CNSC Extension Services Team`;
+
+                const mailtoLink = `mailto:${partnerEmail}?cc=${adminEmail}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+                alert('Proposal submitted successfully! Click OK to prepare the notification email to the partner and admin.');
+                
+                window.location.href = mailtoLink;
+
+            } catch (error) {
+                console.error('Submission Error:', error);
+                alert(`Error: ${error.message}`);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Proposal';
+            }
+        });
+    </script>
+</body>
+
+</html>

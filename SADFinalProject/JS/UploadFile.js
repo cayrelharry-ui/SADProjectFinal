@@ -47,12 +47,12 @@ export function initializeFileUploadForm(formId) {
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
         const fileInput = document.getElementById('fileInput');
         const categorySelect = document.getElementById('fileCategory');
         const accessLevelSelect = document.getElementById('accessLevel');
         const descriptionInput = document.getElementById('fileDescription');
-        
+
         if (!fileInput || !fileInput.files.length) {
             showUploadStatus('Please select at least one file', 'error');
             return;
@@ -98,17 +98,17 @@ export function initializeFileUploadForm(formId) {
 
             if (result.success) {
                 showUploadStatus(`Successfully uploaded ${result.uploadedCount} file(s)`, 'success');
-                
+
                 // Reset form
                 form.reset();
                 const filePreview = document.getElementById('filePreview');
                 if (filePreview) filePreview.style.display = 'none';
                 const selectedFilesList = document.getElementById('selectedFilesList');
                 if (selectedFilesList) selectedFilesList.innerHTML = '';
-                
+
                 // Hide progress bar
                 if (progressContainer) progressContainer.style.display = 'none';
-                
+
                 // Reload files list if function exists
                 if (typeof window.loadUploadedFiles === 'function') {
                     setTimeout(() => window.loadUploadedFiles(), 1000);
@@ -153,11 +153,11 @@ function validateFiles(files) {
 
         // Get file extension
         const fileExt = '.' + file.name.split('.').pop().toLowerCase();
-        
+
         // Check file type by MIME type or extension
-        const isValidType = ALLOWED_FILE_TYPES.includes(file.type) || 
+        const isValidType = ALLOWED_FILE_TYPES.includes(file.type) ||
                            ALLOWED_EXTENSIONS.includes(fileExt);
-        
+
         if (!isValidType) {
             return { valid: false, message: `File type not allowed for "${file.name}". Allowed types: PDF, Images, Documents, Spreadsheets, Archives, Audio, Video` };
         }
@@ -174,14 +174,14 @@ export async function uploadFiles(files, metadata = {}) {
         // Get current user info from localStorage
         const userData = JSON.parse(localStorage.getItem('user') || '{}');
         const userId = userData.user_id;
-        
+
         if (!userId) {
             throw new Error('User not authenticated. Please log in again.');
         }
 
         console.log(`Uploading files for user ${userId}`);
         console.log('Metadata received:', metadata); // Debug log
-        
+
         let uploadedCount = 0;
         const uploadedFiles = [];
         const errors = [];
@@ -194,10 +194,10 @@ export async function uploadFiles(files, metadata = {}) {
                 const timestamp = Date.now();
                 const randomString = Math.random().toString(36).substring(2, 15);
                 const fileName = `${timestamp}_${randomString}_${index}.${fileExt}`;
-                
+
                 // Create user-specific folder structure
                 const filePath = `user_${userId}/${fileName}`;
-                
+
                 console.log(`Uploading file ${index + 1}/${files.length}:`, file.name, 'as', filePath);
 
                 // Upload to Supabase Storage
@@ -210,12 +210,12 @@ export async function uploadFiles(files, metadata = {}) {
 
                 if (uploadError) {
                     console.error('Storage upload error:', uploadError);
-                    
+
                     // Handle specific errors
                     if (uploadError.message?.includes('bucket')) {
                         throw new Error(`Storage bucket "${STORAGE_BUCKET}" not found. Please create it in Supabase Storage.`);
                     }
-                    
+
                     throw new Error(`Failed to upload "${file.name}": ${uploadError.message}`);
                 }
 
@@ -250,13 +250,13 @@ export async function uploadFiles(files, metadata = {}) {
 
                 if (dbError) {
                     console.error('Database insert error:', dbError);
-                    
+
                     // Try to delete the uploaded file from storage if DB insert failed
                     await supabase.storage
                         .from(STORAGE_BUCKET)
                         .remove([filePath])
                         .catch(err => console.warn('Could not delete failed upload:', err));
-                    
+
                     // Check specific error types
                     if (dbError.code === '23503') { // Foreign key violation
                         throw new Error(`User not found. Please log in again.`);
@@ -271,7 +271,7 @@ export async function uploadFiles(files, metadata = {}) {
 
                 uploadedFiles.push(dbData);
                 uploadedCount++;
-                
+
                 console.log(`File ${index + 1} saved to database with ID:`, dbData.id);
 
                 // Update progress bar
@@ -330,7 +330,7 @@ export async function getUploadedFiles(filters = {}) {
         const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
         const currentUserId = currentUser.user_id;
         const currentUserRole = currentUser.role;
-        
+
         let query = supabase
             .from('uploaded_files')
             .select(`
@@ -452,11 +452,11 @@ export async function downloadFile(fileId, fileName) {
             .select('storage_path, public_url')
             .eq('id', fileId)
             .single();
-        
+
         if (error) {
             throw new Error(`File not found: ${error.message}`);
         }
-        
+
         // Create download link
         const link = document.createElement('a');
         link.href = file.public_url;
@@ -465,14 +465,14 @@ export async function downloadFile(fileId, fileName) {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         console.log(`Downloading: ${fileName}`);
-        
+
         return {
             success: true,
             message: `Download started: ${fileName}`
         };
-        
+
     } catch (error) {
         console.error('Download error:', error);
         return {
@@ -492,11 +492,11 @@ export async function downloadFile(fileId, fileName) {
 export function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
     if (typeof bytes !== 'number') return 'Unknown';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
@@ -505,7 +505,7 @@ export function formatFileSize(bytes) {
  */
 function getFileTypeFromExtension(filename) {
     if (!filename) return 'application/octet-stream';
-    
+
     const extension = filename.split('.').pop().toLowerCase();
     const typeMap = {
         'jpg': 'image/jpeg',
@@ -542,7 +542,7 @@ function updateProgressBar(percentage) {
         progressBar.style.width = `${roundedPercentage}%`;
         progressBar.textContent = `${roundedPercentage}%`;
         progressBar.setAttribute('aria-valuenow', roundedPercentage);
-        
+
         // Update progress bar color based on percentage
         progressBar.className = 'progress-bar progress-bar-striped progress-bar-animated';
         if (percentage >= 100) {
@@ -594,7 +594,7 @@ function showUploadStatus(message, type = 'info') {
  */
 export function getFileIconClass(filename) {
     if (!filename) return 'bi-file-earmark text-secondary';
-    
+
     const extension = filename.split('.').pop().toLowerCase();
     const iconMap = {
         'pdf': 'bi-file-pdf text-danger',

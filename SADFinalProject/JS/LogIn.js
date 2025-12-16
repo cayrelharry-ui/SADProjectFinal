@@ -291,7 +291,7 @@ function setupLoginPage() {
         const pageMap = {
             'admin': '../HTML/Admin_Panel.html',
             'partner': '../HTML/Partner_Panel.html',
-            'faculty': '../Faculty/Faculty.html',
+            'faculty': '../HTML/faculty-dashboard.html',
             'coordinator': '../HTML/Partner_Panel.html',
             'public': '../HTML/Public_Dashboard.html',
             'guest': '../index.html'
