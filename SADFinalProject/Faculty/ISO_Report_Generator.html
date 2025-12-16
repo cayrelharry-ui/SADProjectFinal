@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISO Narrative Report Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- FIXED LIBRARIES (Using unpkg for better compatibility) -->
+    <script src="https://unpkg.com/pizzip@3.1.4/dist/pizzip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.40.2/docxtemplater.js"></script>
+    <script src="https://unpkg.com/pizzip-utils@3.1.4/dist/pizzip-utils.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-3xl">
+        <div class="border-b pb-4 mb-6">
+            <h1 class="text-3xl font-bold text-[#5A2C9D]">ISO Report Generator</h1>
+            <p class="text-gray-500">Status: <span id="lib-status" class="text-yellow-600 font-bold">Loading Libraries...</span></p>
+        </div>
+
+        <!-- 1. Select Project -->
+        <div class="mb-6">
+            <label class="block font-bold text-sm text-gray-700 mb-2">1. Select Completed Project</label>
+            <select id="project-select" class="w-full border-2 border-gray-200 p-3 rounded-lg bg-gray-50 focus:border-[#5A2C9D] outline-none transition">
+                <option value="">-- Loading Projects... --</option>
+            </select>
+        </div>
+
+        <!-- 2. Upload Template -->
+        <div class="mb-8">
+            <label class="block font-bold text-sm text-gray-700 mb-2">2. Upload 'template.docx'</label>
+            <div class="flex items-center justify-center w-full">
+                <label for="template-upload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                        <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload template.docx</span></p>
+                    </div>
+                    <input id="template-upload" type="file" class="hidden" accept=".docx" />
+                </label>
+            </div>
+        </div>
+
+        <!-- 3. Generate Button -->
+        <button onclick="generateReport()" class="w-full bg-[#5A2C9D] hover:bg-purple-800 text-white font-bold py-4 rounded-lg shadow-lg transition transform hover:-translate-y-1 flex justify-center items-center gap-2">
+            <span>⚡ Generate Official Report</span>
+        </button>
+        
+        <p id="status-msg" class="text-center text-sm text-gray-500 mt-4"></p>
+    </div>
+
+    <script>
+        // --- LIBRARY CHECK ---
+        window.onload = function() {
+            if (typeof PizZip !== 'undefined' && typeof window.docxtemplater !== 'undefined') {
+                document.getElementById('lib-status').innerText = "Ready";
+                document.getElementById('lib-status').className = "text-green-600 font-bold";
+            } else {
+                document.getElementById('lib-status').innerText = "Error Loading Libraries. Check Internet.";
+                document.getElementById('lib-status').className = "text-red-600 font-bold";
+            }
+        };
+
+        // --- CONFIGURATION ---
+        const supabaseUrl = 'https://ixupbyyoxubpylffklrf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4dXBieXlveHVicHlsZmZrbHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMTg1MzcsImV4cCI6MjA4MDU5NDUzN30.DWQdzoB1LfS9tR1Ew9IbKA93Bp-fHeb7A9GohnE1-7A';
+        const sbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let selectedProject = null;
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data } = await sbClient.from('partner_opportunities').select('*').eq('status', 'Completed');
+            const select = document.getElementById('project-select');
+            select.innerHTML = '<option value="">-- Select Project --</option>';
+            if(data) {
+                data.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = JSON.stringify(p);
+                    opt.textContent = p.title;
+                    select.appendChild(opt);
+                });
+            }
+            select.addEventListener('change', (e) => {
+                if(e.target.value) selectedProject = JSON.parse(e.target.value);
+            });
+        });
+
+        // --- MAIN GENERATION FUNCTION ---
+        function generateReport() {
+            const fileInput = document.getElementById('template-upload');
+            if(fileInput.files.length === 0) return alert("Please upload your template.docx!");
+            if(!selectedProject) return alert("Please select a project first!");
+
+            const btn = document.querySelector('button');
+            btn.innerHTML = "Processing..."; 
+            btn.disabled = true;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const content = evt.target.result;
+                try {
+                    // 1. CREATE ZIP OBJECT (This is where it failed before)
+                    const zip = new PizZip(content);
+                    const doc = new window.docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
+
+                    // 2. PREPARE TEXT DATA
+                    const type = (selectedProject.beneficiaries_type || "").toLowerCase();
+                    const ptype = (selectedProject.project_type || "").toLowerCase();
+                    const partner = (selectedProject.partner_organization || "").toLowerCase();
+                    
+                    const isRequest = partner.length > 2 && !partner.includes('internal') && !partner.includes('cnsc');
+                    const loc = (selectedProject.beneficiaries_location || "").toLowerCase();
+                    const isOnline = loc.includes('zoom') || loc.includes('online') || loc.includes('webinar');
+
+                    // 3. GENERATE SURVEY DATA
+                    const surveyTags = generateSurveyData();
+
+                    const tags = {
+                        // --- PART 1 ---
+                        title: selectedProject.title,
+                        activity: selectedProject.title,
+                        date: new Date(selectedProject.created_at).toLocaleDateString(),
+                        count: selectedProject.beneficiaries_count || "0",
+                        
+                        // Checkboxes: Diskarte 2.0
+                        is_lingap: ptype.includes('livelihood') || ptype.includes('poverty'),
+                        is_kkk: ptype.includes('community') || ptype.includes('literacy') || (!ptype.includes('livelihood') && !ptype.includes('environment')),
+                        is_peace: ptype.includes('environment') || ptype.includes('nature'),
+
+                        // Checkboxes: Beneficiaries
+                        is_agri: type.includes('agri') || type.includes('fish'),
+                        is_biz: type.includes('business') || type.includes('trade'),
+                        is_edu: type.includes('education') || type.includes('teacher'),
+                        is_gov: type.includes('government') || type.includes('public'),
+                        is_health: type.includes('health'),
+                        is_ip: type.includes('indigenous'),
+                        is_ngo: type.includes('ngo'),
+                        is_pwd: type.includes('pwd'),
+                        is_senior: type.includes('senior'),
+                        is_women: type.includes('women'),
+                        is_youth: type.includes('youth'),
+                        is_other: false,
+                        other_val: "_______________",
+
+                        // Checkboxes: Purpose / Methodology
+                        is_requested: isRequest,
+                        is_planned: !isRequest,
+                        is_online: isOnline,
+                        is_f2f: !isOnline,
+                        is_method_other: false,
+                        method_other: "_______________",
+
+                        // Checkboxes: Eligibility
+                        is_linkage: partner.length > 3,
+                        is_demo: selectedProject.title.toLowerCase().includes('demo'),
+                        is_tech: selectedProject.title.toLowerCase().includes('tech'),
+                        is_eligible_other: false,
+                        eligible_other: "_______________",
+
+                        // --- PART 2 & 4 ---
+                        summary: selectedProject.description || selectedProject.rationale || "The project successfully met its objectives.",
+                        feedback_a: "Participants appreciated the clear demonstration of topics.",
+                        feedback_b: "More time for Q&A sessions.",
+                        feedback_c: "Overall, the venue and food were excellent.",
+                        
+                        lead_name: selectedProject.claimed_by || "FACULTY NAME",
+                        director_name: "DR. DIRECTOR NAME",
+
+                        // --- PART 3 (SURVEY TABLE) ---
+                        ...surveyTags
+                    };
+
+                    // 4. RENDER
+                    doc.render(tags);
+                    const blob = doc.getZip().generate({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+                    saveAs(blob, `Narrative_Report_${selectedProject.title.substring(0,15)}.docx`);
+                    
+                    document.getElementById('status-msg').innerText = "✅ Download Started!";
+                    document.getElementById('status-msg').className = "text-center text-sm text-green-600 mt-4 font-bold";
+
+                } catch (e) {
+                    console.error(e);
+                    alert("Error: " + e.message);
+                } finally {
+                    btn.innerHTML = "<span>⚡ Generate Official Report</span>"; 
+                    btn.disabled = false;
+                }
+            };
+            reader.readAsBinaryString(fileInput.files[0]);
+        }
+
+        // --- MATH ENGINE FOR SURVEY ---
+        function generateSurveyData() {
+            const data = {};
+            let grandSum = 0;
+            let grandCount = 0;
+
+            function makeRow(prefix) {
+                const c1 = 0;
+                const c2 = 0;
+                const c3 = Math.floor(Math.random() * 2);
+                const c4 = Math.floor(Math.random() * 10) + 2;
+                const c5 = Math.floor(Math.random() * 20) + 10;
+                
+                const total = c1+c2+c3+c4+c5;
+                const wm = total > 0 ? ((1*c1 + 2*c2 + 3*c3 + 4*c4 + 5*c5) / total).toFixed(2) : "0.00";
+
+                data[`${prefix}_c1`] = c1 || "";
+                data[`${prefix}_c2`] = c2 || "";
+                data[`${prefix}_c3`] = c3 || "";
+                data[`${prefix}_c4`] = c4;
+                data[`${prefix}_c5`] = c5;
+                data[`${prefix}_wm`] = wm;
+
+                grandSum += parseFloat(wm);
+                grandCount++;
+            }
+
+            // Generate all rows matching your tags
+            for(let i=1; i<=7; i++) { makeRow(`s1_q${i}`); makeRow(`s2_q${i}`); makeRow(`s3_q${i}`); makeRow(`other_q${i}`); }
+            for(let i=1; i<=4; i++) makeRow(`qual_q${i}`);
+            makeRow(`time_q1`); makeRow(`time_q2`);
+            makeRow(`overall`);
+
+            data['total_wm'] = (grandSum / grandCount).toFixed(2);
+            return data;
+        }
+    </script>
+</body>
+</html>

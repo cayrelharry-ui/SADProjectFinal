@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrative Report Generator | CNSC Extension</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman:ital,wght@0,400;0,700;1,400&family=Arial:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Arial', sans-serif; }
+        .font-times { font-family: 'Times New Roman', serif; }
+
+        /* A4 Paper Setup */
+        .a4-paper {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            padding: 15mm 15mm;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        /* Table Styles to Match ISO Form */
+        .iso-table { width: 100%; border-collapse: collapse; font-size: 11px; font-family: 'Arial', sans-serif; }
+        .iso-table th, .iso-table td { border: 1px solid black; padding: 4px; vertical-align: top; }
+        .iso-header { background-color: #f3f4f6; font-weight: bold; text-align: center; }
+        .no-border-top { border-top: none !important; }
+        .no-border-bottom { border-bottom: none !important; }
+
+        /* Interactive Elements */
+        .check-box { cursor: pointer; font-weight: bold; display: inline-block; width: 14px; text-align: center; }
+        .check-box:hover { color: blue; }
+        
+        [contenteditable="true"]:hover { background-color: #eff6ff; outline: 1px dashed #2563eb; }
+        [contenteditable="true"]:focus { background-color: #fff; outline: 2px solid #2563eb; padding: 2px; }
+
+        /* Print Settings */
+        @media print {
+            body { background: white; }
+            .no-print { display: none !important; }
+            .a4-paper { box-shadow: none; margin: 0; width: 100%; page-break-after: always; }
+            button { display: none; }
+            /* Hide empty rows in survey if needed, or keep exact form */
+        }
+    </style>
+</head>
+<body class="bg-gray-200 h-screen flex flex-col overflow-hidden">
+
+    <!-- TOP NAV (No Print) -->
+    <header class="no-print bg-white border-b border-gray-300 h-14 flex items-center justify-between px-6 flex-none z-50">
+        <h1 class="font-bold text-gray-700 flex items-center gap-2">
+            <span class="bg-purple-700 text-white w-6 h-6 rounded flex items-center justify-center text-xs">R</span>
+            ISO Report Generator (CNSC-OP-EXT-01F9)
+        </h1>
+        <div class="flex gap-3">
+            <button onclick="window.print()" class="bg-gray-800 hover:bg-black text-white px-4 py-1.5 rounded text-sm font-bold flex items-center gap-2">
+                🖨️ Print / Save PDF
+            </button>
+            <a href="Faculty.html" class="text-sm text-gray-500 hover:text-purple-700 underline flex items-center">Exit</a>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- SIDEBAR (No Print) -->
+        <aside class="no-print w-72 bg-gray-50 border-r border-gray-200 overflow-y-auto p-4 flex-none">
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Select Completed Project</label>
+                <select id="project-select" onchange="loadProjectData()" class="w-full text-sm border-gray-300 rounded shadow-sm p-2 border">
+                    <option value="">-- Load Data --</option>
+                </select>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 p-3 rounded text-xs text-blue-800 mb-4">
+                <strong>Instructions:</strong>
+                <ul class="list-disc ml-4 mt-1 space-y-1">
+                    <li>Select a project above to auto-fill.</li>
+                    <li>Click any text in the paper to edit.</li>
+                    <li>Click <span class="font-mono">[ ]</span> to toggle checkboxes.</li>
+                </ul>
+            </div>
+            
+            <hr class="border-gray-200 my-4">
+            
+            <div class="space-y-2">
+                <button onclick="toggleSection('cert-panel')" class="w-full text-left px-3 py-2 bg-white border rounded hover:bg-gray-50 text-sm font-bold">🎓 Switch to Certificates</button>
+                <button onclick="toggleSection('report-panel')" class="w-full text-left px-3 py-2 bg-purple-100 border border-purple-300 rounded text-sm font-bold text-purple-800">📄 Narrative Report</button>
+            </div>
+        </aside>
+
+        <!-- MAIN PREVIEW AREA -->
+        <main class="flex-1 overflow-y-auto bg-gray-300 p-8 flex justify-center">
+
+            <!-- === NARRATIVE REPORT (CNSC-OP-EXT-01F9) === -->
+            <div id="report-panel" class="a4-paper">
+                
+                <!-- HEADER LOGO SECTION -->
+                <div class="text-center mb-4 leading-tight relative">
+                    <!-- Placeholder for Logo -->
+                    <div class="absolute left-4 top-0">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/c/c8/Camarines_Norte_State_College_seal.png" class="h-20 w-20 opacity-90">
+                    </div>
+                    
+                    <p class="font-times text-sm">Republic of the Philippines</p>
+                    <h2 class="font-times font-bold text-lg">CAMARINES NORTE STATE COLLEGE</h2>
+                    <p class="font-times text-xs">F. Pimentel Avenue, Brgy. 2, Daet, Camarines Norte – 4600, Philippines</p>
+                    <br>
+                    <h3 class="font-bold text-sm uppercase font-times">OFFICE OF THE VICE PRESIDENT FOR RESEARCH AND EXTENSION</h3>
+                    <h3 class="font-bold text-sm uppercase font-times border-b-2 border-black inline-block pb-1">EXTENSION SERVICES DIVISION</h3>
+                </div>
+
+                <h1 class="text-center font-bold text-lg mb-4 font-times uppercase">NARRATIVE REPORT</h1>
+
+                <!-- PART 1 -->
+                <table class="iso-table mb-4">
+                    <tr>
+                        <th class="iso-header text-left" colspan="2">PART 1: EXECUTIVE SUMMARY</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="p-2">
+                            <div class="grid grid-cols-[160px_1fr] gap-2 mb-1">
+                                <span class="font-bold">Title of Extension Project:</span>
+                                <span contenteditable="true" id="rpt-title" class="font-bold underline text-blue-900">...</span>
+                            </div>
+                            <div class="grid grid-cols-[160px_1fr] gap-2 mb-1">
+                                <span class="font-bold">Title of Extension Activity:</span>
+                                <span contenteditable="true" id="rpt-activity">...</span>
+                            </div>
+                            <div class="grid grid-cols-[160px_1fr] gap-2 mb-1">
+                                <span class="font-bold">Date Conducted:</span>
+                                <span contenteditable="true" id="rpt-date">...</span>
+                            </div>
+                            <div class="grid grid-cols-[160px_1fr] gap-2">
+                                <span class="font-bold">Implementing Unit:</span>
+                                <span contenteditable="true">College of Engineering / Extension Services</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="p-2">
+                            <span class="font-bold">DISKARTE 2.0 – Priority Thrust implemented:</span><br>
+                            <div class="flex gap-4 mt-1">
+                                <span class="cursor-pointer" onclick="toggleCheck(this)">[ ] L.I.N.G.A.P.</span>
+                                <span class="cursor-pointer" onclick="toggleCheck(this)">[ ] K.K.K.</span>
+                                <span class="cursor-pointer" onclick="toggleCheck(this)">[ ] P.E.A.C.E.</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="50%" class="p-2">
+                            <span class="font-bold">Beneficiaries/Stakeholders/Sector:</span>
+                            <div class="grid grid-cols-1 gap-1 mt-1 pl-2">
+                                <span onclick="toggleCheck(this)" id="chk-agri">[ ] Agriculture & Fisheries</span>
+                                <span onclick="toggleCheck(this)" id="chk-biz">[ ] Business & Trade (MSME)</span>
+                                <span onclick="toggleCheck(this)" id="chk-edu">[ ] Education (Personnel)</span>
+                                <span onclick="toggleCheck(this)" id="chk-gov">[ ] Government & Public Service</span>
+                                <span onclick="toggleCheck(this)" id="chk-health">[ ] Health & Social Services</span>
+                                <span onclick="toggleCheck(this)" id="chk-ip">[ ] Indigenous Peoples</span>
+                            </div>
+                        </td>
+                        <td width="50%" class="p-2 align-bottom">
+                             <div class="grid grid-cols-1 gap-1 pl-2">
+                                <span onclick="toggleCheck(this)" id="chk-ngo">[ ] Non-Governmental Org (NGO)</span>
+                                <span onclick="toggleCheck(this)" id="chk-pwd">[ ] Person with Disability (PWD)</span>
+                                <span onclick="toggleCheck(this)" id="chk-sc">[ ] Senior Citizen</span>
+                                <span onclick="toggleCheck(this)" id="chk-women">[ ] Women</span>
+                                <span onclick="toggleCheck(this)" id="chk-youth">[ ] Youth & Community Dev</span>
+                                <span onclick="toggleCheck(this)">[ ] Others: <u contenteditable="true">______</u></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2">
+                            <span class="font-bold">Total Number of Persons Trained:</span>
+                            <div contenteditable="true" id="rpt-count" class="text-center text-xl font-bold py-2">0</div>
+                        </td>
+                        <td class="p-2">
+                            <span class="font-bold">Purpose of the conduct:</span>
+                            <div class="mt-1 pl-2 space-y-1">
+                                <span onclick="toggleCheck(this)">[ ] Implementation of Unit’s 3-Year Framework</span>
+                                <span onclick="toggleCheck(this)">[ ] As requested by other unit or agency</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2">
+                            <span class="font-bold">Training Methodology:</span>
+                            <div class="mt-1 pl-2 space-y-1">
+                                <span onclick="toggleCheck(this)">[ ] Traditional Face to Face</span>
+                                <span onclick="toggleCheck(this)">[ ] Radio Network/FB Live</span>
+                                <span onclick="toggleCheck(this)">[ ] Other: <u contenteditable="true">___</u></span>
+                            </div>
+                        </td>
+                        <td class="p-2">
+                            <span class="font-bold">Activity Assessment Eligibility:</span>
+                            <div class="mt-1 pl-2 space-y-1">
+                                <span onclick="toggleCheck(this)">[ ] New Linkage/Partnership</span>
+                                <span onclick="toggleCheck(this)">[ ] Adoption of Technology</span>
+                                <span onclick="toggleCheck(this)">[ ] Viable Demo Project</span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- PART 2 -->
+                <div class="mb-4 border border-black p-1">
+                    <div class="font-bold bg-gray-100 p-1 mb-2 border-b border-black">PART 2: SIGNIFICANT CONTRIBUTION OF THE ACTIVITY / PROJECT</div>
+                    <div contenteditable="true" id="rpt-summary-text" class="h-32 p-2 text-justify text-sm leading-relaxed" style="min-height: 100px;">
+                        [Type the significant contributions or narrative summary here...]
+                    </div>
+                </div>
+
+                <!-- PAGE BREAK FOR PRINT -->
+                <div class="page-break"></div>
+
+                <!-- PART 3: SURVEY (Condensed for visual fit, fully editable) -->
+                <table class="iso-table mb-4 mt-8">
+                    <tr>
+                        <th class="iso-header text-left" colspan="7">PART 3: SUMMARY CLIENT SATISFACTION SURVEY</th>
+                    </tr>
+                    <tr>
+                        <th rowspan="2" class="w-1/2">PERFORMANCE CRITERIA</th>
+                        <th colspan="5">FREQUENCY COUNT</th>
+                        <th rowspan="2" class="w-10">WM</th>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="w-6">1</td><td class="w-6">2</td><td class="w-6">3</td><td class="w-6">4</td><td class="w-6">5</td>
+                    </tr>
+                    
+                    <!-- Speaker 1 -->
+                    <tr><td colspan="7" class="font-bold bg-gray-50">1.A Resource Speaker 1: <span contenteditable="true" class="font-normal underline">Name Here</span></td></tr>
+                    <!-- Loop for criteria -->
+                    <script>
+                        const criteria = [
+                            "Achievement of objectives", "Relevance of topic", "Mastery of subject", 
+                            "Appropriateness", "Interactive participation", "Presentation skills", "Time management"
+                        ];
+                        criteria.forEach(c => {
+                            document.write(`<tr>
+                                <td class="pl-4">${c}</td>
+                                <td contenteditable="true" class="text-center"></td><td contenteditable="true" class="text-center"></td>
+                                <td contenteditable="true" class="text-center"></td><td contenteditable="true" class="text-center"></td>
+                                <td contenteditable="true" class="text-center"></td><td contenteditable="true" class="text-center bg-yellow-50 font-bold"></td>
+                            </tr>`);
+                        });
+                    </script>
+
+                    <!-- Quality -->
+                    <tr><td colspan="7" class="font-bold bg-gray-50">2. Quality of Service</td></tr>
+                     <tr><td class="pl-4">Achievement of training objectives</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true" class="bg-yellow-50"></td></tr>
+                     <tr><td class="pl-4">Usefulness to needs/work</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true" class="bg-yellow-50"></td></tr>
+                    
+                    <!-- Overall -->
+                    <tr>
+                        <td class="font-bold text-right pr-4">Total Rating (Weighted Mean)</td>
+                        <td colspan="5" class="bg-gray-200"></td>
+                        <td contenteditable="true" class="text-center font-bold bg-yellow-100 text-lg">0.0</td>
+                    </tr>
+                </table>
+
+                <!-- PART 4: FEEDBACK -->
+                <table class="iso-table mb-8">
+                    <tr><th class="iso-header text-left">PART 4: SUMMARY OF FEEDBACK</th></tr>
+                    <tr>
+                        <td class="p-2">
+                            <strong>What was the most interesting thing you learned?</strong>
+                            <div contenteditable="true" class="mt-1 italic h-12 border-b border-dashed border-gray-300">...</div>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td class="p-2">
+                            <strong>What would have made the session more effective?</strong>
+                            <div contenteditable="true" class="mt-1 italic h-12 border-b border-dashed border-gray-300">...</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2">
+                            <strong>Additional suggestions/comments:</strong>
+                            <div contenteditable="true" class="mt-1 italic h-12 border-b border-dashed border-gray-300">...</div>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- SIGNATORIES -->
+                <div class="grid grid-cols-2 gap-8 mt-8">
+                    <div>
+                        <p class="text-xs mb-6">Prepared by:</p>
+                        <p contenteditable="true" class="font-bold uppercase border-t border-black inline-block pr-10 pt-1" id="rpt-sign">FACULTY NAME</p>
+                        <p class="text-xs">Faculty Resource Person/Trainer</p>
+                    </div>
+                    <div>
+                        <p class="text-xs mb-6">Certified:</p>
+                        <p contenteditable="true" class="font-bold uppercase border-t border-black inline-block pr-10 pt-1">DIRECTOR NAME</p>
+                        <p class="text-xs">Director, Extension Services Division</p>
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="mt-12 flex justify-between text-[10px] font-times text-gray-500 border-t border-gray-300 pt-2">
+                    <span>CNSC-OP-EXT-01F9</span>
+                    <span>Revision: 4</span>
+                    <span>Page 1 of 2</span>
+                </div>
+            </div>
+
+            <!-- === CERTIFICATE PANEL (Hidden) === -->
+            <div id="cert-panel" class="hidden w-full flex flex-col items-center">
+                 <div class="bg-white p-6 rounded shadow mb-4 no-print text-center w-full max-w-lg">
+                    <h2 class="font-bold text-lg mb-2">Certificate Generator</h2>
+                    <div class="flex gap-2">
+                        <input type="text" id="participant-name" placeholder="Enter Name..." class="border p-2 rounded flex-1">
+                        <button onclick="addCert()" class="bg-purple-600 text-white px-4 rounded font-bold">+</button>
+                    </div>
+                </div>
+                <!-- Container for Certificates -->
+                <div id="cert-container" class="w-full"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // CONFIG
+        const supabaseUrl = 'https://ixupbyyoxubpylffklrf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4dXBieXlveHVicHlsZmZrbHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMTg1MzcsImV4cCI6MjA4MDU5NDUzN30.DWQdzoB1LfS9tR1Ew9IbKA93Bp-fHeb7A9GohnE1-7A';
+        const sbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // INIT
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data } = await sbClient.from('partner_opportunities').select('id, title').eq('status', 'Completed');
+            const sel = document.getElementById('project-select');
+            if(data) data.forEach(p => {
+                sel.innerHTML += `<option value="${p.id}">${p.title}</option>`;
+            });
+        });
+
+        // 1. AUTO-FILL LOGIC
+        async function loadProjectData() {
+            const id = document.getElementById('project-select').value;
+            if(!id) return;
+
+            const { data } = await sbClient.from('partner_opportunities').select('*').eq('id', id).single();
+            if(!data) return;
+
+            // Fill Text Fields
+            document.getElementById('rpt-title').innerText = data.title || "";
+            document.getElementById('rpt-activity').innerText = data.title || ""; // Often same as project
+            document.getElementById('rpt-date').innerText = new Date(data.created_at).toLocaleDateString();
+            document.getElementById('rpt-count').innerText = data.beneficiaries_count || "0";
+            document.getElementById('rpt-sign').innerText = data.claimed_by || "FACULTY NAME";
+            document.getElementById('rpt-summary-text').innerText = data.description || "No description provided.";
+
+            // Auto-Check Checkboxes (Simple Match Logic)
+            resetChecks();
+            const sector = (data.beneficiaries_type || "").toLowerCase();
+            
+            if(sector.includes('youth')) check('chk-youth');
+            if(sector.includes('women')) check('chk-women');
+            if(sector.includes('senior')) check('chk-sc');
+            if(sector.includes('pwd')) check('chk-pwd');
+            if(sector.includes('fisher') || sector.includes('agri')) check('chk-agri');
+            if(sector.includes('indigenous')) check('chk-ip');
+        }
+
+        // 2. CHECKBOX LOGIC
+        function toggleCheck(el) {
+            if(el.innerText.includes('[ ]')) el.innerText = el.innerText.replace('[ ]', '[✓]');
+            else el.innerText = el.innerText.replace('[✓]', '[ ]');
+        }
+        function check(id) {
+            const el = document.getElementById(id);
+            if(el) el.innerText = el.innerText.replace('[ ]', '[✓]');
+        }
+        function resetChecks() {
+            document.querySelectorAll('span[onclick]').forEach(el => {
+                el.innerText = el.innerText.replace('[✓]', '[ ]');
+            });
+        }
+
+        // 3. UI TABS
+        function toggleSection(id) {
+            document.getElementById('report-panel').classList.add('hidden');
+            document.getElementById('cert-panel').classList.add('hidden');
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        // 4. CERTIFICATE LOGIC (Simple)
+        function addCert() {
+            const name = document.getElementById('participant-name').value;
+            if(!name) return;
+            
+            const certHTML = `
+                <div class="a4-paper mb-4 flex flex-col items-center justify-center text-center border-4 border-double border-purple-800 p-10 relative">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/c/c8/Camarines_Norte_State_College_seal.png" class="h-24 opacity-20 absolute">
+                    <h1 class="font-serif text-4xl font-bold text-purple-900 mb-2">Certificate of Participation</h1>
+                    <p class="text-gray-600 italic mb-8">is presented to</p>
+                    <h2 class="text-3xl font-bold border-b-2 border-gray-400 pb-2 mb-6 w-3/4">${name}</h2>
+                    <p>For participating in the extension activity:</p>
+                    <h3 class="font-bold text-xl my-2">"${document.getElementById('rpt-title').innerText}"</h3>
+                    <p class="text-sm text-gray-500 mt-12">Given this ${new Date().toLocaleDateString()}</p>
+                </div>
+            `;
+            document.getElementById('cert-container').insertAdjacentHTML('beforeend', certHTML);
+            document.getElementById('participant-name').value = '';
+        }
+
+    </script>
+</body>
+</html>

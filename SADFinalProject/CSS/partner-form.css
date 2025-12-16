@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc;
+    color: #5A2C9D;
+}
+
+/* Custom Brand Colors */
+.text-violet {
+    color: #5A2C9D;
+}
+
+.bg-violet {
+    background-color: #5A2C9D;
+}
+
+.border-violet {
+    border-color: #5A2C9D;
+}
+
+.bg-violet-dark {
+    background-color: #4C2684;
+}
+
+.hover-bg-violet:hover {
+    background-color: #5A2C9D;
+    color: white;
+}
+
+/* Custom Animations */
+.fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Letter Template Styling */
+.font-serif {
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+/* Inline input styling for letter template */
+input[type="text"].border-b-2.border-dashed,
+select.border-b-2.border-dashed,
+textarea.border-2.border-dashed {
+    min-height: 1.5em;
+}
+
+input[type="text"].border-b-2.border-dashed:focus,
+select.border-b-2.border-dashed:focus,
+textarea.border-2.border-dashed:focus {
+    background-color: #fef3ff;
+}
+
+/* Letter container styling */
+.bg-gray-50.border-2 {
+    line-height: 1.8;
+}
+
+/* File Upload Styling */
+#fileUpload:focus + label,
+label[for="fileUpload"]:hover {
+    color: #5A2C9D;
+}
+
+.border-dashed.border-gray-300:hover {
+    border-color: #5A2C9D;
+    background-color: #faf5ff;
+}
+
+/* File list item hover */
+#fileItems > div:hover {
+    background-color: #f9fafb;
+    border-color: #5A2C9D;
+}
+
+/* Print-friendly styling */
+@media print {
+    .bg-gray-50 {
+        background-color: white !important;
+    }
+    
+    input, select, textarea {
+        border: none !important;
+        border-bottom: 1px solid #000 !important;
+        background: transparent !important;
+    }
+    
+    /* Hide file upload section when printing */
+    .border-t-2.border-gray-300 {
+        display: none !important;
+    }
+}
+
