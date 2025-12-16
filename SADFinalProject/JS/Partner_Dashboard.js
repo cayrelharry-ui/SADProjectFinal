@@ -523,7 +523,7 @@ export async function getMOAStats(email = null) {
 }
 
 // ============================================
-// FUNCTION: Submit Partnership Request (NEW)
+// FUNCTION: Submit Partnership Request
 // ============================================
 export async function submitPartnershipRequest(formData, attachments = []) {
     try {
@@ -654,8 +654,7 @@ export async function submitPartnershipRequest(formData, attachments = []) {
             }
         }
 
-        // Prepare response
-        let message = "Partnership request submitted successfully!";
+
         if (uploadedFiles.length > 0) {
             message += ` ${uploadedFiles.length} file(s) uploaded.`;
         }
@@ -920,7 +919,7 @@ export async function loadDashboardStats(userEmail) {
 }
 
 // ============================================
-// FUNCTION: Load All Requests (NEW)
+// FUNCTION: Load All Requests
 // ============================================
 export async function loadAllPartnerRequests(userEmail) {
     return await getPartnerRequests(userEmail);

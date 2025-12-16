@@ -87,16 +87,15 @@ label[for="fileUpload"]:hover {
     .bg-gray-50 {
         background-color: white !important;
     }
-    
+
     input, select, textarea {
         border: none !important;
         border-bottom: 1px solid #000 !important;
         background: transparent !important;
     }
-    
+
     /* Hide file upload section when printing */
     .border-t-2.border-gray-300 {
         display: none !important;
     }
 }
-

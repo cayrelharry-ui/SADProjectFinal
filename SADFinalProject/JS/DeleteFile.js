@@ -80,7 +80,7 @@ export async function deleteMultipleFiles(fileIds) {
         for (const fileId of fileIds) {
             const result = await deleteFile(fileId);
             results.push({ fileId, ...result });
-            
+
             if (result.success) {
                 successCount++;
             } else {
@@ -151,9 +151,9 @@ export function showDeleteConfirmation(fileName, onConfirm) {
     confirmBtn.addEventListener('click', async () => {
         confirmBtn.disabled = true;
         confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Deleting...';
-        
+
         await onConfirm();
-        
+
         modal.hide();
     });
 

@@ -606,15 +606,6 @@
                         console.warn('Mirror to partner_opportunities failed:', mirrorError);
                     }
 
-                    // Success - notify parent window and reset form
-                    if (window.parent !== window) {
-                        window.parent.postMessage({
-                            type: 'partnershipSubmitted',
-                            success: true,
-                            request_id: data.request_id,
-                            message: 'Partnership request submitted successfully!'
-                        }, '*');
-                    }
 
                     // Show success message
                     let message = 'Partnership request submitted successfully!';
