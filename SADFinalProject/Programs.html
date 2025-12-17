@@ -471,638 +471,61 @@
                 </div>
             </div>
         </div>
-
-<!-- ADD ACTIVITY BUTTON + FLOATING FORM -->
-<!-- Floating + button (bottom-right) -->
-<button
-    id="add-activity-toggle"
-    class="fixed bottom-6 right-6 bg-[#5A2C9D] text-white w-14 h-14 rounded-full shadow-xl 
-           hover:bg-[#4C2684] flex items-center justify-center text-3xl transition z-50">
-    +
-</button>
-
-<!-- Small card form (hidden by default) -->
-<div
-    id="add-activity-form"
-    class="fixed top-24 right-4 md:right-6 w-[90vw] max-w-sm max-h-[80vh] overflow-y-auto
-           bg-white rounded-xl shadow-xl border border-gray-200 p-4 hidden z-40">
-
-    <h3 class="text-sm font-bold text-gray-800 mb-3">New Activity / Project</h3>
-
-    <div class="grid grid-cols-1 gap-3 mb-3">
-        <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Title</label>
-            <input id="act-title" type="text"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
-        </div>
-
-        <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Category</label>
-            <input id="act-category" type="text" placeholder="e.g. ICT Training, Sustainability"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
-        </div>
-
-        <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Status</label>
-            <select id="act-status"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
-                <option value="Completed">Completed</option>
-                <option value="Ongoing">Ongoing</option>
-                <option value="Proposed">Proposed</option>
-            </select>
-        </div>
-
-        <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Lead</label>
-            <input id="act-lead" type="text"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
-        </div>
-
-        <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Location</label>
-            <input id="act-location" type="text" placeholder="e.g. Daet, CN"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
-        </div>
-
-        <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Image URL / File name</label>
-            <input id="act-image" type="text" placeholder="e.g. pro1.avif"
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]">
-        </div>
-    </div>
-
-    <div class="mb-3">
-        <label class="block text-xs font-semibold text-gray-600 mb-1">Short Description</label>
-        <textarea id="act-description" rows="3"
-            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5A2C9D]"></textarea>
-    </div>
-
-    <div class="flex justify-end gap-2">
-        <button
-            id="act-cancel"
-            type="button"
-            class="px-3 py-2 text-xs font-bold rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100">
-            Cancel
-        </button>
-        <button
-            id="act-save"
-            type="button"
-            class="px-4 py-2 text-xs font-bold rounded-lg bg-[#5A2C9D] text-white hover:bg-[#4C2684]">
-            Add Activity
-        </button>
-    </div>
-</div>
-
-
+    
 
         <!-- 2. PROJECTS GRID -->
         <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-<!-- CARD 1: Completed -->
-<div
-    class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
-    <div class="relative h-48">
-        <img src="pro1.avif" alt="Project" class="w-full h-full object-cover">
-        <div
-            class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
-            Completed
-        </div>
-        <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
-            <span class="text-white text-xs font-bold bg-[#5A2C9D] px-2 py-0.5 rounded">ICT Training</span>
-        </div>
-    </div>
-    <div class="p-6 flex-1 flex flex-col">
-        <h3 class="text-xl font-bold text-gray-900 mb-2">Automated TOS and Test Paper Generation System</h3>
-        <p class="text-gray-600 text-sm line-clamp-3 mb-4">
-            This system was implemented with the intention of effectively creating Table of Specification and Periodical 
-            Test Questions that is beneficial to the operation of Deped and its teachers.
-        </p>
-
-        <div class="mt-auto pt-4 border-t border-gray-100">
-            <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
-                <span><strong class="text-gray-800">Lead:</strong> Evelyn M. Baesa, MIT </span>
-                <span><strong class="text-gray-800">Loc:</strong> Daet, CN</span>
-            </div>
-            <!-- Link styled as button -->
-            <a href="TOS.html"
-               class="w-full inline-block text-center py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
-                View Full Details
-            </a>
-        </div>
-    </div>
-</div>
-
-
-            <!-- CARD 2: COMPLETED -->
-            <div
-                class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
-                <div class="relative h-48">
-                    <img src="pro2.webp" alt="Project" class="w-full h-full object-cover grayscale">
-                    <div
-                        class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
-                        Completed</div>
-                    <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
-                        <span class="text-white text-xs font-bold bg-teal-600 px-2 py-0.5 rounded">Sustainability</span>
-                    </div>
-                </div>
-                <div class="p-6 flex-1 flex flex-col">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Website Development Training</h3>
-                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">A Rural Impact Sourcing Program that is intented to create meaningful 
-                        ICT - enabled jobs in socio-economic disadvantaged areas in the country.</p>
-
-                    <div class="mt-auto pt-4 border-t border-gray-100">
-                        <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
-                            <span><strong class="text-gray-800">Lead:</strong> Engr. A. Santos</span>
-                            <span><strong class="text-gray-800">Loc:</strong> Daet, CN</span>
-                        </div>
-                        <button
-                            class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
-                            View Full Details
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
-                       <!-- CARD 3: COMPLETED -->
-            <div
-                class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
-                <div class="relative h-48">
-                    <img src="pro2.webp" alt="Project" class="w-full h-full object-cover grayscale">
-                    <div
-                        class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
-                        Completed</div>
-                    <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
-                        <span class="text-white text-xs font-bold bg-teal-600 px-2 py-0.5 rounded">Sustainability</span>
-                    </div>
-                </div>
-                <div class="p-6 flex-1 flex flex-col">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Development of Automated Barangay Record Management System with Data
-                    Analytics</h3>
-                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">This project is conceptualized to help the barangay in organizing 
-                        their files and database so that valuable  information becomes readily available and accessible to those who needs it. .</p>
-
-                    <div class="mt-auto pt-4 border-t border-gray-100">
-                        <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
-                            <span><strong class="text-gray-800">Lead:</strong> Mary Grace B. Bolos, Sharine A. Gutierrez, Bernadeth C. Mendejar</span>
-                            <span><strong class="text-gray-800">Loc:</strong> Daet, CN</span>
-                        </div>
-                        <button
-                            class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
-                            View Full Details
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD 4: COMPLETED -->
-            <div
-                class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
-                <div class="relative h-48">
-                    <img src="pro2.webp" alt="Project" class="w-full h-full object-cover grayscale">
-                    <div
-                        class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
-                        Completed</div>
-                    <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
-                        <span class="text-white text-xs font-bold bg-teal-600 px-2 py-0.5 rounded">Sustainability</span>
-                    </div>
-                </div>
-                <div class="p-6 flex-1 flex flex-col">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2"> Learning Management System Refresher Course</h3>
-                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">This project aimed to refresh and review the learnings on the use 
-                        of Learning Management System for faculty as a  tool in instruction and to be fully equipped with knowledge and 
-                        skills to produce and create a course in LMS application for the semester.</p>
-
-                    <div class="mt-auto pt-4 border-t border-gray-100">
-                        <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
-                            <span><strong class="text-gray-800">Lead:</strong> Mary Grace B. Bolos, Sharine A. Gutierrez, Bernadeth C. Mendejar</span>
-                            <span><strong class="text-gray-800">Loc:</strong> Daet, CN</span>
-                        </div>
-                        <button
-                            class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
-                            View Full Details
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-                        <!-- CARD 6: PROPOSED -->
-            <div
-                class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full opacity-90 hover:opacity-100">
-                <div class="relative h-48">
-                    <div class="w-full h-full bg-gray-200 flex items-center justify-center">
-                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div
-                        class="absolute top-4 right-4 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
-                        Proposed</div>
-                    <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/50 to-transparent w-full p-4">
-                        <span class="text-white text-xs font-bold bg-orange-500 px-2 py-0.5 rounded">Research</span>
-                    </div>
-                </div>
-                <div class="p-6 flex-1 flex flex-col">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">School Online Success</h3>
-                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">This project aimed to help the ICS secondary school partners
-                        in achieving a successful online teaching and learning experience. </p>
-
-                    <div class="mt-auto pt-4 border-t border-gray-100">
-                        <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
-                            <span><strong class="text-gray-800">Lead:</strong>Dr. Daniel E. Maligat,Jr., Dr. Jocelyn O. Torio,
-                            Dr. Rosemarie Bigueras, Dr. Mary Grace B. Bolos, Sharine Gutierrez</span>
-                            <span><strong class="text-gray-800">Loc:</strong> Basud, CN</span>
-                        </div>
-                        <button
-                            class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
-                            View Proposal
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-                                    <!-- CARD 5: COMPLETED -->
-            <div
-                class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
-                <div class="relative h-48">
-                    <img src="pro2.webp" alt="Project" class="w-full h-full object-cover grayscale">
-                    <div
-                        class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
-                        Completed</div>
-                    <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
-                        <span class="text-white text-xs font-bold bg-teal-600 px-2 py-0.5 rounded">Sustainability</span>
-                    </div>
-                </div>
-                <div class="p-6 flex-1 flex flex-col">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Virtual Jobs/ Project T.E.L.L</h3>
-                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">This activity successfully educated the Barangay Alawihao 
-                    Residence on how to become a virtual agent. </p>
-
-                    <div class="mt-auto pt-4 border-t border-gray-100">
-                        <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
-                            <span><strong class="text-gray-800">Lead:</strong> Dr. Jocelyn Torio, Dr. Daniel E. Maligat, Jr.</span>
-                            <span><strong class="text-gray-800">Loc:</strong> Daet, CN</span>
-                        </div>
-                        <button
-                            class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
-                            View Full Details
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-                                                <!-- CARD 5: COMPLETED -->
-            <div
-                class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col h-full">
-                <div class="relative h-48">
-                    <img src="pro2.webp" alt="Project" class="w-full h-full object-cover grayscale">
-                    <div
-                        class="absolute top-4 right-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm">
-                        Completed</div>
-                    <div class="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
-                        <span class="text-white text-xs font-bold bg-teal-600 px-2 py-0.5 rounded">Sustainability</span>
-                    </div>
-                </div>
-                <div class="p-6 flex-1 flex flex-col">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">IT Consultation on Digital Marketings</h3>
-                    <p class="text-gray-600 text-sm line-clamp-3 mb-4">In partnership with the Institue of Computer Studies, the DTI collaborated to form a seminar consulation on 
-                        Digital Marketing, and Software tools to facilitate online business. </p>
-
-                    <div class="mt-auto pt-4 border-t border-gray-100">
-                        <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
-                            <span><strong class="text-gray-800">Lead:</strong> Dr. Jocelyn Torio, Dr. Daniel E. Maligat, Jr.</span>
-                            <span><strong class="text-gray-800">Loc:</strong> Daet, CN</span>
-                        </div>
-                        <button
-                            class="w-full py-2.5 rounded-lg border-2 border-[#5A2C9D] text-[#5A2C9D] font-bold text-sm hover:bg-[#5A2C9D] hover:text-white transition">
-                            View Full Details
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
+            <!-- Loading state -->
+            <p id="loading-state" class="col-span-full text-center text-gray-500">Loading projects...</p>
         </div>
 
     </main>
-
-<!--
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const mobileMenuButton = document.getElementById('mobile-menu-button');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const menuIconOpen = document.getElementById('menu-icon-open');
-  const menuIconClose = document.getElementById('menu-icon-close');
-  const mobileDropdownButtons = document.querySelectorAll('.mobile-menu-item');
-
-  // 1. Mobile Menu Toggle Logic (guarded)
-  if (mobileMenuButton) {
-    mobileMenuButton.addEventListener('click', () => {
-      if (mobileMenu) mobileMenu.classList.toggle('hidden');
-      if (menuIconOpen) menuIconOpen.classList.toggle('hidden');
-      if (menuIconClose) menuIconClose.classList.toggle('hidden');
-    });
-  }
-
-  // 2. Mobile Dropdown Toggle Logic (works even if no buttons found)
-  mobileDropdownButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const targetId = button.getAttribute('data-target');
-      const targetDropdown = document.getElementById(targetId);
-      const svgIcon = button.querySelector('svg');
-
-      if (targetDropdown && targetDropdown.classList.contains('hidden')) {
-        // Close all other dropdowns
-        document.querySelectorAll('.mobile-dropdown-content').forEach(dd => dd.classList.add('hidden'));
-        document.querySelectorAll('.mobile-menu-item svg').forEach(svg => svg.classList.remove('rotate-180'));
-
-        // Open the clicked one
-        targetDropdown.classList.remove('hidden');
-        if (svgIcon) svgIcon.classList.add('rotate-180');
-      } else {
-        if (targetDropdown) targetDropdown.classList.add('hidden');
-        if (svgIcon) svgIcon.classList.remove('rotate-180');
-      }
-    });
-  });
-
-  // 3. Desktop Dropdown Logic (guarded)
-  const desktopDropdowns = document.querySelectorAll('#desktop-menu > li');
-  desktopDropdowns.forEach(li => {
-    li.addEventListener('click', (event) => {
-      if (window.innerWidth < 1024 || 'ontouchstart' in window) {
-        event.stopPropagation();
-        const dropdownContent = li.querySelector('.dropdown-content');
-        if (!dropdownContent) return;
-        if (dropdownContent.classList.contains('opacity-0')) {
-          desktopDropdowns.forEach(otherLi => {
-            if (otherLi !== li) {
-              const dc = otherLi.querySelector('.dropdown-content');
-              if (dc) dc.classList.add('opacity-0', 'invisible');
-            }
-          });
-          dropdownContent.classList.remove('opacity-0', 'invisible');
-        } else {
-          dropdownContent.classList.add('opacity-0', 'invisible');
-        }
-      }
-    });
-  });
-
-  // Close desktop dropdowns when clicking outside (for touch/click)
-  document.addEventListener('click', (event) => {
-    if (window.innerWidth >= 1024 && 'ontouchstart' in window) {
-      desktopDropdowns.forEach(li => {
-        const dc = li.querySelector('.dropdown-content');
-        if (dc && !li.contains(event.target)) {
-          dc.classList.add('opacity-0', 'invisible');
-        }
-      });
-    }
-  });
-});
-</script>
--->
-
-
-
-    <!-- ============================================ -->
-    <!-- PROJECT DETAIL MODAL (The Core Feature)      -->
-    <!-- ============================================ -->
-    <div class="modal fade" id="projectModal1" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
+    
+    <!-- Generic Modal for Project Details -->
+    <div class="modal fade" id="projectModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content rounded-2xl overflow-hidden border-0">
-
-                <!-- Modal Header / Banner -->
                 <div class="relative bg-gray-900 h-48 md:h-64">
-                    <img src="pro1.avif" class="w-full h-full object-cover opacity-60" alt="Cover">
+                    <img id="modal-image" src="" class="w-full h-full object-cover opacity-60" alt="Project Banner">
                     <div class="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                        <div class="flex items-center space-x-3 mb-2">
-                            <span
-                                class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded uppercase">Ongoing</span>
-                            <span class="bg-[#5A2C9D] text-white text-xs font-bold px-2 py-1 rounded uppercase">ICT
-                                Training</span>
-                        </div>
-                        <h2 class="text-3xl md:text-4xl font-bold text-white leading-tight">Barangay Digital Literacy
-                            Program</h2>
-                        <button type="button" class="btn-close btn-close-white absolute top-4 right-4"
-                            data-bs-dismiss="modal" aria-label="Close"></button>
+                        <span id="modal-status" class="text-white text-xs font-bold px-2 py-1 rounded uppercase mb-2"></span>
+                        <h2 id="modal-title" class="text-3xl md:text-4xl font-bold text-white leading-tight"></h2>
+                        <button type="button" class="btn-close btn-close-white absolute top-4 right-4" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                 </div>
-
-                <!-- Modal Body with Tabs -->
                 <div class="modal-body p-0 bg-gray-50">
-
-                    <!-- Navigation Tabs -->
-                    <ul class="nav nav-tabs px-6 pt-4 bg-white shadow-sm" id="projectTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active px-4 py-3" id="overview-tab" data-bs-toggle="tab"
-                                data-bs-target="#overview" type="button" role="tab">Overview</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link px-4 py-3" id="team-tab" data-bs-toggle="tab" data-bs-target="#team"
-                                type="button" role="tab">Implementing Team</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link px-4 py-3" id="impact-tab" data-bs-toggle="tab"
-                                data-bs-target="#impact" type="button" role="tab">Impact Matrix</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link px-4 py-3" id="docs-tab" data-bs-toggle="tab" data-bs-target="#docs"
-                                type="button" role="tab">Gallery & Docs</button>
-                        </li>
-                    </ul>
-
-                    <!-- Tab Content -->
-                    <div class="tab-content p-6 md:p-8" id="projectTabContent">
-
-                        <!-- 1. Overview Tab -->
-                        <div class="tab-pane fade show active" id="overview" role="tabpanel">
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                <div class="lg:col-span-2 space-y-6">
-                                    <div>
-                                        <h4 class="text-lg font-bold text-gray-900 mb-2">Rationale</h4>
-                                        <p class="text-gray-600 text-sm leading-relaxed">
-                                            In the modern era, digital literacy is no longer a luxury but a necessity.
-                                            Many barangay officials in coastal areas of Camarines Norte lack the
-                                            technical skills to efficiently manage records and access national
-                                            government portals. This project aims to bridge that gap to improve local
-                                            governance and individual employability.
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-lg font-bold text-gray-900 mb-2">Objectives</h4>
-                                        <ul class="list-disc pl-5 text-gray-600 text-sm space-y-1">
-                                            <li>To train 100% of barangay secretaries in basic MS Office applications.
-                                            </li>
-                                            <li>To introduce cloud storage solutions for disaster-resilient record
-                                                keeping.</li>
-                                            <li>To educate youth on safe internet practices and cyber hygiene.</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-lg font-bold text-gray-900 mb-2">Expected Outcome</h4>
-                                        <p class="text-gray-600 text-sm">
-                                            A fully digitized barangay record system and a community that is capable of
-                                            utilizing online government services (eGov PH) effectively.
-                                        </p>
-                                    </div>
-                                </div>
-                                <!-- Sidebar Info -->
-                                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
-                                    <h5 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Project
-                                        Info</h5>
-                                    <div class="space-y-4">
-                                        <div>
-                                            <p class="text-xs text-gray-500">Timeline</p>
-                                            <p class="text-sm font-bold text-gray-800">Jan 2025 - Dec 2025</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-500">Target Beneficiaries</p>
-                                            <p class="text-sm font-bold text-gray-800">Barangay Officials, OSY, Women
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-500">Location</p>
-                                            <p class="text-sm font-bold text-gray-800">Mercedes, Camarines Norte</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-500">Funding Agency</p>
-                                            <p class="text-sm font-bold text-gray-800">CNSC GAD Fund</p>
-                                        </div>
-                                    </div>
+                    <ul class="nav nav-tabs px-6 pt-4 bg-white shadow-sm" role="tablist">
+                    <li class="nav-item"><button class="nav-link active px-4 py-3" data-bs-toggle="tab" data-bs-target="#dyn-overview">Overview</button></li>
+                    <li class="nav-item"><button class="nav-link px-4 py-3" data-bs-toggle="tab" data-bs-target="#dyn-team">Team & Info</button></li>
+                </ul>
+                <div class="tab-content p-6 md:p-8">
+                    <!-- Overview Tab -->
+                    <div class="tab-pane fade show active" id="dyn-overview">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div class="lg:col-span-2 space-y-6">
+                                <div><h4 class="text-lg font-bold text-gray-900 mb-2">Description</h4><p id="modal-desc" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line"></p></div>
+                                <div><h4 class="text-lg font-bold text-gray-900 mb-2">Objectives</h4><p id="modal-objectives" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line"></p></div>
+                            </div>
+                            <!-- Info Sidebar -->
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
+                                <h5 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Project Details</h5>
+                                <div class="space-y-4">
+                                    <div><p class="text-xs text-gray-500">Timeline</p><p id="modal-timeline" class="text-sm font-bold text-gray-800"></p></div>
+                                    <div><p class="text-xs text-gray-500">Location</p><p id="modal-location" class="text-sm font-bold text-gray-800"></p></div>
+                                    <div><p class="text-xs text-gray-500">Funding</p><p id="modal-funding" class="text-sm font-bold text-gray-800"></p></div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- 2. Implementing Team Tab -->
-                        <div class="tab-pane fade" id="team" role="tabpanel">
-                            <h4 class="text-lg font-bold text-gray-900 mb-6">Project Members & Facilitators</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <!-- Team Member -->
-                                <div class="flex items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                    <div
-                                        class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-[#5A2C9D] font-bold mr-4">
-                                        JD</div>
-                                    <div>
-                                        <h5 class="font-bold text-gray-900 text-sm">Prof. Juan Dela Cruz</h5>
-                                        <p class="text-xs text-gray-500">Project Leader / Lead Trainer</p>
-                                    </div>
-                                </div>
-                                <!-- Team Member -->
-                                <div class="flex items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                    <div
-                                        class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-[#5A2C9D] font-bold mr-4">
-                                        MS</div>
-                                    <div>
-                                        <h5 class="font-bold text-gray-900 text-sm">Maria Santos, MIT</h5>
-                                        <p class="text-xs text-gray-500">Technical Support / Facilitator</p>
-                                    </div>
-                                </div>
-                                <!-- Team Member -->
-                                <div class="flex items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                    <div
-                                        class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-[#5A2C9D] font-bold mr-4">
-                                        CC</div>
-                                    <div>
-                                        <h5 class="font-bold text-gray-900 text-sm">CCMS Student Council</h5>
-                                        <p class="text-xs text-gray-500">Support Staff</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 3. Impact Matrix Tab -->
-                        <div class="tab-pane fade" id="impact" role="tabpanel">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                                <div class="bg-purple-50 p-6 rounded-xl border border-purple-100 text-center">
-                                    <h2 class="text-4xl font-bold text-[#5A2C9D] mb-1">500+</h2>
-                                    <p class="text-sm font-bold text-gray-600 uppercase">Beneficiaries Reached</p>
-                                </div>
-                                <div class="bg-green-50 p-6 rounded-xl border border-green-100 text-center">
-                                    <h2 class="text-4xl font-bold text-green-600 mb-1">95%</h2>
-                                    <p class="text-sm font-bold text-gray-600 uppercase">Skills Adoption Rate</p>
-                                </div>
-                            </div>
-
-                            <h4 class="text-lg font-bold text-gray-900 mb-4">Skills Developed</h4>
-                            <div class="flex flex-wrap gap-2 mb-8">
-                                <span class="px-3 py-1 bg-gray-200 rounded-full text-xs font-bold text-gray-700">Word
-                                    Processing</span>
-                                <span
-                                    class="px-3 py-1 bg-gray-200 rounded-full text-xs font-bold text-gray-700">Spreadsheet
-                                    Mgmt</span>
-                                <span class="px-3 py-1 bg-gray-200 rounded-full text-xs font-bold text-gray-700">Email
-                                    Etiquette</span>
-                                <span class="px-3 py-1 bg-gray-200 rounded-full text-xs font-bold text-gray-700">Data
-                                    Privacy</span>
-                            </div>
-
-                            <h4 class="text-lg font-bold text-gray-900 mb-4">Sustainable Development Goals (SDG)</h4>
-                            <div class="flex gap-4">
-                                <div
-                                    class="w-16 h-16 bg-red-500 text-white flex items-center justify-center font-bold rounded shadow-md text-xs text-center p-1">
-                                    Quality Education</div>
-                                <div
-                                    class="w-16 h-16 bg-pink-600 text-white flex items-center justify-center font-bold rounded shadow-md text-xs text-center p-1">
-                                    Reduced Inequalities</div>
-                            </div>
-                        </div>
-
-                        <!-- 4. Gallery & Docs Tab -->
-                        <div class="tab-pane fade" id="docs" role="tabpanel">
-                            <h4 class="text-lg font-bold text-gray-900 mb-4">Project Documentation</h4>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                                <img src="event1.jpg" class="rounded-lg shadow-sm h-32 w-full object-cover" alt="Doc 1">
-                                <img src="event3.jpg" class="rounded-lg shadow-sm h-32 w-full object-cover" alt="Doc 2">
-                                <img src="event4.jpg" class="rounded-lg shadow-sm h-32 w-full object-cover" alt="Doc 3">
-                                <div
-                                    class="bg-gray-200 rounded-lg flex items-center justify-center h-32 text-gray-500 text-xs font-bold cursor-pointer hover:bg-gray-300 transition">
-                                    + View More
-                                </div>
-                            </div>
-
-                            <h4 class="text-lg font-bold text-gray-900 mb-4">Reports & Downloads</h4>
-                            <div class="space-y-2">
-                                <a href="#"
-                                    class="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:border-[#5A2C9D] transition group">
-                                    <svg class="w-6 h-6 text-red-500 mr-3" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                    <span class="text-sm font-semibold text-gray-700 group-hover:text-[#5A2C9D]">Phase 1
-                                        Completion Report.pdf</span>
-                                </a>
-                                <a href="#"
-                                    class="flex items-center p-3 bg-white border border-gray-200 rounded-lg hover:border-[#5A2C9D] transition group">
-                                    <svg class="w-6 h-6 text-blue-500 mr-3" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                        </path>
-                                    </svg>
-                                    <span
-                                        class="text-sm font-semibold text-gray-700 group-hover:text-[#5A2C9D]">Attendance
-                                        Sheet.xlsx</span>
-                                </a>
-                            </div>
-                        </div>
-
+                    </div>
+                    <!-- Team Tab -->
+                    <div class="tab-pane fade" id="dyn-team">
+                        <h4 class="text-lg font-bold text-gray-900 mb-4">Target Beneficiaries</h4>
+                        <p id="modal-beneficiaries" class="text-gray-700 mb-6"></p>
+                        
+                        <h4 class="text-lg font-bold text-gray-900 mb-4">Proponents (Project Team)</h4>
+                        <div id="modal-proponents-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                     </div>
                 </div>
-
-                <!-- Modal Footer -->
-                <div class="modal-footer bg-gray-50 px-8 py-4">
-                    <button type="button"
-                        class="px-6 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg hover:bg-gray-300 transition text-sm"
-                        data-bs-dismiss="modal">Close</button>
-                    <button type="button"
-                        class="px-6 py-2 bg-[#5A2C9D] text-white font-bold rounded-lg hover:bg-[#4C2684] transition text-sm">Contact
-                        Project Lead</button>
                 </div>
             </div>
         </div>
@@ -1366,73 +789,146 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     </script>
-<!-- ============================================ -->
-<!-- GENERIC MODAL FOR DATABASE PROJECTS          -->
-<!-- ============================================ -->
-<div class="modal fade" id="dynamicProjectModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content rounded-2xl overflow-hidden border-0">
-            
-            <!-- Header -->
-            <div class="relative bg-gray-900 h-48 md:h-64">
-                <img id="modal-image" src="" class="w-full h-full object-cover opacity-60">
-                <div class="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-                    <div class="flex items-center space-x-3 mb-2">
-                        <span id="modal-status" class="text-white text-xs font-bold px-2 py-1 rounded uppercase"></span>
-                    </div>
-                    <h2 id="modal-title" class="text-3xl md:text-4xl font-bold text-white leading-tight"></h2>
-                    <button type="button" class="btn-close btn-close-white absolute top-4 right-4" data-bs-dismiss="modal"></button>
-                </div>
-            </div>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-            <!-- Body -->
-            <div class="modal-body p-0 bg-gray-50">
-                <ul class="nav nav-tabs px-6 pt-4 bg-white shadow-sm" role="tablist">
-                    <li class="nav-item"><button class="nav-link active px-4 py-3" data-bs-toggle="tab" data-bs-target="#dyn-overview">Overview</button></li>
-                    <li class="nav-item"><button class="nav-link px-4 py-3" data-bs-toggle="tab" data-bs-target="#dyn-team">Team & Info</button></li>
-                </ul>
-                <div class="tab-content p-6 md:p-8">
-                    <!-- Overview Tab -->
-                    <div class="tab-pane fade show active" id="dyn-overview">
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                            <div class="lg:col-span-2 space-y-6">
-                                <div><h4 class="text-lg font-bold text-gray-900 mb-2">Description</h4><p id="modal-desc" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line"></p></div>
-                                <div><h4 class="text-lg font-bold text-gray-900 mb-2">Objectives</h4><p id="modal-objectives" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line"></p></div>
-                            </div>
-                            <!-- Info Sidebar -->
-                            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
-                                <h5 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Project Details</h5>
-                                <div class="space-y-4">
-                                    <div><p class="text-xs text-gray-500">Timeline</p><p id="modal-timeline" class="text-sm font-bold text-gray-800"></p></div>
-                                    <div><p class="text-xs text-gray-500">Location</p><p id="modal-location" class="text-sm font-bold text-gray-800"></p></div>
-                                    <div><p class="text-xs text-gray-500">Funding</p><p id="modal-funding" class="text-sm font-bold text-gray-800"></p></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Team Tab -->
-                    <div class="tab-pane fade" id="dyn-team">
-                        <h4 class="text-lg font-bold text-gray-900 mb-4">Target Beneficiaries</h4>
-                        <p id="modal-beneficiaries" class="text-gray-700 mb-6"></p>
-                        
-                        <h4 class="text-lg font-bold text-gray-900 mb-4">Proponents (Project Team)</h4>
-                        <div id="modal-proponents-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                    </div>
-                </div>
-            </div>
+const supabaseUrl = 'https://fkdqenrxfanpgmtogiig.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDA1NzksImV4cCI6MjA4MDMxNjU3OX0.NSA57GQcxnCpLnqMVlDpf_lvfggb2H-IGGTBL_XYQ4I';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-            <!-- Footer (Matches Hardcoded Card) -->
-            <div class="modal-footer bg-gray-50 px-8 py-4">
-                <button type="button" class="px-6 py-2 bg-gray-200 text-gray-700 font-bold rounded-lg hover:bg-gray-300 transition text-sm" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="px-6 py-2 bg-[#5A2C9D] text-white font-bold rounded-lg hover:bg-[#4C2684] transition text-sm">Contact Project Lead</button>
-            </div>
+let allProjects = []; // Store all fetched projects
+
+function createProjectCard(project) {
+    const statusColor = project.status === 'Completed' ? 'bg-blue-600' : 'bg-green-600';
+
+    // Safely handle attachment_urls
+    let imageUrl = 'default-project.jpg'; // fallback
+    if (project.attachment_urls) {
+        if (Array.isArray(project.attachment_urls)) {
+            imageUrl = project.attachment_urls[0] || 'default-project.jpg';
+        } else if (typeof project.attachment_urls === 'string') {
+            imageUrl = project.attachment_urls.split(',')[0].trim() || 'default-project.jpg';
+        }
+    }
+
+    return `
+      <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 border border-gray-100 flex flex-col">
+        <div class="relative h-48">
+          <img src="${imageUrl}" alt="${project.title}" class="w-full h-full object-cover">
+          <div class="absolute top-4 right-4 text-white text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm ${statusColor}">
+            ${project.status || 'Ongoing'}
+          </div>
         </div>
-    </div>
-</div>
+        <div class="p-6 flex-1 flex flex-col">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">${project.title}</h3>
+          <p class="text-gray-600 text-sm line-clamp-3 mb-4 flex-grow">${project.description || 'No description provided.'}</p>
+          <div class="mt-auto pt-4 border-t border-gray-100">
+            <a href="#" data-id="${project.id}" class="view-project-btn w-full inline-block text-center py-2.5 rounded-lg border-2 border-violet-600 text-violet-600 font-bold text-sm hover:bg-violet-600 hover:text-white transition">
+              View Full Details
+            </a>
+          </div>
+        </div>
+      </div>`;
+}
 
+function renderProjects(projects) {
+    const grid = document.getElementById('projects-grid');
+    const loadingState = document.getElementById('loading-state');
+
+    if (!projects || projects.length === 0) {
+        grid.innerHTML = '<p class="col-span-full text-center text-gray-500">No projects found.</p>';
+    } else {
+        grid.innerHTML = projects.map(createProjectCard).join('');
+    }
+
+    if (loadingState) loadingState.style.display = 'none';
+}
+
+async function loadAndDisplayProjects() {
+    const grid = document.getElementById('projects-grid');
+    const loadingState = document.getElementById('loading-state');
+
+    try {
+        console.log('Fetching projects from Supabase...');
+        const { data, error } = await supabase
+            .from('partner_opportunities')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Supabase Error:', error);
+            grid.innerHTML = `<p class="col-span-full text-center text-red-500">Error loading projects: ${error.message}</p>`;
+            loadingState.style.display = 'none';
+            return;
+        }
+
+        console.log('Supabase Data:', data);
+
+        if (!data || data.length === 0) {
+            console.warn('No projects found in the table.');
+        }
+
+        allProjects = data;
+        renderProjects(allProjects);
+
+    } catch (err) {
+        console.error('Unexpected error:', err);
+        grid.innerHTML = '<p class="col-span-full text-center text-red-500">Unexpected error occurred. Check console.</p>';
+        loadingState.style.display = 'none';
+    }
+}
+
+async function testSupabaseConnection() {
+    try {
+        console.log('Testing Supabase connection...');
+        const { data, error } = await supabase
+            .from('partner_opportunities')
+            .select('*');
+
+        console.log('Raw data:', data);
+        console.log('Supabase error:', error);
+    } catch (err) {
+        console.error('Full unexpected error:', err);
+    }
+}
+
+testSupabaseConnection();
+
+
+// Modal click handling
+document.getElementById('projects-grid').addEventListener('click', (event) => {
+    const viewButton = event.target.closest('.view-project-btn');
+    if (!viewButton) return;
+
+    event.preventDefault();
+    const projectId = viewButton.dataset.id;
+    const project = allProjects.find(p => p.id == projectId);
+
+    if (project) {
+        document.getElementById('modal-title').textContent = project.title || 'N/A';
+        document.getElementById('modal-desc').textContent = project.description || 'No description provided.';
+        document.getElementById('modal-objectives').textContent = project.objectives || 'N/A';
+        document.getElementById('modal-status').textContent = project.status || 'N/A';
+        document.getElementById('modal-timeline').textContent = `${project.date_started || 'TBD'} - ${project.date_completed || 'Ongoing'}`;
+        document.getElementById('modal-location').textContent = project.partner_organization || 'N/A';
+        document.getElementById('modal-funding').textContent = project.funding || 'N/A';
+        document.getElementById('modal-beneficiaries').textContent = project.target_beneficiaries || 'N/A';
+        document.getElementById('modal-proponents-list').innerHTML = project.team_members
+            ? project.team_members.split(',').map(m => `<div class="text-sm text-gray-700">${m.trim()}</div>`).join('')
+            : 'N/A';
+
+        const modalEl = document.getElementById('projectModal');
+        const bsModal = new bootstrap.Modal(modalEl);
+        bsModal.show();
+    }
+});
+
+// Initial load
+loadAndDisplayProjects();
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script type="module" src="./JS/Programs.js"></script>
+<script type="module" src="./JS/Activities.js"></script>
 
 </body>
 
