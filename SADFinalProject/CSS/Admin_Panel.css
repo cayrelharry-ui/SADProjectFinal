@@ -225,3 +225,50 @@
     animation: none;
     box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
 }
+
+/* Proposal Management Styles */
+.proposal-status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-revision {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-archived {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+/* Modal Styles */
+.modal-lg {
+    max-width: 800px;
+}
+
+.whitespace-pre-line {
+    white-space: pre-line;
+}
+
+/* Action buttons */
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Table hover effects */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}

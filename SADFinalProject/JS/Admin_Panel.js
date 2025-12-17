@@ -1,4 +1,4 @@
-// Admin_Panel.js - COMPLETE VERSION WITH STATISTICS
+// Admin_Panel.js - COMPLETE PROPOSAL MANAGEMENT VERSION WITH QUICK STATS
 import { 
     supabase, 
     logout as supabaseLogout, 
@@ -10,18 +10,6 @@ import {
     updateUserStatus
 } from './db_connection.js';
 
-// Import the upload functions
-import {
-    uploadFiles,
-    getUploadedFiles,
-    deleteFile,
-    downloadFile,
-    formatFileSize,
-    getFileIcon,
-    getFileAccessBadge,
-    initializeFileUploadForm
-} from './UploadFile.js';
-
 // Import the Statistics module
 import {
     loadStatistics,
@@ -29,6 +17,367 @@ import {
     drawCharts,
     refreshStatistics
 } from './Statistics.js';
+
+// Store proposals globally for modal access
+window.adminProposals = [];
+
+// ============================================
+// PROPOSAL STATISTICS FUNCTIONS (ADDED NEW)
+// ============================================
+
+// Function to update proposal statistics
+function updateProposalStatistics(proposals) {
+    if (!proposals) return;
+    
+    // Calculate statistics
+    const total = proposals.length;
+    const approved = proposals.filter(p => p.status === 'Approved').length;
+    const pending = proposals.filter(p => p.status === 'Pending').length;
+    const revision = proposals.filter(p => p.status === 'Revision Requested').length;
+    const archived = proposals.filter(p => p.status === 'Archived').length;
+    
+    // Update UI elements
+    const updateElement = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    };
+    
+    updateElement('totalProposalsCount', total);
+    updateElement('approvedProposalsCount', approved);
+    updateElement('pendingProposalsCount', pending);
+    updateElement('revisionProposalsCount', revision);
+    
+    // Update last updated timestamp
+    const lastUpdatedEl = document.getElementById('proposalsLastUpdated');
+    if (lastUpdatedEl) {
+        const now = new Date();
+        lastUpdatedEl.textContent = `Last updated: ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    }
+    
+    console.log(`📊 Proposal Stats: Total=${total}, Approved=${approved}, Pending=${pending}, Revision=${revision}, Archived=${archived}`);
+    return { total, approved, pending, revision, archived };
+}
+
+// ============================================
+// PROPOSAL MANAGEMENT FUNCTIONS (DEFINED FIRST)
+// ============================================
+
+// View proposal details
+async function viewProposalDetails(index) {
+    try {
+        const proposal = window.adminProposals[index];
+        if (!proposal) {
+            alert('Proposal not found');
+            return;
+        }
+        
+        // Create modal HTML using existing columns
+        const modalHtml = `
+            <div class="modal fade" id="proposalDetailsModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Proposal Details</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <h4 class="fw-bold">${proposal.title || 'Untitled Proposal'}</h4>
+                                    <span class="badge ${getStatusBadgeClass(proposal.status)}">${proposal.status}</span>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <small class="text-muted">Created: ${new Date(proposal.created_at).toLocaleString()}</small>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Proposal Information</h6>
+                                    <p><strong>Proponents:</strong> ${proposal.proponents || 'N/A'}</p>
+                                    <p><strong>Project Type:</strong> ${proposal.project_type || 'N/A'}</p>
+                                    <p><strong>User ID:</strong> ${proposal.user_id || 'N/A'}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">Project Details</h6>
+                                    <p><strong>Budget:</strong> ${proposal.budget_requirement ? '$' + parseFloat(proposal.budget_requirement).toLocaleString() : 'N/A'}</p>
+                                    <p><strong>Implementation Days:</strong> ${proposal.implementation_days || 'N/A'}</p>
+                                    <p><strong>Last Updated:</strong> ${proposal.updated_at ? new Date(proposal.updated_at).toLocaleString() : 'Never'}</p>
+                                </div>
+                            </div>
+                            
+                            <h6 class="fw-bold border-bottom pb-2">Rationale</h6>
+                            <p class="mb-4">${proposal.rationale || 'No rationale provided.'}</p>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold border-bottom pb-2">Beneficiaries</h6>
+                                    <p><strong>Count:</strong> ${proposal.beneficiaries_count || 'N/A'}</p>
+                                    <p><strong>Type:</strong> ${proposal.beneficiaries_type || 'N/A'}</p>
+                                    <p><strong>Location:</strong> ${proposal.beneficiaries_location || 'N/A'}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold border-bottom pb-2">Additional Info</h6>
+                                    <p><strong>Data Started:</strong> ${proposal.data_started || 'N/A'}</p>
+                                    <p><strong>Metric Value:</strong> ${proposal.metric_value || 'N/A'}</p>
+                                    <p><strong>Attachment Unit:</strong> ${proposal.attachment_unit || 'N/A'}</p>
+                                </div>
+                            </div>
+                            
+                            ${proposal.attachment_unit ? `
+                            <h6 class="fw-bold border-bottom pb-2">Attachments</h6>
+                            <p class="mb-4">${proposal.attachment_unit}</p>
+                            ` : ''}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Remove existing modal if any
+        const existingModal = document.getElementById('proposalDetailsModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
+        // Add modal to body
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('proposalDetailsModal'));
+        modal.show();
+        
+    } catch (error) {
+        console.error('Error viewing proposal:', error);
+        alert('Failed to load proposal details: ' + error.message);
+    }
+}
+
+// Approve proposal function
+async function approveProposal(proposalId) {
+    console.log('=== APPROVE PROPOSAL CALLED ===', proposalId);
+    
+    if (!confirm('Are you sure you want to approve this proposal?')) {
+        return;
+    }
+    
+    try {
+        console.log('Making Supabase update request for ID:', proposalId);
+        
+        const { data, error } = await supabase
+            .from('faculty_extension_proposals')
+            .update({ 
+                status: 'Approved'
+            })
+            .eq('id', proposalId)
+            .select();
+        
+        if (error) {
+            console.error('❌ Supabase error:', error);
+            showStatus('Error: ' + error.message, 'error');
+            return;
+        }
+        
+        console.log('✅ Update successful! Response:', data);
+        showStatus('Proposal approved successfully!', 'success');
+        
+        // Force refresh the proposals
+        await forceRefreshProposals();
+        
+    } catch (error) {
+        console.error('❌ Full error:', error);
+        showStatus('Failed to approve proposal: ' + error.message, 'error');
+    }
+}
+
+// Request revision function
+async function requestRevision(proposalId) {
+    console.log('=== REQUEST REVISION CALLED ===', proposalId);
+    
+    const revisionReason = prompt('Please enter the reason for requesting revision:', '');
+    
+    if (revisionReason === null) {
+        return;
+    }
+    
+    if (!revisionReason.trim()) {
+        alert('Please enter a reason for requesting revision.');
+        return;
+    }
+    
+    try {
+        const { data, error } = await supabase
+            .from('faculty_extension_proposals')
+            .update({ 
+                status: 'Revision Requested'
+            })
+            .eq('id', proposalId)
+            .select();
+        
+        if (error) {
+            console.error('❌ Supabase error:', error);
+            showStatus('Error: ' + error.message, 'error');
+            return;
+        }
+        
+        console.log('✅ Revision request successful! Response:', data);
+        showStatus('Revision requested successfully!', 'success');
+        
+        // Force refresh the proposals
+        await forceRefreshProposals();
+        
+    } catch (error) {
+        console.error('❌ Full error:', error);
+        showStatus('Failed to request revision: ' + error.message, 'error');
+    }
+}
+
+// Delete proposal function
+async function deleteProposal(proposalId) {
+    console.log('=== DELETE PROPOSAL CALLED ===', proposalId);
+    
+    if (!confirm('⚠️ Are you sure you want to delete this proposal?\n\nThis action cannot be undone!')) {
+        return;
+    }
+    
+    try {
+        const { data, error } = await supabase
+            .from('faculty_extension_proposals')
+            .delete()
+            .eq('id', proposalId)
+            .select();
+        
+        if (error) {
+            console.error('❌ Supabase error:', error);
+            showStatus('Error: ' + error.message, 'error');
+            return;
+        }
+        
+        console.log('✅ Delete successful! Response:', data);
+        showStatus('Proposal deleted successfully!', 'success');
+        
+        // Force refresh the proposals
+        await forceRefreshProposals();
+        
+    } catch (error) {
+        console.error('❌ Full error:', error);
+        showStatus('Failed to delete proposal: ' + error.message, 'error');
+    }
+}
+
+// ============================================
+// MODIFIED FORCE REFRESH PROPOSALS FUNCTION
+// ============================================
+
+async function forceRefreshProposals() {
+    console.log('🔄 FORCE REFRESHING PROPOSALS...');
+    
+    const tbody = document.getElementById('filesTableBody');
+    if (!tbody) {
+        console.error('Table body not found');
+        return;
+    }
+    
+    // Show loading state in stats too
+    document.querySelectorAll('#totalProposalsCount, #approvedProposalsCount, #pendingProposalsCount, #revisionProposalsCount').forEach(el => {
+        if (el) el.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+    });
+    
+    // Clear the table immediately
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="7" class="text-center">
+                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="visually-hidden">Refreshing...</span>
+                </div>
+                <p class="mt-2">Refreshing proposals...</p>
+            </td>
+        </tr>
+    `;
+    
+    try {
+        // Add a small delay to ensure Supabase has time to update
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Clear any cached data
+        window.adminProposals = [];
+        
+        // Force a fresh query with cache busting
+        const { data: proposals, error } = await supabase
+            .from('faculty_extension_proposals')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (error) {
+            console.error('Refresh error:', error);
+            throw error;
+        }
+        
+        // Update global store
+        window.adminProposals = proposals || [];
+        
+        // Update statistics
+        updateProposalStatistics(proposals || []);
+        
+        // Re-render table
+        renderProposalsTable(proposals || []);
+        
+        console.log(`✅ Force refreshed ${proposals?.length || 0} proposal(s)`);
+        
+        // Show success message
+        showStatus('Proposals refreshed successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Force refresh error:', error);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center text-danger">
+                    <i class="bi bi-exclamation-triangle"></i> Error refreshing
+                    <br><small>${error.message}</small>
+                </td>
+            </tr>
+        `;
+        showStatus('Failed to refresh proposals: ' + error.message, 'error');
+    }
+}
+
+// Attach to window for debugging
+window.forceRefreshProposals = forceRefreshProposals;
+
+// Helper function for status badge classes
+function getStatusBadgeClass(status) {
+    switch(status) {
+        case 'Approved': return 'bg-success';
+        case 'Pending': return 'bg-warning text-dark';
+        case 'Revision Requested': return 'bg-danger';
+        case 'Archived': return 'bg-secondary';
+        default: return 'bg-info';
+    }
+}
+
+// ============================================
+// ATTACH FUNCTIONS TO WINDOW OBJECT (IMMEDIATELY)
+// ============================================
+
+// Attach all proposal functions to window object immediately
+window.viewProposalDetails = viewProposalDetails;
+window.approveProposal = approveProposal;
+window.requestRevision = requestRevision;
+window.deleteProposal = deleteProposal;
+
+console.log('✅ Proposal functions attached to window:', {
+    viewProposalDetails: typeof window.viewProposalDetails,
+    approveProposal: typeof window.approveProposal,
+    requestRevision: typeof window.requestRevision,
+    deleteProposal: typeof window.deleteProposal
+});
+
+// ============================================
+// DOM CONTENT LOADED
+// ============================================
 
 document.addEventListener('DOMContentLoaded', async function() {
     console.log("👑 Admin Panel Initializing...");
@@ -53,6 +402,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Store current admin user ID for approval tracking
     window.currentAdminId = user.user_id;
+    window.currentAdminName = user.full_name;
     
     // Initialize the admin panel
     await initializeAdminPanel(user);
@@ -78,15 +428,10 @@ async function initializeAdminPanel(user) {
     await loadDashboardData();
     await loadAllUsers();
     await loadPendingApprovals();
+    await loadAllProposals(); // Load proposals
     
     // Setup navigation
     setupSectionNavigation();
-    
-    // Initialize file upload form
-    initializeFileUploadForm('fileUploadForm');
-    
-    // Setup file preview on selection
-    setupFilePreview();
     
     // Setup search and filter listeners
     setupSearchAndFilters();
@@ -120,7 +465,8 @@ function setupSectionNavigation() {
         'dashboard': { title: 'Admin Dashboard', element: 'dashboard-section' },
         'user-management': { title: 'User Management', element: 'user-management-section' },
         'approvals': { title: 'Pending Approvals', element: 'approvals-section' },
-        'content': { title: 'Content Management', element: 'content-section' },
+        'content': { title: 'Proposals Management', element: 'content-section' },
+        'project-management': { title: 'Project Management', element: 'project-management-section' },
         'analytics': { title: 'Analytics & Statistics', element: 'analytics-section' },
         'settings': { title: 'Settings', element: 'settings-section' }
     };
@@ -149,7 +495,7 @@ function setupSectionNavigation() {
                 
                 // Load data if needed
                 if (sectionKey === 'content') {
-                    loadUploadedFiles();
+                    loadAllProposals(); // This will load stats too
                 } else if (sectionKey === 'user-management') {
                     loadAllUsers();
                 } else if (sectionKey === 'approvals') {
@@ -158,59 +504,25 @@ function setupSectionNavigation() {
                     loadDashboardData();
                 } else if (sectionKey === 'analytics') {
                     loadAnalyticsSection();
+                } else if (sectionKey === 'project-management') {
+                    loadAdminProjects();
                 }
             }
         });
     });
 }
 
-function setupFilePreview() {
-    const fileInput = document.getElementById('fileInput');
-    if (!fileInput) return;
-    
-    fileInput.addEventListener('change', function() {
-        const preview = document.getElementById('filePreview');
-        const filesList = document.getElementById('selectedFilesList');
-        
-        if (!preview || !filesList) return;
-        
-        filesList.innerHTML = '';
-        
-        if (this.files.length > 0) {
-            preview.style.display = 'block';
-            
-            for (let file of this.files) {
-                const size = formatFileSize(file.size);
-                const item = document.createElement('div');
-                item.className = 'list-group-item';
-                item.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <i class="bi ${getFileIcon(file.name)} me-2"></i>
-                            <span>${file.name}</span>
-                        </div>
-                        <div class="text-muted">${size}</div>
-                    </div>
-                `;
-                filesList.appendChild(item);
-            }
-        } else {
-            preview.style.display = 'none';
-        }
-    });
-}
-
 function setupSearchAndFilters() {
-    // File search
+    // File search (we'll repurpose this for proposals)
     const searchInput = document.getElementById('searchFiles');
     if (searchInput) {
-        searchInput.addEventListener('input', debounce(loadUploadedFiles, 300));
+        searchInput.addEventListener('input', debounce(loadAllProposals, 300));
     }
     
-    // File filter
+    // File filter (we'll repurpose this for proposals)
     const filterSelect = document.getElementById('filterCategory');
     if (filterSelect) {
-        filterSelect.addEventListener('change', loadUploadedFiles);
+        filterSelect.addEventListener('change', loadAllProposals);
     }
     
     // User search
@@ -224,6 +536,15 @@ function setupSearchAndFilters() {
     if (refreshStatsBtn) {
         refreshStatsBtn.addEventListener('click', async function() {
             await loadAnalyticsSection();
+        });
+    }
+    
+    // Add refresh button for proposals in content section
+    const refreshProposalsBtn = document.querySelector('button[onclick="forceRefreshProposals()"]');
+    if (refreshProposalsBtn) {
+        refreshProposalsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            forceRefreshProposals();
         });
     }
 }
@@ -241,7 +562,7 @@ function debounce(func, wait) {
 }
 
 // ============================================
-// DATA LOADING FUNCTIONS
+// DATA LOADING FUNCTIONS (UPDATED)
 // ============================================
 
 async function loadDashboardData() {
@@ -271,7 +592,12 @@ async function loadDashboardData() {
             .select('*', { count: 'exact', head: true })
             .eq('status', 'inactive');
         
-        if (usersError || activeError || pendingError || inactiveError) {
+        // Get proposals count
+        const { count: totalProposals, error: proposalsError } = await supabase
+            .from('faculty_extension_proposals')
+            .select('*', { count: 'exact', head: true });
+        
+        if (usersError || activeError || pendingError || inactiveError || proposalsError) {
             throw new Error('Failed to load dashboard stats');
         }
         
@@ -280,7 +606,8 @@ async function loadDashboardData() {
             total_users: totalUsers || 0,
             active_users: activeUsers || 0,
             pending_users: pendingUsers || 0,
-            inactive_users: inactiveUsers || 0
+            inactive_users: inactiveUsers || 0,
+            total_proposals: totalProposals || 0
         });
         
         console.log("Dashboard data loaded");
@@ -291,11 +618,94 @@ async function loadDashboardData() {
     }
 }
 
+// ============================================
+// MODIFIED LOAD ALL PROPOSALS FUNCTION
+// ============================================
+
+async function loadAllProposals() {
+    console.log("🔄 Loading all proposals...");
+    
+    const tbody = document.getElementById('filesTableBody');
+    if (!tbody) {
+        console.error("Proposals table body not found");
+        return;
+    }
+    
+    // Show loading in stats too
+    document.querySelectorAll('#totalProposalsCount, #approvedProposalsCount, #pendingProposalsCount, #revisionProposalsCount').forEach(el => {
+        if (el) el.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+    });
+    
+    // Show loading
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="7" class="text-center">
+                <div class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading proposals...</p>
+            </td>
+        </tr>
+    `;
+    
+    try {
+        // Get filter values
+        const category = document.getElementById('filterCategory')?.value || 'all';
+        const search = document.getElementById('searchFiles')?.value || '';
+        
+        // Build query
+        let query = supabase
+            .from('faculty_extension_proposals')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        // Apply status filter
+        if (category !== 'all') {
+            query = query.eq('status', category);
+        }
+        
+        // Apply search filter
+        if (search) {
+            query = query.or(`title.ilike.%${search}%,proponents.ilike.%${search}%,project_type.ilike.%${search}%,rationale.ilike.%${search}%`);
+        }
+        
+        const { data: proposals, error } = await query;
+        
+        if (error) {
+            throw error;
+        }
+        
+        // Store globally for modal access
+        window.adminProposals = proposals || [];
+        
+        // Update statistics BEFORE rendering table
+        updateProposalStatistics(proposals || []);
+        
+        // Render table
+        renderProposalsTable(proposals || []);
+        
+        console.log(`✅ Loaded ${proposals?.length || 0} proposal(s)`);
+        
+    } catch (error) {
+        console.error('❌ Error loading proposals:', error);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center text-danger">
+                    <i class="bi bi-exclamation-triangle"></i> Error loading proposals
+                    <br><small>${error.message}</small>
+                </td>
+            </tr>
+        `;
+        
+        // Reset stats to 0 on error
+        updateProposalStatistics([]);
+    }
+}
+
 async function loadAllUsers() {
     console.log("Loading all users...");
     
     try {
-        // Use the new function from db_connection.js
         const { users, error } = await getAllUsers();
         
         if (error) {
@@ -315,7 +725,6 @@ async function loadPendingApprovals() {
     console.log("Loading pending approvals...");
     
     try {
-        // Use the new function from db_connection.js
         const { users, error } = await getPendingUsers();
         
         if (error) {
@@ -332,30 +741,21 @@ async function loadPendingApprovals() {
     }
 }
 
-// In your Admin_Panel.js loadAnalyticsSection function
 async function loadAnalyticsSection() {
     try {
         console.log("Loading analytics section...");
         
-        // Make sure the section is visible first
         const analyticsSection = document.getElementById('analytics-section');
         if (!analyticsSection) {
             console.error("❌ Analytics section element not found!");
             return;
         }
         
-        console.log("Analytics section found, checking for elements...");
-        console.log("recentUsersBody exists:", !!document.getElementById('recentUsersBody'));
-        console.log("topUsersBody exists:", !!document.getElementById('topUsersBody'));
-        console.log("fileTypesBody exists:", !!document.getElementById('fileTypesBody'));
-        
-        // Now load statistics
         const result = await loadStatistics();
         if (result.success) {
             updateStatisticsUI(result.data);
             drawCharts(result.data.users, result.data.files);
             
-            // Update last updated time
             const lastUpdated = document.getElementById('lastUpdated');
             if (lastUpdated) {
                 lastUpdated.textContent = new Date().toLocaleString();
@@ -367,125 +767,9 @@ async function loadAnalyticsSection() {
         console.error('Analytics section error:', error);
     }
 }
-// Global function to load uploaded files
-window.loadUploadedFiles = async function() {
-    console.log("Loading uploaded files...");
-    
-    const tbody = document.getElementById('filesTableBody');
-    if (!tbody) {
-        console.error("Files table body not found");
-        return;
-    }
-    
-    // Show loading
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="5" class="text-center">
-                <div class="spinner-border spinner-border-sm" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-2">Loading files...</p>
-            </td>
-        </tr>
-    `;
-    
-    try {
-        const currentUser = getCurrentUser();
-        const userId = currentUser?.user_id;
-        
-        // Get filter values
-        const category = document.getElementById('filterCategory')?.value || '';
-        const search = document.getElementById('searchFiles')?.value || '';
-        
-        // Fetch files
-        const files = await getUploadedFiles({
-            user_id: userId,
-            category: category === 'all' ? '' : category,
-            search: search
-        });
-        
-        // Calculate storage stats
-        const stats = await calculateStorageStats(files);
-        
-        // Render table
-        renderFilesTable(files);
-        updateStorageStats(stats);
-        
-        console.log(`Loaded ${files?.length || 0} file(s)`);
-        
-    } catch (error) {
-        console.error('Error loading files:', error);
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" class="text-center text-danger">
-                    <i class="bi bi-exclamation-triangle"></i> Error loading files
-                    <br><small>${error.message}</small>
-                </td>
-            </tr>
-        `;
-    }
-};
-
-async function calculateStorageStats(files) {
-    try {
-        const totalSize = files?.reduce((sum, file) => sum + (file.file_size || 0), 0) || 0;
-        const storageLimit = 100 * 1024 * 1024; // 100MB default
-        
-        return {
-            total_size: totalSize,
-            storage_limit: storageLimit
-        };
-        
-    } catch (error) {
-        console.error('Storage stats error:', error);
-        return {
-            total_size: 0,
-            storage_limit: 100 * 1024 * 1024
-        };
-    }
-}
-
-// Global delete function
-window.deleteUploadedFile = async function(fileId, fileName) {
-    if (!confirm(`Are you sure you want to delete "${fileName}"?`)) {
-        return;
-    }
-    
-    try {
-        const result = await deleteFile(fileId);
-        
-        if (result.success) {
-            showStatus('File deleted successfully', 'success');
-            await loadUploadedFiles(); // Refresh the list
-        } else {
-            showStatus('Delete failed: ' + result.message, 'error');
-        }
-        
-    } catch (error) {
-        console.error('Delete error:', error);
-        showStatus('Delete failed: ' + error.message, 'error');
-    }
-};
-
-// Global download function
-window.downloadFileFromSupabase = async function(fileId, fileName) {
-    try {
-        const result = await downloadFile(fileId, fileName);
-        
-        if (result.success) {
-            showStatus(result.message, 'success');
-        } else {
-            showStatus('Download failed: ' + result.message, 'error');
-        }
-        
-    } catch (error) {
-        console.error('Download error:', error);
-        showStatus('Download failed: ' + error.message, 'error');
-    }
-};
 
 // ============================================
-// UI UPDATE FUNCTIONS
+// UI UPDATE FUNCTIONS (UPDATED)
 // ============================================
 
 function updateDashboardStats(stats) {
@@ -508,6 +792,203 @@ function updatePendingCount(count) {
     }
 }
 
+function renderProposalsTable(proposals) {
+    const tbody = document.getElementById('filesTableBody');
+    if (!tbody) {
+        console.error('Table body not found');
+        return;
+    }
+    
+    if (!proposals || proposals.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                    <i class="bi bi-inbox fs-1"></i>
+                    <h5 class="mt-2">No proposals found</h5>
+                    <p class="text-muted">Try changing your search or filter</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    console.log('📋 Rendering proposals table with', proposals.length, 'proposals');
+    
+    let html = '';
+    proposals.forEach((proposal, index) => {
+        // Format dates
+        const createdDate = new Date(proposal.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+        
+        // Status badge with better color coding
+        let statusBadge = '';
+        let statusClass = '';
+        let statusText = proposal.status || 'Unknown';
+        
+        switch(statusText.toLowerCase()) {
+            case 'approved':
+                statusBadge = 'Approved';
+                statusClass = 'bg-success text-white';
+                break;
+            case 'pending':
+                statusBadge = 'Pending';
+                statusClass = 'bg-warning text-dark';
+                break;
+            case 'revision requested':
+            case 'revision':
+                statusBadge = 'Revision';
+                statusClass = 'bg-danger text-white';
+                break;
+            case 'archived':
+                statusBadge = 'Archived';
+                statusClass = 'bg-secondary text-white';
+                break;
+            default:
+                statusBadge = statusText;
+                statusClass = 'bg-info text-white';
+        }
+        
+        // Use rationale as description
+        const shortDesc = proposal.rationale ? 
+            (proposal.rationale.length > 100 ? 
+                proposal.rationale.substring(0, 100) + '...' : 
+                proposal.rationale) : 
+            'No description';
+        
+        // Use proponents as faculty name
+        const facultyName = proposal.proponents || 'Unknown';
+        
+        // Use project_type as department
+        const department = proposal.project_type || 'N/A';
+        
+        // Use budget_requirement as budget
+        const budget = proposal.budget_requirement ? 
+            '$' + parseFloat(proposal.budget_requirement).toLocaleString() : 
+            'N/A';
+        
+        // Determine button states
+        const isApproved = statusText.toLowerCase() === 'approved';
+        const isRevision = statusText.toLowerCase() === 'revision requested' || statusText.toLowerCase() === 'revision';
+        
+        html += `
+        <tr id="proposal-row-${proposal.id}">
+            <td>
+                <div class="fw-semibold">${proposal.title || 'Untitled Proposal'}</div>
+                <small class="text-muted">${shortDesc}</small>
+                <div class="mt-1">
+                    <small class="text-muted">ID: ${proposal.id}</small>
+                </div>
+            </td>
+            <td>${facultyName}</td>
+            <td>${department}</td>
+            <td>
+                <span class="badge ${statusClass}" id="status-badge-${proposal.id}">
+                    ${statusBadge}
+                </span>
+                <br>
+                <small class="text-muted" id="status-text-${proposal.id}">${statusText}</small>
+            </td>
+            <td>${createdDate}</td>
+            <td>${budget}</td>
+            <td>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button class="btn btn-outline-primary" onclick="window.viewProposalDetails(${index})" title="View Details">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-outline-success" onclick="handleApprove('${proposal.id}')" 
+                        ${isApproved ? 'disabled' : ''} 
+                        id="approve-btn-${proposal.id}"
+                        title="${isApproved ? 'Already Approved' : 'Approve'}">
+                        <i class="bi bi-check-lg"></i>
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="handleRevision('${proposal.id}')" 
+                        ${isRevision ? 'disabled' : ''}
+                        id="revision-btn-${proposal.id}"
+                        title="${isRevision ? 'Revision Already Requested' : 'Request Revision'}">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="handleDelete('${proposal.id}')" title="Delete">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
+    
+    console.log('✅ Table rendered successfully');
+}
+
+// New handler functions for better UI updates
+async function handleApprove(proposalId) {
+    console.log('🎯 Handle Approve:', proposalId);
+    
+    // Update button immediately to show loading
+    const approveBtn = document.getElementById(`approve-btn-${proposalId}`);
+    const originalHTML = approveBtn.innerHTML;
+    approveBtn.innerHTML = '<i class="bi bi-hourglass"></i>';
+    approveBtn.disabled = true;
+    
+    try {
+        await window.approveProposal(proposalId);
+    } catch (error) {
+        console.error('Approve handler error:', error);
+        // Restore button
+        approveBtn.innerHTML = originalHTML;
+        approveBtn.disabled = false;
+    }
+}
+
+async function handleRevision(proposalId) {
+    console.log('🎯 Handle Revision:', proposalId);
+    
+    // Update button immediately to show loading
+    const revisionBtn = document.getElementById(`revision-btn-${proposalId}`);
+    const originalHTML = revisionBtn.innerHTML;
+    revisionBtn.innerHTML = '<i class="bi bi-hourglass"></i>';
+    revisionBtn.disabled = true;
+    
+    try {
+        await window.requestRevision(proposalId);
+    } catch (error) {
+        console.error('Revision handler error:', error);
+        // Restore button
+        revisionBtn.innerHTML = originalHTML;
+        revisionBtn.disabled = false;
+    }
+}
+
+async function handleDelete(proposalId) {
+    console.log('🎯 Handle Delete:', proposalId);
+    
+    // Update button immediately to show loading
+    const deleteBtn = document.querySelector(`button[onclick*="${proposalId}"]`);
+    if (deleteBtn) {
+        const originalHTML = deleteBtn.innerHTML;
+        deleteBtn.innerHTML = '<i class="bi bi-hourglass"></i>';
+        deleteBtn.disabled = true;
+        
+        try {
+            await window.deleteProposal(proposalId);
+        } catch (error) {
+            console.error('Delete handler error:', error);
+            // Restore button
+            deleteBtn.innerHTML = originalHTML;
+            deleteBtn.disabled = false;
+        }
+    }
+}
+
+// Attach to window
+window.handleApprove = handleApprove;
+window.handleRevision = handleRevision;
+window.handleDelete = handleDelete;
+
 function updateUsersTable(users) {
     const tbody = document.getElementById('usersTableBody');
     if (!tbody) return;
@@ -525,7 +1006,6 @@ function updateUsersTable(users) {
             ? '<span class="badge bg-warning">Pending</span>'
             : '<span class="badge bg-danger">Inactive</span>';
         
-        // Show approval info if available
         let approvalInfo = '';
         if (user.approved_at) {
             approvalInfo = `<br><small class="text-muted">Approved: ${new Date(user.approved_at).toLocaleDateString()}</small>`;
@@ -559,6 +1039,7 @@ function updateUsersTable(users) {
     
     tbody.innerHTML = html;
 }
+
 function filterUsersTable() {
     const searchTerm = document.getElementById('searchUsers')?.value.toLowerCase() || '';
     const rows = document.querySelectorAll('#usersTableBody tr');
@@ -634,91 +1115,6 @@ function updatePendingApprovals(accounts) {
     container.innerHTML = html;
 }
 
-function renderFilesTable(files) {
-    const tbody = document.getElementById('filesTableBody');
-    if (!tbody) return;
-    
-    if (!files || files.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" class="text-center text-muted">
-                    <i class="bi bi-inbox"></i> No files found
-                    <br><small>Try changing your search or filter</small>
-                </td>
-            </tr>
-        `;
-        return;
-    }
-    
-    let html = '';
-    files.forEach(file => {
-        const fileSize = formatFileSize(file.file_size);
-        const uploadedDate = new Date(file.uploaded_at).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
-        
-        const accessBadge = getFileAccessBadge(file.access_level);
-        const fileIcon = getFileIcon(file.original_name || file.file_type);
-        const escapedFileName = (file.original_name || '').replace(/'/g, "\\'").replace(/"/g, '\\"');
-        
-        html += `
-        <tr>
-            <td>
-                <div class="d-flex align-items-center">
-                    <i class="bi ${fileIcon} me-2 fs-5"></i>
-                    <div>
-                        <div class="fw-semibold">${file.original_name}</div>
-                        <small class="text-muted">${file.description || 'No description'}</small>
-                    </div>
-                </div>
-            </td>
-            <td>${fileSize}</td>
-            <td>${uploadedDate}</td>
-            <td>${accessBadge}</td>
-            <td>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button class="btn btn-outline-primary" onclick="downloadFileFromSupabase(${file.id}, '${escapedFileName}')" title="Download ${file.original_name}">
-                        <i class="bi bi-download"></i>
-                    </button>
-                    <button class="btn btn-outline-danger" onclick="deleteUploadedFile(${file.id}, '${escapedFileName}')" title="Delete file">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-        `;
-    });
-    
-    tbody.innerHTML = html;
-}
-
-function updateStorageStats(stats) {
-    const progressBar = document.getElementById('storageProgress');
-    const usedElement = document.getElementById('storageUsed');
-    const totalElement = document.getElementById('storageTotal');
-    
-    if (!progressBar || !usedElement || !totalElement) return;
-    
-    const used = stats.total_size || 0;
-    const total = stats.storage_limit || (100 * 1024 * 1024);
-    const percentage = Math.min(100, (used / total) * 100);
-    
-    progressBar.style.width = `${percentage}%`;
-    progressBar.setAttribute('aria-valuenow', percentage);
-    progressBar.textContent = `${percentage.toFixed(1)}% Used`;
-    
-    usedElement.textContent = formatFileSize(used);
-    totalElement.textContent = formatFileSize(total);
-    
-    progressBar.className = 'progress-bar';
-    if (percentage >= 90) progressBar.classList.add('bg-danger');
-    else if (percentage >= 70) progressBar.classList.add('bg-warning');
-    else if (percentage >= 50) progressBar.classList.add('bg-info');
-    else progressBar.classList.add('bg-success');
-}
-
 // ============================================
 // AUTH & UTILITY FUNCTIONS
 // ============================================
@@ -772,10 +1168,9 @@ function showStatus(message, type = 'info') {
 }
 
 // ============================================
-// GLOBAL FUNCTIONS FOR HTML ONCLICK
+// USER MANAGEMENT FUNCTIONS (GLOBAL)
 // ============================================
 
-// Approval functions using the new db_connection.js functions
 window.approveUserAccount = async function(userId) {
     if (!confirm('Approve this user account? They will be able to login immediately.')) {
         return;
@@ -786,7 +1181,6 @@ window.approveUserAccount = async function(userId) {
         
         if (result.success) {
             showStatus('User approved successfully!', 'success');
-            // Refresh data
             await loadDashboardData();
             await loadAllUsers();
             await loadPendingApprovals();
@@ -809,7 +1203,6 @@ window.rejectUserAccount = async function(userId) {
         
         if (result.success) {
             showStatus('User rejected successfully', 'success');
-            // Refresh data
             await loadDashboardData();
             await loadAllUsers();
             await loadPendingApprovals();
@@ -832,7 +1225,6 @@ window.activateUser = async function(userId) {
         
         if (result.success) {
             showStatus('User activated successfully', 'success');
-            // Refresh data
             await loadDashboardData();
             await loadAllUsers();
             await loadPendingApprovals();
@@ -855,7 +1247,6 @@ window.deactivateUser = async function(userId) {
         
         if (result.success) {
             showStatus('User deactivated successfully', 'success');
-            // Refresh data
             await loadDashboardData();
             await loadAllUsers();
             await loadPendingApprovals();
@@ -909,16 +1300,15 @@ window.refreshUserData = async function() {
     await loadDashboardData();
     await loadAllUsers();
     await loadPendingApprovals();
+    await loadAllProposals();
     showStatus('Data refreshed', 'success');
 };
 
-// Global statistics refresh function
 window.refreshStatistics = async function() {
     showStatus('Refreshing statistics...', 'info');
     await loadAnalyticsSection();
 };
 
-// Add this to your global functions in Admin_Panel.js
 window.deleteUserAccount = async function(userId, userName) {
     if (!confirm(`Are you sure you want to DELETE user "${userName}"?\n\n⚠️ This action cannot be undone!`)) {
         return;
@@ -927,7 +1317,6 @@ window.deleteUserAccount = async function(userId, userName) {
     try {
         showStatus('Deleting user...', 'warning');
         
-        // Delete user from Supabase
         const { error } = await supabase
             .from('users')
             .delete()
@@ -939,7 +1328,6 @@ window.deleteUserAccount = async function(userId, userName) {
         
         showStatus(`User "${userName}" deleted successfully`, 'success');
         
-        // Refresh data
         await loadDashboardData();
         await loadAllUsers();
         await loadPendingApprovals();
@@ -949,142 +1337,12 @@ window.deleteUserAccount = async function(userId, userName) {
         showStatus('Delete failed: ' + error.message, 'error');
     }
 };
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // 1. Sidebar Navigation Logic (Switching Tabs)
-    const navLinks = document.querySelectorAll('.nav-link[data-section]');
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            // Remove active class from all links
-            navLinks.forEach(l => l.classList.remove('active'));
-            // Add active class to clicked link
-            e.currentTarget.classList.add('active');
-            
-            // Hide all sections
-            document.querySelectorAll('.section-content').forEach(sec => sec.classList.add('d-none'));
-            
-            // Show target section
-            const sectionId = e.currentTarget.dataset.section + '-section';
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-                targetSection.classList.remove('d-none');
-            }
-        });
-    });
 
-    // 2. Dynamic Proponents: Add New Input Field
-    const addPropBtn = document.getElementById('addProponentBtn');
-    if (addPropBtn) {
-        addPropBtn.addEventListener('click', () => {
-            const container = document.getElementById('proponents-container');
-            const div = document.createElement('div');
-            div.className = 'input-group mb-2 proponent-entry';
-            div.innerHTML = `
-                <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
-                <input type="text" class="form-control" name="proponent[]" placeholder="Enter name">
-                <button class="btn btn-outline-danger" type="button" onclick="this.parentElement.remove()">
-                    <i class="bi bi-trash"></i>
-                </button>
-            `;
-            container.appendChild(div);
-        });
-    }
-
-    // Handle Project Form Submission
-const projectForm = document.getElementById('projectForm');
-if (projectForm) {
-    projectForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const saveBtn = document.getElementById('saveBtn');
-        const originalText = saveBtn.innerHTML;
-        
-        saveBtn.disabled = true;
-        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
-
-        try {
-            // A. Collect Proponents (Filter out empty inputs)
-            const proponents = [];
-            document.querySelectorAll('input[name="proponent[]"]').forEach(input => {
-                if(input.value.trim() !== "") proponents.push(input.value.trim());
-            });
-
-            // B. Upload Image (Only if file selected)
-            const fileInput = document.getElementById('pImage');
-            let imageUrl = null; // Default if no image
-
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const fileName = `project_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                
-                const { error: uploadError } = await supabase.storage
-                    .from('project-images')
-                    .upload(fileName, file);
-
-                if (uploadError) throw uploadError;
-
-                const { data } = supabase.storage.from('project-images').getPublicUrl(fileName);
-                imageUrl = data.publicUrl;
-            }
-
-            // C. Get Form Values (Handle empty strings -> null)
-            const getVal = (id) => {
-                const val = document.getElementById(id).value.trim();
-                return val === "" ? null : val;
-            };
-
-            // D. Insert Data
-            const { error: dbError } = await supabase.from('projects').insert([{
-                title: document.getElementById('pTitle').value.trim(), // Required field
-                description: getVal('pDesc'),
-                objectives: getVal('pObjectives'),
-                proponents: proponents, // Array (can be empty)
-                start_date: getVal('pStartDate'),
-                end_date: getVal('pEndDate'),
-                beneficiaries: getVal('pBeneficiaries'),
-                location: getVal('pLocation'),
-                funding_agency: getVal('pFunding'),
-                image_url: imageUrl,
-                status: 'Ongoing' 
-            }]);
-
-            if (dbError) throw dbError;
-
-            alert('Project successfully created!');
-            projectForm.reset();
-            loadAdminProjects();
-            
-            // Reset proponents UI
-            document.getElementById('proponents-container').innerHTML = `
-                <div class="input-group mb-2 proponent-entry">
-                    <span class="input-group-text bg-white"><i class="bi bi-person"></i></span>
-                    <input type="text" class="form-control" name="proponent[]" placeholder="Enter member name">
-                </div>`;
-
-        } catch (err) {
-            console.error(err);
-            alert('Error saving project: ' + (err.message || 'Unknown error'));
-        } finally {
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = originalText;
-        }
-    });
-}
 // ============================================
-// ADMIN PROJECT LIST LOGIC
+// PROJECT MANAGEMENT FUNCTIONS
 // ============================================
 
-// Store projects for modal access
-window.adminProjects = [];
-
-// Load projects when page loads
-document.addEventListener('DOMContentLoaded', () => {
-    loadAdminProjects();
-});
-
-// Make functions global so HTML buttons can call them
+// Load admin projects (for project-management section)
 window.loadAdminProjects = async function() {
     const container = document.getElementById('admin-projects-grid');
     if (!container) return;
@@ -1107,20 +1365,16 @@ window.loadAdminProjects = async function() {
         container.innerHTML = '';
 
         projects.forEach((proj, index) => {
-            // Status Badge Color
             let badgeClass = 'bg-primary';
             if (proj.status === 'Ongoing') badgeClass = 'bg-success';
             if (proj.status === 'Proposed') badgeClass = 'bg-warning text-dark';
 
-            // Formatting
             const startYear = proj.start_date ? new Date(proj.start_date).getFullYear() : 'TBA';
             const image = proj.image_url || 'https://placehold.co/600x400?text=No+Image';
 
-            // Bootstrap Card matching Programs.html design
             const html = `
             <div class="col-md-6 col-xl-4">
                 <div class="card h-100 shadow-sm border-0 hover-shadow transition">
-                    <!-- Image Header -->
                     <div class="position-relative" style="height: 200px; overflow: hidden;">
                         <img src="${image}" class="w-100 h-100 object-fit-cover">
                         <span class="position-absolute top-0 end-0 m-3 badge ${badgeClass} text-uppercase shadow-sm">
@@ -1132,7 +1386,6 @@ window.loadAdminProjects = async function() {
                         </div>
                     </div>
 
-                    <!-- Body -->
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title fw-bold text-dark mb-2">${proj.title}</h5>
                         <p class="card-text text-muted small text-truncate-3 mb-4 flex-fill">
@@ -1145,7 +1398,6 @@ window.loadAdminProjects = async function() {
                                 <span><strong>Fund:</strong> ${proj.funding_agency || 'N/A'}</span>
                             </div>
                             
-                            <!-- Action Buttons -->
                             <div class="d-grid gap-2 d-md-flex">
                                 <button onclick="openAdminModal(${index})" class="btn btn-outline-primary btn-sm flex-grow-1">
                                     <i class="bi bi-eye"></i> View Details
@@ -1168,72 +1420,30 @@ window.loadAdminProjects = async function() {
     }
 };
 
-// Delete Project Function
-window.deleteProject = async function(id) {
-    if (!confirm("Are you sure you want to delete this project? This cannot be undone.")) return;
+// ============================================
+// FINAL EXPORTS AND WINDOW ATTACHMENTS
+// ============================================
 
-    try {
-        const { error } = await supabase
-            .from('projects')
-            .delete()
-            .eq('project_id', id);
-
-        if (error) throw error;
-
-        alert("Project deleted successfully.");
-        loadAdminProjects(); // Refresh list
-
-    } catch (err) {
-        alert("Error deleting project: " + err.message);
-    }
+// Export for module system
+export {
+    approveProposal,
+    requestRevision,
+    deleteProposal,
+    viewProposalDetails,
+    loadAllProposals,
+    loadDashboardData,
+    loadAllUsers,
+    loadPendingApprovals,
+    loadAnalyticsSection,
+    updateProposalStatistics,
+    forceRefreshProposals
 };
 
-// Open Detail Modal
-window.openAdminModal = function(index) {
-    const proj = window.adminProjects[index];
-    if (!proj) return;
-
-    // Populate Data
-    document.getElementById('adm-modal-title').innerText = proj.title;
-    document.getElementById('adm-modal-image').src = proj.image_url || '';
-    document.getElementById('adm-modal-desc').innerText = proj.description;
-    document.getElementById('adm-modal-objectives').innerText = proj.objectives;
-    document.getElementById('adm-modal-timeline').innerText = `${proj.start_date} to ${proj.end_date}`;
-    document.getElementById('adm-modal-location').innerText = proj.location;
-    document.getElementById('adm-modal-funding').innerText = proj.funding_agency;
-    document.getElementById('adm-modal-beneficiaries').innerText = proj.beneficiaries;
-
-    // Status Badge
-    const statusEl = document.getElementById('adm-modal-status');
-    statusEl.innerText = proj.status;
-    statusEl.className = 'badge mb-2 ' + (
-        proj.status === 'Ongoing' ? 'bg-success' : 
-        proj.status === 'Proposed' ? 'bg-warning text-dark' : 'bg-primary'
-    );
-
-    // Proponents
-    const propContainer = document.getElementById('adm-modal-proponents');
-    propContainer.innerHTML = '';
-    if (proj.proponents && Array.isArray(proj.proponents)) {
-        proj.proponents.forEach(name => {
-            propContainer.insertAdjacentHTML('beforeend', `
-                <div class="col-md-6">
-                    <div class="p-3 border rounded bg-white d-flex align-items-center">
-                        <div class="bg-light rounded-circle p-2 me-3 text-primary"><i class="bi bi-person"></i></div>
-                        <strong>${name}</strong>
-                    </div>
-                </div>
-            `);
-        });
-    } else {
-        propContainer.innerHTML = '<p class="text-muted small">No proponents listed.</p>';
-    }
-
-    // Show Modal
-    new bootstrap.Modal(document.getElementById('adminProjectModal')).show();
-};
-
-});
+// Additional window attachments
 window.loadAnalyticsSection = loadAnalyticsSection;
 window.refreshUserData = refreshUserData;
-window.loadUploadedFiles = loadUploadedFiles;
+window.loadAllProposals = loadAllProposals;
+window.loadAdminProjects = loadAdminProjects;
+window.updateProposalStatistics = updateProposalStatistics;
+
+console.log('🎯 Admin Panel fully initialized with working buttons and statistics!');
