@@ -319,3 +319,128 @@ body {
     animation: none;
     box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
 }
+
+/* Additional styles for Submit Proposal section */
+#approvedRequestsTable tbody tr:hover {
+    background-color: #f8f5ff;
+}
+
+.submit-proposal-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.view-submission-btn {
+    padding: 2px 8px;
+    font-size: 12px;
+}
+
+/* Status badges */
+.badge.bg-purple {
+    background-color: #6f42c1 !important;
+    color: white;
+}
+
+/* Toast notifications */
+.toast-container {
+    z-index: 9999;
+}
+
+/* Loading spinner */
+.spinner-border {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: text-bottom;
+    border: 0.15em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border .75s linear infinite;
+}
+
+@keyframes spinner-border {
+    to { transform: rotate(360deg); }
+}
+
+/* File upload styles */
+.file-drop-zone {
+    border: 2px dashed #dee2e6;
+    border-radius: 0.375rem;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.file-drop-zone:hover {
+    border-color: #5A2C9D;
+    background-color: #f8f5ff;
+}
+
+/* Proposal output rows */
+.output-row {
+    position: relative;
+    transition: all 0.3s;
+}
+
+.output-row:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.remove-output-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.remove-output-btn:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Custom scrollbar for modal */
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #5A2C9D;
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #4C2684;
+}
+
+/* Error styling */
+.field-error {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+input:invalid, textarea:invalid, select:invalid {
+    border-color: #ef4444 !important;
+}
+
+input:focus:invalid, textarea:focus:invalid, select:focus:invalid {
+    ring-color: #ef4444 !important;
+    border-color: #ef4444 !important;
+}

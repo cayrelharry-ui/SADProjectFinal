@@ -46,6 +46,31 @@
 
     <!-- Local styles that align visuals with faculty dashboard -->
     <link rel="stylesheet" href="../CSS/Partner_Panel.css">
+
+    <style>
+        /* Custom styles for the proposal modal */
+        .proposal-modal .modal-dialog {
+            max-width: 95%;
+            width: 95%;
+            height: 95vh;
+            margin: 2.5vh auto;
+        }
+        .proposal-modal .modal-content {
+            height: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .proposal-modal .modal-body {
+            padding: 0;
+            height: calc(100% - 60px);
+        }
+        .proposal-modal iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 antialiased">
     <!-- Sidebar Overlay (mobile) -->
@@ -80,6 +105,12 @@
                     class="nav-link sidebar-item w-full flex items-center px-3 py-2.5 text-sm rounded-lg text-gray-600">
                 <i class="bi bi-file-earmark-text mr-3 text-gray-500"></i>
                 <span>Partnership Requests</span>
+            </button>
+
+            <button id="approved-requests-link" data-section="approved-requests"
+                    class="nav-link sidebar-item w-full flex items-center px-3 py-2.5 text-sm rounded-lg text-gray-600">
+                <i class="bi bi-check-circle mr-3 text-gray-500"></i>
+                <span>Approved Requests</span>
             </button>
 
             <button id="projects-link" data-section="projects"
@@ -299,6 +330,80 @@
                 </div>
             </div>
 
+            <!-- Approved Requests Section (NEW) -->
+            <div id="approved-requests-section" class="section-content d-none">
+                <div class="card">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-check-circle me-2"></i>
+                            Approved Partnership Requests
+                        </h5>
+                        <div>
+                            <button class="btn btn-light btn-sm" id="refresh-approved-requests-btn">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Approved Requests Info -->
+                        <div class="alert alert-success mb-4">
+                            <i class="bi bi-info-circle me-2"></i>
+                            These are partnership requests that have been approved by the faculty. You can submit a proposal for any of these approved requests.
+                        </div>
+
+                        <!-- Search and Filter -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="searchApprovedRequests" placeholder="Search approved requests...">
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-select" id="orgTypeFilter">
+                                    <option value="">All Organization Types</option>
+                                    <option value="Government">Government</option>
+                                    <option value="NGO">NGO</option>
+                                    <option value="Private Company">Private Company</option>
+                                    <option value="Academic">Academic</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Approved Requests Table -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Request ID</th>
+                                        <th>Organization</th>
+                                        <th>Subject</th>
+                                        <th>Collaboration Areas</th>
+                                        <th>Submitted Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="approvedRequestsTableBody">
+                                    <tr>
+                                        <td colspan="6" class="text-center">
+                                            <div class="spinner-border text-success" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <p class="mt-2">Loading approved requests...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- No Approved Requests Message -->
+                        <div id="noApprovedRequestsMessage" class="text-center d-none">
+                            <i class="bi bi-check-circle fs-1 text-muted"></i>
+                            <h5 class="mt-3">No approved requests found</h5>
+                            <p class="text-muted">Approved partnership requests will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Active Projects Section -->
             <div id="projects-section" class="section-content d-none">
                 <div class="card">
@@ -380,44 +485,6 @@
                 </div>
             </div>
 
-            <!-- MOA Management Section -->
-            <div id="moa-section" class="section-content d-none">
-                <div class="card mb-4">
-                    <div class="card-header bg-emerald-500 text-white">
-                        <h5 class="mb-0">MOA Management</h5>
-                    </div>
-                    <div class="card-body">
-                        <div id="moaManagementContent">
-                            <div class="text-center">
-                                <div class="spinner-border" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2">Loading MOA management...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Budget Tracking Section -->
-            <div id="budget-section" class="section-content d-none">
-                <div class="card">
-                    <div class="card-header bg-sky-500 text-white">
-                        <h5 class="mb-0">Budget Tracking</h5>
-                    </div>
-                    <div class="card-body">
-                        <div id="budgetTrackingContent">
-                            <div class="text-center">
-                                <div class="spinner-border" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2">Loading budget information...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Organization Profile Section -->
             <div id="profile-section" class="section-content d-none">
                 <div class="card">
@@ -477,6 +544,23 @@
         </div>
     </div>
 
+    <!-- Submit Proposal Modal - Updated to be larger -->
+    <div class="modal fade proposal-modal" id="submitProposalModal" tabindex="-1" aria-labelledby="submitProposalModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white d-flex align-items-center">
+                    <h5 class="modal-title mb-0" id="submitProposalModalLabel">
+                        <i class="bi bi-send-check me-2"></i> Submit Project Proposal
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <iframe id="proposalFormIframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -527,6 +611,25 @@
                     }
                 }
             }
+
+            // Handle proposal submission success
+            if (message && message.type === 'proposalSubmitted') {
+                console.log('Proposal submitted successfully:', message);
+
+                // Close the proposal modal
+                const proposalModal = bootstrap.Modal.getInstance(document.getElementById('submitProposalModal'));
+                if (proposalModal) {
+                    proposalModal.hide();
+                }
+
+                // Show success message
+                showNotification(`Proposal submitted successfully! Submission ID: PRP-${message.submissionId.toString().padStart(4, '0')}`, 'success');
+
+                // Refresh the approved requests section
+                if (typeof loadApprovedRequests === 'function') {
+                    loadApprovedRequests();
+                }
+            }
         });
 
         // Initialize Partner Panel when db_connection.js is ready
@@ -538,6 +641,41 @@
                 console.error("❌ db_connection.js not loaded properly");
             }
         });
+
+        // Custom showNotification function
+        function showNotification(message, type = 'info') {
+            let toastContainer = document.getElementById('toastContainer');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'toastContainer';
+                toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                toastContainer.style.zIndex = '1060';
+                document.body.appendChild(toastContainer);
+            }
+
+            const toastId = 'toast-' + Date.now();
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `toast align-items-center text-bg-${type} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            const bsToast = new bootstrap.Toast(toast, { delay: 5000 });
+            bsToast.show();
+
+            toast.addEventListener('hidden.bs.toast', function () {
+                toast.remove();
+            });
+        }
     </script>
 </body>
 </html>

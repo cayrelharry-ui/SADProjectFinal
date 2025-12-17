@@ -1,5 +1,3 @@
-//faculty-views.js
-
 // --- USER PROFILE & DATA FETCHING ---
 
 // Fetch user profile and dashboard data
@@ -67,25 +65,30 @@ async function fetchDashboardData() {
             { count: partnershipCount },
             { count: propsCount },
             { count: handCount },
-            { count: compCount }
+            { count: compCount },
+            // Fetch total partnership requests for the badge
+            { count: totalPartnershipCount }
         ] = await Promise.all([
             sbClient.from('partner_opportunities').select('*', { count: 'exact', head: true }).eq('status', 'New'),
             sbClient.from('partnership_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
             sbClient.from('faculty_extension_proposals').select('*', { count: 'exact', head: true }).neq('status', 'Archived'),
             sbClient.from('partner_opportunities').select('*', { count: 'exact', head: true }).eq('claimed_by', currentUser).neq('status', 'Completed'),
-            sbClient.from('partner_opportunities').select('*', { count: 'exact', head: true }).eq('status', 'Completed')
+            sbClient.from('partner_opportunities').select('*', { count: 'exact', head: true }).eq('status', 'Completed'),
+            // Get total partnership requests (all statuses)
+            sbClient.from('partnership_requests').select('*', { count: 'exact', head: true })
         ]);
 
         // Update the main dashboard stat cards
         document.getElementById('stat-opps').textContent = oppsCount || 0;
-        document.getElementById('stat-partnership').textContent = partnershipCount || 0;
+        document.getElementById('stat-partnership').textContent = partnershipCount || 0; // Pending only for dashboard
         document.getElementById('stat-props').textContent = propsCount || 0;
         document.getElementById('stat-hand').textContent = handCount || 0;
         document.getElementById('stat-comp').textContent = compCount || 0;
 
         // Update the sidebar badges
+        // For partnership badge, show total count of all partnership requests
         document.getElementById('opp-badge').textContent = oppsCount || 0;
-        document.getElementById('partnership-badge').textContent = partnershipCount || 0;
+        document.getElementById('partnership-badge').textContent = totalPartnershipCount || 0; // Total count for badge
         document.getElementById('prop-badge').textContent = propsCount || 0;
         document.getElementById('hand-badge').textContent = handCount || 0;
         document.getElementById('comp-badge').textContent = compCount || 0;
@@ -124,7 +127,7 @@ async function fetchRecentActivities() {
                 <div class="p-4 hover:bg-gray-50 transition cursor-pointer" onclick="openProjectModal('${encodeURIComponent(JSON.stringify(item))}')">
                     <div class="flex items-start gap-4">
                         <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                            <span>📄</span>
+                            <i class="bi bi-file-text text-gray-600"></i>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-2">
@@ -195,20 +198,20 @@ async function fetchPartnershipRequests(page = 1, filterStatus = 'all', searchQu
             const safeData = encodeURIComponent(JSON.stringify(request));
 
             // Status badge styling
-            let statusClass = 'status-partnership-pending';
-            let statusText = 'Pending Review';
+            let statusClass = 'bg-yellow-100 text-yellow-800';
+            let statusText = 'Pending';
 
             switch(request.status) {
                 case 'reviewed':
-                    statusClass = 'status-partnership-reviewed';
-                    statusText = 'Under Review';
+                    statusClass = 'bg-blue-100 text-blue-800';
+                    statusText = 'Reviewed';
                     break;
                 case 'approved':
-                    statusClass = 'status-partnership-approved';
+                    statusClass = 'bg-green-100 text-green-800';
                     statusText = 'Approved';
                     break;
                 case 'rejected':
-                    statusClass = 'status-partnership-rejected';
+                    statusClass = 'bg-red-100 text-red-800';
                     statusText = 'Rejected';
                     break;
             }
@@ -238,19 +241,46 @@ async function fetchPartnershipRequests(page = 1, filterStatus = 'all', searchQu
                     </td>
                     <td class="px-6 py-4 text-right" data-label="Actions">
                         <div class="flex items-center justify-end gap-2">
+                            <!-- View Details Button -->
                             <button onclick="openPartnershipRequestModal('${safeData}')"
-                                class="px-3 py-1.5 bg-cnsc-500 hover:bg-cnsc-600 text-white text-xs font-bold rounded shadow-sm transition">
-                                View Details
+                                class="px-3 py-1.5 bg-cnsc-500 hover:bg-cnsc-600 text-white text-xs font-bold rounded shadow-sm transition flex items-center gap-1"
+                                title="View Details">
+                                <i class="bi bi-eye-fill"></i>
                             </button>
-                            <button onclick="updateRequestStatus('${request.request_id}', 'reviewed')"
-                                class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded shadow-sm transition ${request.status !== 'pending' ? 'hidden' : ''}">
-                                Mark as Reviewed
+
+                            <!-- Status Buttons -->
+                            <!-- Approve Button -->
+                            <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'approved')"
+                                class="px-3 py-1.5 ${getStatusColor('approved')} text-xs font-bold rounded shadow-sm transition flex items-center gap-1"
+                                title="Approve">
+                                <i class="bi bi-check-lg"></i>
+                            </button>
+
+                            <!-- Reject Button -->
+                            <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'rejected')"
+                                class="px-3 py-1.5 ${getStatusColor('rejected')} text-xs font-bold rounded shadow-sm transition flex items-center gap-1"
+                                title="Reject">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+
+                            <!-- Mark as Reviewed Button -->
+                            <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'reviewed')"
+                                class="px-3 py-1.5 ${getStatusColor('reviewed')} text-xs font-bold rounded shadow-sm transition flex items-center gap-1"
+                                title="Mark as Reviewed">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+
+                            <!-- Send Email Button -->
+                            <button onclick="sendResponseEmail('${encodeURIComponent(JSON.stringify(request))}')"
+                                class="px-3 py-1.5 text-cnsc-600 hover:text-cnsc-700 bg-cnsc-50 hover:bg-cnsc-100 border border-cnsc-200 text-xs font-bold rounded shadow-sm transition flex items-center gap-1"
+                                title="Send Email">
+                                <i class="bi bi-envelope-fill"></i>
                             </button>
                         </div>
                     </td>
                 </tr>
             `;
-        }).join('');
+    }).join('');
 
     } catch (error) {
         console.error("Partnership Requests Error:", error);
@@ -258,32 +288,53 @@ async function fetchPartnershipRequests(page = 1, filterStatus = 'all', searchQu
     }
 }
 
-// Update request status
-async function updateRequestStatus(requestId, newStatus) {
-    if (!confirm(`Are you sure you want to mark this request as ${newStatus}?`)) return;
+// Update partnership request status (fixed version)
+async function updatePartnershipRequestStatus(requestId, newStatus) {
+    if (!confirm(`Are you sure you want to mark this as ${newStatus}?`)) return;
 
     try {
-        const { error } = await sbClient.from('partnership_requests')
-            .update({
-                status: newStatus,
-                updated_at: new Date().toISOString()
-            })
-            .eq('request_id', requestId);
+        // Convert requestId to number since it's an integer in the database
+        const requestIdNum = parseInt(requestId);
 
-        if (error) throw error;
+        const updateData = {
+            status: newStatus,
+            updated_at: new Date().toISOString()
+        };
 
-        // Refresh the view
-        const filterStatus = document.getElementById('status-filter').value;
-        const searchQuery = document.getElementById('partnership-search').value;
-        fetchPartnershipRequests(currentPage, filterStatus, searchQuery);
+        // Only add reviewed_by if the column exists
+        if (currentUser) {
+            updateData.reviewed_by = currentUser;
+        }
 
-        // Update dashboard stats
+        const { error } = await sbClient
+            .from('partnership_requests')
+            .update(updateData)
+            .eq('request_id', requestIdNum);
+
+        if (error) {
+            console.error("Supabase Error Details:", error);
+            throw new Error(`Database error: ${error.message}`);
+        }
+
+        // Show success message
+        alert(`✓ Status updated to ${newStatus}!`);
+
+        // Refresh the partnership requests view
+        const searchInput = document.getElementById('partnership-search');
+        const statusFilter = document.getElementById('status-filter');
+        const query = searchInput?.value || '';
+        const status = statusFilter?.value || 'all';
+        fetchPartnershipRequests(currentPage, status, query);
+
+        // Update dashboard stats (this will refresh the badge count)
         fetchDashboardData();
 
-        alert(`Request status updated to ${newStatus}`);
+        // Close the modal if it's open
+        closePartnershipModal();
+
     } catch (error) {
-        console.error("Update Status Error:", error);
-        alert("Error updating status. Please try again.");
+        console.error("Error updating status:", error);
+        alert(`❌ Error updating status: ${error.message}`);
     }
 }
 
@@ -294,8 +345,8 @@ function openPartnershipRequestModal(encodedData) {
 
         // Create modal HTML
         const modalHTML = `
-            <div id="partnership-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 modal-backdrop">
-                <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden modal-content">
+            <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60">
+                <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
                     <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                         <div>
                             <h3 class="text-xl font-bold text-gray-900">${request.subject}</h3>
@@ -314,17 +365,17 @@ function openPartnershipRequestModal(encodedData) {
                                 <h4 class="font-bold text-gray-700 mb-2">Organization Details</h4>
                                 <p><strong>Name:</strong> ${request.org_name}</p>
                                 <p><strong>Type:</strong> ${request.org_type}</p>
-                                <p><strong>Letter Date:</strong> ${new Date(request.letter_date).toLocaleDateString()}</p>
+                                <p><strong>Letter Date:</strong> ${request.letter_date ? new Date(request.letter_date).toLocaleDateString() : 'N/A'}</p>
                                 <p class="mt-2"><strong>Address:</strong></p>
-                                <p class="text-sm text-gray-600 whitespace-pre-wrap">${request.address}</p>
+                                <p class="text-sm text-gray-600 whitespace-pre-wrap">${request.address || 'No address provided'}</p>
                             </div>
 
                             <div class="bg-gray-50 p-4 rounded-lg">
                                 <h4 class="font-bold text-gray-700 mb-2">Contact Information</h4>
-                                <p><strong>Contact Person:</strong> ${request.contact_person}</p>
+                                <p><strong>Contact Person:</strong> ${request.contact_person || 'N/A'}</p>
                                 <p><strong>Position:</strong> ${request.position || 'N/A'}</p>
-                                <p><strong>Email:</strong> <a href="mailto:${request.email}" class="text-cnsc-500 hover:underline">${request.email}</a></p>
-                                <p><strong>Phone:</strong> <a href="tel:${request.phone}" class="text-cnsc-500 hover:underline">${request.phone}</a></p>
+                                <p><strong>Email:</strong> ${request.email || 'N/A'}</p>
+                                <p><strong>Phone:</strong> ${request.phone || 'N/A'}</p>
                             </div>
                         </div>
 
@@ -334,12 +385,10 @@ function openPartnershipRequestModal(encodedData) {
                                 <div class="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap">${request.collaboration || 'No details provided.'}</div>
                             </div>
 
-                            ${request.outcomes ? `
                             <div>
                                 <h4 class="font-bold text-gray-700 mb-2">Expected Outcomes</h4>
-                                <div class="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap">${request.outcomes}</div>
+                                <div class="bg-gray-50 p-4 rounded-lg whitespace-pre-wrap">${request.outcomes || 'No outcomes specified.'}</div>
                             </div>
-                            ` : ''}
 
                             ${request.additional_info ? `
                             <div>
@@ -354,11 +403,11 @@ function openPartnershipRequestModal(encodedData) {
                             <div class="flex flex-wrap gap-4">
                                 <div>
                                     <p class="text-sm text-gray-500">Submitted</p>
-                                    <p class="font-medium">${new Date(request.submitted_at).toLocaleDateString()}</p>
+                                    <p class="font-medium">${request.submitted_at ? new Date(request.submitted_at).toLocaleDateString() : 'N/A'}</p>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-500">Last Updated</p>
-                                    <p class="font-medium">${new Date(request.updated_at).toLocaleDateString()}</p>
+                                    <p class="font-medium">${request.updated_at ? new Date(request.updated_at).toLocaleDateString() : 'N/A'}</p>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-500">Current Status</p>
@@ -370,28 +419,47 @@ function openPartnershipRequestModal(encodedData) {
                                     }">
                                         ${request.status === 'pending' ? 'Pending Review' :
                                           request.status === 'reviewed' ? 'Under Review' :
-                                          request.status === 'approved' ? 'Approved' : 'Rejected'}
+                                          request.status === 'approved' ? 'Approved' :
+                                          request.status === 'rejected' ? 'Rejected' : request.status || 'Pending'}
                                     </span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="p-6 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="p-6 border-t border-gray-200 bg-gray-50 flex justify-between items-center">
                         <div class="text-sm text-gray-500">
                             Request ID: ${request.request_id}
                         </div>
-                        <div class="flex flex-wrap gap-3">
-                            <button onclick="closePartnershipModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
-                                Close
+                        <div class="flex gap-2">
+                            <button onclick="closePartnershipModal()"
+                                class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition flex items-center gap-2">
+                                <i class="bi bi-x-lg"></i> Close
                             </button>
-                            ${request.status === 'pending' ? `
-                            <button onclick="updateRequestStatus('${request.request_id}', 'reviewed')" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium">
-                                Mark as Reviewed
-                            </button>
-                            ` : ''}
-                            <button onclick="sendResponseEmail('${encodeURIComponent(JSON.stringify(request))}')" class="px-4 py-2 bg-cnsc-500 hover:bg-cnsc-600 text-white rounded-lg text-sm font-medium">
-                                Send Response
+
+                            <!-- Status Action Buttons with Bootstrap Icons -->
+                            <div class="flex gap-2">
+                                <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'approved')"
+                                    class="px-4 py-2 ${getStatusColor('approved')} rounded-lg text-sm font-medium flex items-center gap-2 transition"
+                                    title="Approve">
+                                    <i class="bi bi-check-lg"></i> Approve
+                                </button>
+                                <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'rejected')"
+                                    class="px-4 py-2 ${getStatusColor('rejected')} rounded-lg text-sm font-medium flex items-center gap-2 transition"
+                                    title="Reject">
+                                    <i class="bi bi-x-lg"></i> Reject
+                                </button>
+                                <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'reviewed')"
+                                    class="px-4 py-2 ${getStatusColor('reviewed')} rounded-lg text-sm font-medium flex items-center gap-2 transition"
+                                    title="Mark as Reviewed">
+                                    <i class="bi bi-pencil-square"></i> Review
+                                </button>
+                            </div>
+
+                            <button onclick="sendResponseEmail('${encodeURIComponent(JSON.stringify(request))}')"
+                                class="px-4 py-2 bg-cnsc-500 hover:bg-cnsc-600 text-white rounded-lg text-sm font-medium flex items-center gap-2 transition"
+                                title="Send Response Email">
+                                <i class="bi bi-envelope-fill"></i> Email
                             </button>
                         </div>
                     </div>
@@ -399,14 +467,28 @@ function openPartnershipRequestModal(encodedData) {
             </div>
         `;
 
+        // Remove existing modal if any
+        const existingModal = document.getElementById('partnership-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
         // Add modal to DOM
         const modalDiv = document.createElement('div');
+        modalDiv.id = 'partnership-modal';
         modalDiv.innerHTML = modalHTML;
         document.body.appendChild(modalDiv);
 
+        // Add smooth fade-in animation
+        setTimeout(() => {
+            modalDiv.style.opacity = '0';
+            modalDiv.style.transition = 'opacity 0.2s ease-in-out';
+            modalDiv.style.opacity = '1';
+        }, 10);
+
     } catch (error) {
         console.error("Error opening partnership modal:", error);
-        alert("Could not load partnership request details.");
+        alert("Could not load partnership request details. Please try again.");
     }
 }
 
@@ -414,7 +496,7 @@ function openPartnershipRequestModal(encodedData) {
 function closePartnershipModal() {
     const modal = document.getElementById('partnership-modal');
     if (modal) {
-        modal.classList.add('closing');
+        modal.style.opacity = '0';
         setTimeout(() => {
             modal.remove();
         }, 200);
@@ -525,6 +607,28 @@ function debounce(func, wait) {
     };
 }
 
+// Get status color class (for button styling)
+function getStatusColor(status) {
+    switch(status) {
+        case 'approved':
+            return 'bg-green-50 hover:bg-green-100 border border-green-200 text-green-600 hover:text-green-700';
+        case 'rejected':
+            return 'bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 hover:text-red-700';
+        case 'reviewed':
+            return 'bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 hover:text-blue-700';
+        case 'pending':
+            return 'bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 text-yellow-600 hover:text-yellow-700';
+        case 'in progress':
+            return 'bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-600 hover:text-purple-700';
+        case 'completed':
+            return 'bg-green-100 hover:bg-green-200 border border-green-300 text-green-700 hover:text-green-800';
+        case 'archived':
+            return 'bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-600 hover:text-gray-700';
+        default:
+            return 'bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 hover:text-gray-700';
+    }
+}
+
 // --- EXISTING FUNCTIONS (keep these as they are) ---
 
 // Fetch partner proposals/opportunities
@@ -610,33 +714,22 @@ async function fetchMyProposals() {
             if (showArchived) {
                 actionsHtml = `
                     <button onclick="restoreProposal('${proposal.id}')" class="inline-flex items-center gap-2 text-sm font-bold text-green-600 hover:text-green-800 transition mr-2" title="Restore">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l4-4m-4 4l4 4" />
-                        </svg>
+                        <i class="bi bi-arrow-counterclockwise"></i>
                         Restore
                     </button>
                     <button onclick="openDeleteModal('${proposal.id}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-red-100 hover:text-red-600 transition" title="Delete Permanently">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
+                        <i class="bi bi-trash-fill"></i>
                     </button>`;
             } else {
                 actionsHtml = `
                     <button onclick="openProjectModal('${safeData}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition" title="View Details">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
+                        <i class="bi bi-eye-fill"></i>
                     </button>
                     <a href="SubmitProposal.html?id=${proposal.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-purple-50 hover:text-cnsc-500 transition" title="Edit Proposal">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" />
-                        </svg>
+                        <i class="bi bi-pencil-fill"></i>
                     </a>
                     <button onclick="openDeleteModal('${proposal.id}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-red-100 hover:text-red-600 transition" title="Archive or Delete">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
+                        <i class="bi bi-archive-fill"></i>
                     </button>`;
             }
 
@@ -874,7 +967,7 @@ function simulateEmailSending(name, msg) {
 
     const toast = document.createElement('div');
     toast.className = "fixed bottom-5 right-5 bg-gray-900 text-white px-6 py-4 rounded-lg shadow-2xl flex items-center gap-3 z-[200] animate-pulse";
-    toast.innerHTML = `<span>⏳</span><div><p class="font-bold text-sm">Sending Email...</p></div>`;
+    toast.innerHTML = `<span><i class="bi bi-clock"></i></span><div><p class="font-bold text-sm">Sending Email...</p></div>`;
     document.body.appendChild(toast);
 
     const templateParams = {
@@ -887,7 +980,7 @@ function simulateEmailSending(name, msg) {
     emailjs.send('service_gyl0q9g', 'template_q40yoyg', templateParams)
         .then(function(response) {
             toast.classList.remove('animate-pulse');
-            toast.innerHTML = `<span>✅</span><div><p class="font-bold text-sm">Email Sent Successfully!</p></div>`;
+            toast.innerHTML = `<span><i class="bi bi-check-circle-fill"></i></span><div><p class="font-bold text-sm">Email Sent Successfully!</p></div>`;
             setTimeout(() => toast.remove(), 5000);
         }, function(error) {
             toast.innerHTML = `<p class="text-red-400 font-bold">Email Failed: ${error.text}</p>`;

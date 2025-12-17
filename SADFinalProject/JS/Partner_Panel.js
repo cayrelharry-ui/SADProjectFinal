@@ -557,6 +557,39 @@ async function getPartnerRequests(email, filters = {}) {
     }
 }
 
+async function getAllApprovedRequests(filters = {}) {
+    const { search, orgType } = filters;
+
+    try {
+        let query = supabase
+            .from('partnership_requests')
+            .select('*')
+            .eq('status', 'approved');
+
+        if (search) {
+            query = query.or(`subject.ilike.%${search}%,org_name.ilike.%${search}%,collaboration.ilike.%${search}%`);
+        }
+
+        if (orgType) {
+            query = query.eq('org_type', orgType);
+        }
+
+        query = query.order('submitted_at', { ascending: false });
+
+        const { data: requests, error } = await query;
+
+        if (error) throw error;
+
+        return {
+            status: 'success',
+            requests: requests || []
+        };
+    } catch (error) {
+        console.error('Error getting approved requests:', error);
+        return { status: 'error', message: 'Query failed: ' + error.message };
+    }
+}
+
 async function getRequestDetails(requestId) {
     if (!requestId) {
         return { status: 'error', message: 'Request ID is required' };
@@ -769,6 +802,340 @@ function renderRequestsTable(requests) {
         </tr>
     `).join('');
 }
+
+// ============================================
+// APPROVED REQUESTS FUNCTIONALITY
+// ============================================
+
+async function loadApprovedRequests() {
+    try {
+        showApprovedRequestsLoading(true);
+
+        const searchTerm = document.getElementById('searchApprovedRequests')?.value || '';
+        const orgTypeFilter = document.getElementById('orgTypeFilter')?.value || '';
+
+        const result = await getAllApprovedRequests({
+            search: searchTerm || undefined,
+            orgType: orgTypeFilter || undefined
+        });
+
+        if (result.status === 'success') {
+            renderApprovedRequestsTable(result.requests);
+            updateApprovedRequestsCount(result.requests.length);
+
+            // Show/hide no results message
+            const noRequestsMsg = document.getElementById('noApprovedRequestsMessage');
+            if (noRequestsMsg) {
+                noRequestsMsg.classList.toggle('d-none', result.requests.length > 0);
+            }
+        } else {
+            showNotification(result.message, 'danger');
+            renderApprovedRequestsTable([]);
+        }
+    } catch (error) {
+        console.error('Error loading approved requests:', error);
+        showNotification('Failed to load approved requests', 'danger');
+        renderApprovedRequestsTable([]);
+    } finally {
+        showApprovedRequestsLoading(false);
+    }
+}
+
+function renderApprovedRequestsTable(requests) {
+    const tbody = document.getElementById('approvedRequestsTableBody');
+    if (!tbody) return;
+
+    if (!requests || requests.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center text-muted py-5">
+                    <i class="bi bi-check-circle fs-1"></i>
+                    <p class="mt-3">No approved partnership requests found</p>
+                    <p class="text-muted small">Approved requests from all organizations will appear here.</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = requests.map(request => `
+        <tr>
+            <td>
+                <span class="badge bg-secondary">#${request.request_id}</span>
+            </td>
+            <td>
+                <div class="fw-semibold">${escapeHtml(request.org_name)}</div>
+                <small class="text-muted">${escapeHtml(request.org_type)}</small>
+            </td>
+            <td>
+                <div class="fw-medium" title="${escapeHtml(request.subject)}">
+                    ${escapeHtml(request.subject)}
+                </div>
+                <small class="text-muted">${formatRelativeTime(request.submitted_at)}</small>
+            </td>
+            <td>
+                <div class="text-truncate" style="max-width: 200px;" title="${escapeHtml(request.collaboration)}">
+                    ${escapeHtml(request.collaboration.length > 100 ? request.collaboration.substring(0, 100) + '...' : request.collaboration)}
+                </div>
+            </td>
+            <td>
+                ${formatDate(request.submitted_at)}
+            </td>
+            <td>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button class="btn btn-outline-primary" onclick="viewApprovedRequestDetails(${request.request_id})"
+                        title="View Details">
+                        <i class="bi bi-eye"></i> Details
+                    </button>
+                    <button class="btn btn-success" onclick="submitProposal(${request.request_id})"
+                        title="Submit Proposal">
+                        <i class="bi bi-send-check"></i> Submit Proposal
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function viewApprovedRequestDetails(requestId) {
+    try {
+        const result = await getRequestDetails(requestId);
+
+        if (result.status === 'success') {
+            const request = result.request;
+            const attachments = result.attachments;
+
+            let content = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Request Information</h6>
+                        <table class="table table-sm">
+                            <tr><th>Request ID:</th><td>#${request.request_id}</td></tr>
+                            <tr><th>Status:</th>
+                                <td><span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i>
+                                    Approved
+                                </span></td>
+                            </tr>
+                            <tr><th>Submitted:</th><td>${formatDate(request.submitted_at)}</td></tr>
+                            <tr><th>Last Updated:</th><td>${formatDate(request.updated_at)}</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Organization Details</h6>
+                        <table class="table table-sm">
+                            <tr><th>Organization:</th><td>${escapeHtml(request.org_name)}</td></tr>
+                            <tr><th>Type:</th><td>${escapeHtml(request.org_type)}</td></tr>
+                            <tr><th>Contact Person:</th><td>${escapeHtml(request.contact_person)}</td></tr>
+                            <tr><th>Position:</th><td>${escapeHtml(request.position || 'Not specified')}</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6 class="text-muted">Contact Information</h6>
+                        <table class="table table-sm">
+                            <tr><th>Email:</th><td>${escapeHtml(request.email)}</td></tr>
+                            <tr><th>Phone:</th><td>${escapeHtml(request.phone)}</td></tr>
+                            <tr><th>Address:</th><td>${escapeHtml(request.address)}</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6 class="text-muted">Request Details</h6>
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>Subject: ${escapeHtml(request.subject)}</h6>
+                                <hr>
+                                <h6>Collaboration Areas:</h6>
+                                <p>${escapeHtml(request.collaboration).replace(/\n/g, '<br>')}</p>
+                                ${request.outcomes ? `
+                                    <h6 class="mt-3">Expected Outcomes:</h6>
+                                    <p>${escapeHtml(request.outcomes).replace(/\n/g, '<br>')}</p>
+                                ` : ''}
+                                ${request.additional_info ? `
+                                    <h6 class="mt-3">Additional Information:</h6>
+                                    <p>${escapeHtml(request.additional_info).replace(/\n/g, '<br>')}</p>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            if (attachments.length > 0) {
+                content += `
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-3">Attachments (${attachments.length})</h6>
+                            <div class="list-group">
+                                ${attachments.map(attachment => `
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="bi ${getFileIcon(attachment.file_type)} me-2"></i>
+                                            ${escapeHtml(attachment.original_name)}
+                                            <small class="text-muted d-block">${formatFileSize(attachment.file_size)}</small>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary"
+                                                    onclick="downloadDocument(${attachment.id})">
+                                                <i class="bi bi-download"></i> Download
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-info"
+                                                    onclick="previewFileUniversal(${JSON.stringify({
+                                                        id: attachment.id,
+                                                        original_name: attachment.original_name,
+                                                        storage_path: attachment.storage_path,
+                                                        public_url: attachment.public_url,
+                                                        request_id: request.request_id,
+                                                        partnership_request_id: attachment.partnership_request_id
+                                                    }).replace(/"/g, '&quot;')})">
+                                                <i class="bi bi-eye"></i> Preview
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Add proposal button
+            content += `
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-success">
+                            <i class="bi bi-info-circle"></i>
+                            This request has been approved. You can now submit a proposal for collaboration.
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                            <button class="btn btn-success" onclick="submitProposal(${request.request_id})">
+                                <i class="bi bi-send-check"></i> Submit Proposal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const modalContent = document.getElementById('requestDetailsContent');
+            if (modalContent) {
+                modalContent.innerHTML = content;
+                const modal = new bootstrap.Modal(document.getElementById('requestDetailsModal'));
+                modal.show();
+            }
+        } else {
+            showNotification(result.message, 'warning');
+        }
+    } catch (error) {
+        console.error('Error viewing approved request details:', error);
+        showNotification('Failed to load request details', 'danger');
+    }
+}
+
+// In Partner_Panel.js, update the submitProposal function to pass request data:
+
+function submitProposal(requestId) {
+    try {
+        // Get request details to pass to the proposal form
+        getRequestDetails(requestId).then(result => {
+            if (result.status === 'success') {
+                const request = result.request;
+
+                // Prepare data to pass to the proposal form
+                const proposalData = {
+                    requestId: requestId,
+                    request_subject: request.subject,
+                    organization_name: request.org_name,
+                    organization_type: request.org_type,
+                    collaboration_areas: request.collaboration,
+                    request_description: request.additional_info,
+                    partnership_outcomes: request.outcomes,
+                    contact_person: request.contact_person,
+                    contact_email: request.email,
+                    contact_phone: request.phone
+                };
+
+                // Encode the data for URL
+                const encodedData = encodeURIComponent(JSON.stringify(proposalData));
+
+                // Set the iframe source to SubmitProposal.html with the request data
+                const iframe = document.getElementById('proposalFormIframe');
+                if (iframe) {
+                    iframe.src = `SubmitProposal.html?requestId=${requestId}&data=${encodedData}`;
+                }
+
+                // Show the modal
+                const modal = new bootstrap.Modal(document.getElementById('submitProposalModal'));
+                modal.show();
+
+                // Close any open details modal
+                const detailsModal = bootstrap.Modal.getInstance(document.getElementById('requestDetailsModal'));
+                if (detailsModal) {
+                    detailsModal.hide();
+                }
+
+            } else {
+                // Fallback: open proposal form without request data
+                const iframe = document.getElementById('proposalFormIframe');
+                if (iframe) {
+                    iframe.src = `SubmitProposal.html?requestId=${requestId}`;
+                }
+
+                const modal = new bootstrap.Modal(document.getElementById('submitProposalModal'));
+                modal.show();
+            }
+        }).catch(error => {
+            console.error('Error fetching request details:', error);
+            // Fallback: open proposal form without request data
+            const iframe = document.getElementById('proposalFormIframe');
+            if (iframe) {
+                iframe.src = `SubmitProposal.html?requestId=${requestId}`;
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('submitProposalModal'));
+            modal.show();
+        });
+
+    } catch (error) {
+        console.error('Error opening proposal form:', error);
+        showNotification('Failed to open proposal form', 'danger');
+    }
+}
+
+function showApprovedRequestsLoading(isLoading) {
+    const tbody = document.getElementById('approvedRequestsTableBody');
+    const noRequestsMsg = document.getElementById('noApprovedRequestsMessage');
+
+    if (isLoading && tbody) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading approved requests...</p>
+                </td>
+            </tr>
+        `;
+        if (noRequestsMsg) noRequestsMsg.classList.add('d-none');
+    }
+}
+
+function updateApprovedRequestsCount(count) {
+    // You can update a counter element if needed
+    console.log(`Total approved requests: ${count}`);
+}
+
+// ============================================
+// REQUEST DETAILS VIEWING
+// ============================================
 
 async function viewRequestDetails(requestId) {
     try {
@@ -1723,7 +2090,6 @@ async function loadDashboardData(email) {
             document.getElementById('totalRequestsCount').textContent = result.stats.total_requests;
             document.getElementById('approvedRequestsCount').textContent = result.stats.approved_requests;
             document.getElementById('pendingRequestsCount').textContent = result.stats.pending_requests;
-            document.getElementById('cancelledRequestsCount').textContent = result.stats.cancelled_requests;
             document.getElementById('activeProjectsCount').textContent = result.stats.active_projects;
 
             const recentRequests = await getPartnerRequests(email, { limit: 1 });
@@ -1857,10 +2223,9 @@ function getSectionTitle(sectionName) {
     const titles = {
         'dashboard': 'Partner Dashboard',
         'requests': 'Partnership Requests',
+        'approved-requests': 'Approved Requests',
         'projects': 'Active Projects',
         'documents': 'Documents & Attachments',
-        'moa': 'MOA Management',
-        'budget': 'Budget Tracking',
         'profile': 'Organization Profile'
     };
     return titles[sectionName] || 'Partner Panel';
@@ -1883,6 +2248,9 @@ function loadSectionData(sectionName) {
         case 'requests':
             loadPartnershipRequests();
             break;
+        case 'approved-requests':
+            loadApprovedRequests();
+            break;
         case 'documents':
             loadDocumentsSection();
             break;
@@ -1891,8 +2259,6 @@ function loadSectionData(sectionName) {
             loadRecentRequests(userEmail);
     }
 }
-
-
 
 // ============================================
 // EVENT LISTENERS
@@ -1915,9 +2281,22 @@ function initializeEventListeners() {
         });
     }
 
+    const approvedRequestsLink = document.getElementById('approved-requests-link');
+    if (approvedRequestsLink) {
+        approvedRequestsLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            loadApprovedRequests();
+        });
+    }
+
     const refreshDocsBtn = document.getElementById('refresh-documents-btn');
     if (refreshDocsBtn) {
         refreshDocsBtn.addEventListener('click', loadDocumentsSection);
+    }
+
+    const refreshApprovedBtn = document.getElementById('refresh-approved-requests-btn');
+    if (refreshApprovedBtn) {
+        refreshApprovedBtn.addEventListener('click', loadApprovedRequests);
     }
 
     const statusFilter = document.getElementById('statusFilter');
@@ -1930,6 +2309,18 @@ function initializeEventListeners() {
         searchRequests.addEventListener('input', debounce(function() {
             loadPartnershipRequests();
         }, 300));
+    }
+
+    const searchApprovedRequests = document.getElementById('searchApprovedRequests');
+    if (searchApprovedRequests) {
+        searchApprovedRequests.addEventListener('input', debounce(function() {
+            loadApprovedRequests();
+        }, 300));
+    }
+
+    const orgTypeFilter = document.getElementById('orgTypeFilter');
+    if (orgTypeFilter) {
+        orgTypeFilter.addEventListener('change', loadApprovedRequests);
     }
 
     const refreshRequestsBtn = document.getElementById('refresh-requests-btn');
@@ -1963,7 +2354,6 @@ function initializeEventListeners() {
         });
     }
 
-
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', logout);
@@ -1973,7 +2363,6 @@ function initializeEventListeners() {
         if (event.data && event.data.type === 'partnershipSubmitted' && event.data.success) {
             const modal = bootstrap.Modal.getInstance(document.getElementById('newRequestModal'));
             if (modal) modal.hide();
-
 
             const user = getCurrentUser();
             if (user?.email) {
@@ -2045,15 +2434,18 @@ window.downloadDocument = downloadDocument;
 window.downloadAllRequestAttachments = downloadAllRequestAttachments;
 window.downloadRequestDocuments = downloadRequestDocuments;
 window.viewRequestDetails = viewRequestDetails;
+window.viewApprovedRequestDetails = viewApprovedRequestDetails;
 window.viewRequestAttachments = viewRequestAttachments;
 window.editRequest = editRequest;
 window.removeAttachment = removeAttachment;
 window.cancelRequest = cancelRequest;
 window.cancelRequestFromModal = cancelRequestFromModal;
 window.showNewRequestModal = showNewRequestModal;
+window.submitProposal = submitProposal;
 window.showNotification = showNotification;
 window.logout = logout;
 window.loadPartnershipRequests = loadPartnershipRequests;
+window.loadApprovedRequests = loadApprovedRequests;
 window.loadDocumentsSection = loadDocumentsSection;
 window.getCurrentUser = getCurrentUser;
 window.escapeHtml = escapeHtml;

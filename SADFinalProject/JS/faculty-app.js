@@ -1044,6 +1044,7 @@ function updatePaginationUI() {
 }
 
 // Process partnership requests with updated status buttons
+// Process partnership requests with updated status buttons
 function processPartnershipRequests(data, count, page) {
     const tbody = document.getElementById('partnership-requests-body');
 
@@ -1117,7 +1118,7 @@ function processPartnershipRequests(data, count, page) {
                         <button onclick="openPartnershipRequestModal('${safeData}')"
                             class="px-3 py-1.5 bg-cnsc-500 hover:bg-cnsc-600 text-white text-xs font-bold rounded shadow-sm transition flex items-center gap-1"
                             title="View Details">
-                            <span>👁️</span>
+                            <i class="bi bi-eye-fill"></i>
                         </button>
 
                         <!-- Status Buttons -->
@@ -1125,28 +1126,28 @@ function processPartnershipRequests(data, count, page) {
                         <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'approved')"
                             class="px-3 py-1.5 ${getStatusColor('approved')} text-xs font-bold rounded shadow-sm transition flex items-center gap-1"
                             title="Approve">
-                            <span>✓</span>
+                            <i class="bi bi-check-lg"></i>
                         </button>
 
                         <!-- Reject Button -->
                         <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'rejected')"
                             class="px-3 py-1.5 ${getStatusColor('rejected')} text-xs font-bold rounded shadow-sm transition flex items-center gap-1"
                             title="Reject">
-                            <span>✗</span>
+                            <i class="bi bi-x-lg"></i>
                         </button>
 
                         <!-- Mark as Reviewed Button -->
                         <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'reviewed')"
                             class="px-3 py-1.5 ${getStatusColor('reviewed')} text-xs font-bold rounded shadow-sm transition flex items-center gap-1"
                             title="Mark as Reviewed">
-                            <span>📝</span>
+                            <i class="bi bi-pencil-square"></i>
                         </button>
 
                         <!-- Send Email Button -->
                         <button onclick="sendResponseEmail('${encodeURIComponent(JSON.stringify(request))}')"
                             class="px-3 py-1.5 text-cnsc-600 hover:text-cnsc-700 bg-cnsc-50 hover:bg-cnsc-100 border border-cnsc-200 text-xs font-bold rounded shadow-sm transition flex items-center gap-1"
                             title="Send Email">
-                            <span>✉️</span>
+                            <i class="bi bi-envelope-fill"></i>
                         </button>
                     </div>
                 </td>
@@ -1252,32 +1253,32 @@ function openPartnershipRequestModal(encodedData) {
                         <div class="flex gap-2">
                             <button onclick="closePartnershipModal()"
                                 class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition flex items-center gap-2">
-                                Close
+                                <i class="bi bi-x-lg"></i> Close
                             </button>
 
-                            <!-- Status Action Buttons with Symbols -->
+                            <!-- Status Action Buttons with Bootstrap Icons -->
                             <div class="flex gap-2">
                                 <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'approved')"
                                     class="px-4 py-2 ${getStatusColor('approved')} rounded-lg text-sm font-medium flex items-center gap-2 transition"
                                     title="Approve">
-                                    <span class="text-lg">✓</span> Approve
+                                    <i class="bi bi-check-lg"></i> Approve
                                 </button>
                                 <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'rejected')"
                                     class="px-4 py-2 ${getStatusColor('rejected')} rounded-lg text-sm font-medium flex items-center gap-2 transition"
                                     title="Reject">
-                                    <span class="text-lg">✗</span> Reject
+                                    <i class="bi bi-x-lg"></i> Reject
                                 </button>
                                 <button onclick="updatePartnershipRequestStatus(${request.request_id}, 'reviewed')"
                                     class="px-4 py-2 ${getStatusColor('reviewed')} rounded-lg text-sm font-medium flex items-center gap-2 transition"
                                     title="Mark as Reviewed">
-                                    <span class="text-lg">📝</span> Review
+                                    <i class="bi bi-pencil-square"></i> Review
                                 </button>
                             </div>
 
                             <button onclick="sendResponseEmail('${encodeURIComponent(JSON.stringify(request))}')"
                                 class="px-4 py-2 bg-cnsc-500 hover:bg-cnsc-600 text-white rounded-lg text-sm font-medium flex items-center gap-2 transition"
                                 title="Send Response Email">
-                                <span class="text-lg">✉️</span> Email
+                                <i class="bi bi-envelope-fill"></i> Email
                             </button>
                         </div>
                     </div>
@@ -1400,25 +1401,25 @@ async function updatePartnerProposalStatus(proposalId, newStatus) {
     }
 }
 
-// Get status icon based on status
+// Get status icon based on status (Bootstrap Icons version)
 function getStatusIcon(status) {
     switch(status) {
         case 'approved':
-            return '✓'; // Checkmark
+            return '<i class="bi bi-check-lg"></i>'; // Checkmark
         case 'rejected':
-            return '✗'; // X mark
+            return '<i class="bi bi-x-lg"></i>'; // X mark
         case 'reviewed':
-            return '📝'; // Pencil/Note
+            return '<i class="bi bi-pencil-square"></i>'; // Pencil/Edit
         case 'pending':
-            return '⏳'; // Hourglass
+            return '<i class="bi bi-clock"></i>'; // Clock
         case 'in progress':
-            return '🔄'; // Refresh/Progress
+            return '<i class="bi bi-arrow-repeat"></i>'; // Refresh/Progress
         case 'completed':
-            return '✅'; // Checkmark in box
+            return '<i class="bi bi-check-circle-fill"></i>'; // Checkmark in circle
         case 'archived':
-            return '🗄️'; // Filing cabinet
+            return '<i class="bi bi-archive"></i>'; // Archive
         default:
-            return '📄'; // Document
+            return '<i class="bi bi-file-text"></i>'; // Document
     }
 }
 
@@ -1467,6 +1468,7 @@ function getStatusTitle(status) {
 }
 
 // Process partner opportunities with status buttons
+// Process partner opportunities with status buttons
 function processPartnerOpportunities(data) {
     const tbody = document.getElementById('partner-opps-body');
 
@@ -1499,27 +1501,27 @@ function processPartnerOpportunities(data) {
                         <button onclick="openProjectModal('${safeData}')"
                             class="px-3 py-1.5 bg-cnsc-500 hover:bg-cnsc-600 text-white text-xs font-bold rounded shadow-sm transition"
                             title="View Details">
-                            👁️
+                            <i class="bi bi-eye-fill"></i>
                         </button>
                         <button onclick="updatePartnerProposalStatus('${opportunity.id}', 'approved')"
                             class="px-3 py-1.5 ${getStatusColor('approved')} text-xs font-bold rounded shadow-sm transition"
                             title="${getStatusTitle('approved')}">
-                            ${getStatusIcon('approved')}
+                            <i class="bi bi-check-lg"></i>
                         </button>
                         <button onclick="updatePartnerProposalStatus('${opportunity.id}', 'rejected')"
                             class="px-3 py-1.5 ${getStatusColor('rejected')} text-xs font-bold rounded shadow-sm transition"
                             title="${getStatusTitle('rejected')}">
-                            ${getStatusIcon('rejected')}
+                            <i class="bi bi-x-lg"></i>
                         </button>
                         <button onclick="updatePartnerProposalStatus('${opportunity.id}', 'reviewed')"
                             class="px-3 py-1.5 ${getStatusColor('reviewed')} text-xs font-bold rounded shadow-sm transition"
                             title="${getStatusTitle('reviewed')}">
-                            ${getStatusIcon('reviewed')}
+                            <i class="bi bi-pencil-square"></i>
                         </button>
                         <button onclick="sendManualEmail('${safeData}')"
                             class="px-3 py-1.5 text-cnsc-600 hover:text-cnsc-700 bg-cnsc-50 hover:bg-cnsc-100 border border-cnsc-200 text-xs font-bold rounded shadow-sm transition"
                             title="Send Email">
-                            ✉️
+                            <i class="bi bi-envelope-fill"></i>
                         </button>
                     </div>
                 </td>
