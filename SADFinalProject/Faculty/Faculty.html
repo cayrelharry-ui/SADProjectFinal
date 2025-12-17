@@ -845,6 +845,32 @@
                 break-inside: avoid;
             }
         }
+
+        /* Faculty Proposal Modal Styles */
+        .faculty-tab {
+            position: relative;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .faculty-tab:hover {
+            color: #374151;
+        }
+
+        .faculty-tab.active-tab {
+            color: #5A2C9D;
+            border-bottom-color: #5A2C9D;
+            font-weight: 600;
+        }
+
+        .faculty-tab-content {
+            animation: fadeIn 0.3s ease-out;
+        }
     </style>
 
     <script>
@@ -961,7 +987,7 @@
                 aria-label="Completed">
                 <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 01180z"></path>
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <span>Completed</span>
                 <span id="comp-badge"
@@ -1519,6 +1545,7 @@
         let currentProfileDbId = null;
         let currentUser = null;
         let currentUserEmail = null;
+        let currentFacultyProposalId = null;
 
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -1551,7 +1578,6 @@
             const { count: handCount } = await sbClient.from('partner_opportunities').select('*', { count: 'exact' }).eq('claimed_by', currentUser).neq('status', 'Completed');
             const { count: compCount } = await sbClient.from('partner_opportunities').select('*', { count: 'exact' }).eq('status', 'Completed');
 
-            // --- FIX START ---
             // Update the main dashboard stat cards
             document.getElementById('stat-opps').textContent = oppsCount || 0;
             document.getElementById('stat-props').textContent = propsCount || 0;
@@ -1563,7 +1589,6 @@
             document.getElementById('prop-badge').textContent = propsCount || 0;
             document.getElementById('hand-badge').textContent = handCount || 0;
             document.getElementById('comp-badge').textContent = compCount || 0;
-            // --- FIX END ---
 
             // Fetch recent activities
             const { data: activity, error } = await sbClient.from('faculty_extension_proposals').select('*').order('created_at', { ascending: false }).limit(5);
@@ -1579,7 +1604,7 @@
                 if (item.status === 'Completed') statusClass = 'status-completed';
 
                 return `
-                    <div class="p-4 hover:bg-gray-50 transition cursor-pointer" onclick="openProjectModal('${encodeURIComponent(JSON.stringify(item))}')">
+                    <div class="p-4 hover:bg-gray-50 transition cursor-pointer" onclick="openFacultyProposalModal('${encodeURIComponent(JSON.stringify(item))}')">
                         <div class="flex items-start gap-4">
                             <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
                                 <span>📄</span>
@@ -1589,7 +1614,7 @@
                                     <p class="text-sm font-semibold text-gray-900 truncate">${item.title}</p>
                                     <span class="status-badge ${statusClass} flex-shrink-0">${item.status}</span>
                                 </div>
-                                <p class="text-sm text-gray-500 mt-1 line-clamp-1">${item.description || 'No description available.'}</p>
+                                <p class="text-sm text-gray-500 mt-1 line-clamp-1">${item.rationale ? (item.rationale.length > 100 ? item.rationale.substring(0, 100) + '...' : item.rationale) : 'No description available.'}</p>
                                 <p class="text-xs text-gray-400 mt-2">${new Date(item.created_at).toLocaleString()}</p>
                             </div>
                         </div>
@@ -1831,9 +1856,28 @@
                     if (proposal.status === 'Revision Requested') statusClass = 'bg-red-100 text-red-800';
 
                     const safeData = encodeURIComponent(JSON.stringify(proposal));
+                    
+                    // Check if there's a revision message
+                    const hasRevision = proposal.status === 'Revision Requested' && proposal.revision_reason;
+                    const revisionIndicator = hasRevision ? 
+                        `<span class="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse ml-1" title="Revision Requested"></span>` : '';
+                    
+                    // Add revision icon with tooltip if there's a message
+                    const revisionTooltip = hasRevision ? 
+                        `<div class="relative inline-block ml-1 group">
+                            <svg class="w-4 h-4 text-red-500 animate-bounce" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                            <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+                                Revision Requested: Click to view details
+                                <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                    <div class="w-2 h-2 bg-gray-900 rotate-45"></div>
+                                </div>
+                            </div>
+                        </div>` : '';
+
                     let actionsHtml = '';
 
-                    // --- AESTHETIC ICONS UPDATE START ---
                     if (showArchived) {
                         actionsHtml = `
                             <button onclick="restoreProposal('${proposal.id}')" class="inline-flex items-center gap-2 text-sm font-bold text-green-600 hover:text-green-800 transition mr-2" title="Restore">
@@ -1845,23 +1889,33 @@
                             </button>`;
                     } else {
                         actionsHtml = `
-                            <button onclick="openProjectModal('${safeData}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition" title="View Details">
+                            <button onclick="openFacultyProposalModal('${safeData}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition" title="View Details">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                             </button>
-                            <a href="SubmitProposal.html?id=${proposal.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-purple-50 hover:text-cnsc-500 transition" title="Edit Proposal">
+                            <a href="SubmitProposal.html?id=${proposal.id}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-purple-50 hover:text-cnsc-500 transition" title="${hasRevision ? 'Make Revisions' : 'Edit Proposal'}">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" /></svg>
                             </a>
                             <button onclick="openDeleteModal('${proposal.id}')" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:bg-red-100 hover:text-red-600 transition" title="Archive or Delete">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                             </button>`;
                     }
-                    // --- AESTHETIC ICONS UPDATE END ---
 
                     return `
-                        <tr class="border-b hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 font-bold text-gray-900">${proposal.title}</td>
+                        <tr class="border-b hover:bg-gray-50 transition ${hasRevision ? 'bg-red-50 hover:bg-red-100' : ''}">
+                            <td class="px-6 py-4 font-bold text-gray-900">
+                                <div class="flex items-center gap-2">
+                                    ${proposal.title}
+                                    ${revisionTooltip}
+                                </div>
+                                ${hasRevision ? '<div class="text-xs text-red-600 font-medium mt-1">Revision Requested - Click to view details</div>' : ''}
+                            </td>
                             <td class="px-6 py-4">${dateStr}</td>
-                            <td class="px-6 py-4"><span class="px-3 py-1 text-xs font-bold rounded-full ${statusClass}">${proposal.status}</span></td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-1">
+                                    <span class="px-3 py-1 text-xs font-bold rounded-full ${statusClass}">${proposal.status}</span>
+                                    ${revisionIndicator}
+                                </div>
+                            </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end items-center gap-2">${actionsHtml}</div>
                             </td>
@@ -1893,7 +1947,6 @@
                 if (item.status === 'Completed') badgeColor = 'bg-green-500';
                 if (item.status === 'In Progress') badgeColor = 'bg-blue-500';
 
-                // --- IMAGE SYNC FIX START ---
                 // Set a default placeholder image
                 let coverImageUrl = `https://source.unsplash.com/random/400x300?work&sig=${item.id}`;
                 // Check if there are any attachments
@@ -1905,7 +1958,6 @@
                         coverImageUrl = firstImage;
                     }
                 }
-                // --- IMAGE SYNC FIX END ---
 
                 return `
                 <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-gray-100 flex flex-col h-full group">
@@ -1944,7 +1996,6 @@
             grid.innerHTML = data.map(item => {
                 const safeItem = encodeURIComponent(JSON.stringify(item));
 
-                // --- IMAGE SYNC FIX START ---
                 let coverImageUrl = `https://source.unsplash.com/random/400x300?success&sig=${item.id}`;
                 if (item.attachment_urls && item.attachment_urls.length > 0) {
                     const firstImage = item.attachment_urls.find(url => url && url.match(/\.(jpeg|jpg|gif|png|webp|avif)$/i));
@@ -1952,7 +2003,6 @@
                         coverImageUrl = firstImage;
                     }
                 }
-                // --- IMAGE SYNC FIX END ---
 
                 return `
                 <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-emerald-100 flex flex-col h-full group">
@@ -2251,6 +2301,159 @@
             if (card) card.classList.add('hidden');
         }
 
+        // --- FACULTY PROPOSAL MODAL WITH REVISION MESSAGES ---
+        
+        // Open faculty proposal modal with revision details
+        function openFacultyProposalModal(encodedData) {
+            try {
+                const proposal = JSON.parse(decodeURIComponent(encodedData));
+                
+                // Set basic info
+                document.getElementById('faculty-proposal-title').textContent = proposal.title || 'Untitled Proposal';
+                document.getElementById('faculty-proposal-id').textContent = `ID: ${proposal.id ? proposal.id.substring(0, 8) + '...' : 'N/A'}`;
+                
+                // Set status badge
+                const statusBadge = document.getElementById('faculty-proposal-status-badge');
+                let statusClass = 'bg-yellow-100 text-yellow-800';
+                let statusText = proposal.status || 'Pending';
+                
+                if (proposal.status === 'Approved') {
+                    statusClass = 'bg-green-100 text-green-800';
+                } else if (proposal.status === 'Revision Requested') {
+                    statusClass = 'bg-red-100 text-red-800';
+                } else if (proposal.status === 'Archived') {
+                    statusClass = 'bg-gray-100 text-gray-800';
+                }
+                
+                statusBadge.innerHTML = `<span class="px-3 py-1 text-sm font-bold rounded-full ${statusClass}">${statusText}</span>`;
+                
+                // Check if revision requested
+                const hasRevision = proposal.status === 'Revision Requested' && proposal.revision_reason;
+                const revisionAlert = document.getElementById('faculty-revision-alert');
+                const actionRequired = document.getElementById('faculty-action-required');
+                
+                if (hasRevision) {
+                    revisionAlert.classList.remove('hidden');
+                    actionRequired.classList.remove('hidden');
+                    
+                    // Set revision details
+                    document.getElementById('faculty-revision-reason').textContent = proposal.revision_reason || 'No specific reason provided.';
+                    
+                    // Format revision date
+                    if (proposal.revision_requested_at) {
+                        const revisionDate = new Date(proposal.revision_requested_at);
+                        document.getElementById('faculty-revision-date').textContent = revisionDate.toLocaleString();
+                        document.getElementById('faculty-timeline-revision-date').textContent = revisionDate.toLocaleString();
+                    } else {
+                        document.getElementById('faculty-revision-date').textContent = 'Date not available';
+                        document.getElementById('faculty-timeline-revision-date').textContent = 'Date not available';
+                    }
+                    
+                    // Show revision in timeline
+                    document.getElementById('faculty-timeline-revision').classList.remove('hidden');
+                    
+                    // Update edit button text
+                    document.getElementById('faculty-edit-button').innerHTML = `
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" />
+                        </svg>
+                        Make Revisions
+                    `;
+                } else {
+                    revisionAlert.classList.add('hidden');
+                    actionRequired.classList.add('hidden');
+                    document.getElementById('faculty-timeline-revision').classList.add('hidden');
+                    
+                    // Update edit button text
+                    document.getElementById('faculty-edit-button').innerHTML = `
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" />
+                        </svg>
+                        Edit Proposal
+                    `;
+                }
+                
+                // Set proposal details
+                document.getElementById('faculty-proponents').textContent = proposal.proponents || 'N/A';
+                document.getElementById('faculty-project-type').textContent = proposal.project_type || 'N/A';
+                document.getElementById('faculty-budget').textContent = proposal.budget_requirement ? 
+                    '$' + parseFloat(proposal.budget_requirement).toLocaleString() : 'N/A';
+                document.getElementById('faculty-implementation-days').textContent = proposal.implementation_days || 'N/A';
+                document.getElementById('faculty-rationale').textContent = proposal.rationale || 'No rationale provided.';
+                
+                // Set beneficiaries
+                document.getElementById('faculty-beneficiaries-count').textContent = proposal.beneficiaries_count || 'N/A';
+                document.getElementById('faculty-beneficiaries-type').textContent = proposal.beneficiaries_type || 'N/A';
+                document.getElementById('faculty-beneficiaries-location').textContent = proposal.beneficiaries_location || 'N/A';
+                
+                // Set additional info
+                document.getElementById('faculty-date-started').textContent = proposal.date_started || 'N/A';
+                document.getElementById('faculty-attachment-unit').textContent = proposal.attachment_unit || 'N/A';
+                document.getElementById('faculty-metric-value').textContent = proposal.matric_value || proposal.metric_value || 'N/A';
+                
+                // Format dates
+                const createdDate = new Date(proposal.created_at);
+                const updatedDate = proposal.updated_at ? new Date(proposal.updated_at) : createdDate;
+                
+                document.getElementById('faculty-created-date').textContent = createdDate.toLocaleDateString();
+                document.getElementById('faculty-updated-date').textContent = updatedDate.toLocaleDateString();
+                
+                // Set timeline
+                document.getElementById('faculty-timeline-created').textContent = createdDate.toLocaleString();
+                document.getElementById('faculty-timeline-current-status').textContent = `${proposal.status || 'Pending'} as of ${updatedDate.toLocaleDateString()}`;
+                
+                // Store proposal ID for edit button
+                window.currentFacultyProposalId = proposal.id;
+                
+                // Open modal
+                const modal = document.getElementById('faculty-proposal-modal');
+                modal.classList.remove('hidden');
+                
+                // Set first tab active
+                switchFacultyTab('basic', document.querySelector('.faculty-tab.active-tab'));
+                
+            } catch (error) {
+                console.error('Error opening faculty proposal modal:', error);
+                alert('Failed to load proposal details.');
+            }
+        }
+
+        // Close faculty proposal modal
+        function closeFacultyProposalModal() {
+            const modal = document.getElementById('faculty-proposal-modal');
+            modal.classList.add('hidden');
+            window.currentFacultyProposalId = null;
+        }
+
+        // Switch tabs in faculty proposal modal
+        function switchFacultyTab(tabName, btnClicked) {
+            // Hide all tab content
+            document.querySelectorAll('.faculty-tab-content').forEach(p => p.classList.add('hidden'));
+            
+            // Show selected tab content
+            document.getElementById(`faculty-tab-${tabName}`).classList.remove('hidden');
+            
+            // Update tab buttons
+            document.querySelectorAll('.faculty-tab').forEach(btn => {
+                btn.classList.remove('active-tab', 'border-cnsc-500', 'text-cnsc-500', 'font-bold');
+                btn.classList.add('border-transparent', 'text-gray-500', 'font-medium');
+            });
+            
+            if (btnClicked) {
+                btnClicked.classList.remove('border-transparent', 'text-gray-500', 'font-medium');
+                btnClicked.classList.add('active-tab', 'border-cnsc-500', 'text-cnsc-500', 'font-bold');
+            }
+        }
+
+        // Go to edit proposal page
+        function goToEditProposal() {
+            if (window.currentFacultyProposalId) {
+                window.location.href = `SubmitProposal.html?id=${window.currentFacultyProposalId}`;
+            } else {
+                alert('No proposal selected for editing.');
+            }
+        }
+
     </script>
 
     <!-- Account Popup Card -->
@@ -2306,6 +2509,212 @@
                         </svg>
                         Sign Out
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Faculty Proposal Details Modal -->
+    <div id="faculty-proposal-modal" class="fixed inset-0 z-[110] hidden" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <div class="fixed inset-0 bg-black/60 transition-opacity" onclick="closeFacultyProposalModal()"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl border-0">
+                    <!-- Modal Header -->
+                    <div class="bg-white px-6 pt-6 pb-2">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 id="faculty-proposal-title" class="text-2xl font-bold text-gray-900">Proposal Details</h3>
+                                <p id="faculty-proposal-id" class="text-sm text-gray-500 mt-1"></p>
+                            </div>
+                            <button type="button" onclick="closeFacultyProposalModal()"
+                                class="text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Status Badge -->
+                        <div id="faculty-proposal-status-badge" class="inline-block mb-4"></div>
+                        
+                        <!-- Revision Alert (Only shows if revision requested) -->
+                        <div id="faculty-revision-alert" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <div class="flex items-start gap-3">
+                                <div class="flex-shrink-0">
+                                    <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-red-800 mb-1">Revision Requested by Admin</h4>
+                                    <p id="faculty-revision-reason" class="text-red-700 mb-2"></p>
+                                    <div class="text-xs text-red-600">
+                                        <p><strong>Requested at:</strong> <span id="faculty-revision-date"></span></p>
+                                        <p><strong>Please revise your proposal and resubmit for review.</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="bg-gray-50 px-6 pt-4 pb-6">
+                        <!-- Tab Navigation -->
+                        <div class="border-b border-gray-200 mb-6">
+                            <nav class="-mb-px flex space-x-8">
+                                <button onclick="switchFacultyTab('basic', this)" class="faculty-tab active-tab">Basic Info</button>
+                                <button onclick="switchFacultyTab('details', this)" class="faculty-tab">Project Details</button>
+                                <button onclick="switchFacultyTab('timeline', this)" class="faculty-tab">Timeline</button>
+                            </nav>
+                        </div>
+
+                        <!-- Tab Content -->
+                        <div id="faculty-tab-basic" class="faculty-tab-content space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-bold text-gray-900 mb-3">Proposal Information</h4>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Proponents</p>
+                                            <p id="faculty-proponents" class="font-medium text-gray-900"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Project Type</p>
+                                            <p id="faculty-project-type" class="font-medium text-gray-900"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Submission Date</p>
+                                            <p id="faculty-created-date" class="font-medium text-gray-900"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 mb-3">Budget & Implementation</h4>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Budget Requirement</p>
+                                            <p id="faculty-budget" class="font-medium text-gray-900"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Implementation Days</p>
+                                            <p id="faculty-implementation-days" class="font-medium text-gray-900"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Last Updated</p>
+                                            <p id="faculty-updated-date" class="font-medium text-gray-900"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-bold text-gray-900 mb-3">Rationale</h4>
+                                <div id="faculty-rationale" class="p-4 bg-white rounded-lg border border-gray-200 text-gray-700"></div>
+                            </div>
+                        </div>
+
+                        <div id="faculty-tab-details" class="faculty-tab-content hidden space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-bold text-gray-900 mb-3">Beneficiaries</h4>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Count</p>
+                                            <p id="faculty-beneficiaries-count" class="font-medium text-gray-900"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Type</p>
+                                            <p id="faculty-beneficiaries-type" class="font-medium text-gray-900"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Location</p>
+                                            <p id="faculty-beneficiaries-location" class="font-medium text-gray-900"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900 mb-3">Additional Information</h4>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Date Started</p>
+                                            <p id="faculty-date-started" class="font-medium text-gray-900"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Attachment Unit</p>
+                                            <p id="faculty-attachment-unit" class="font-medium text-gray-900"></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-semibold">Metric Value</p>
+                                            <p id="faculty-metric-value" class="font-medium text-gray-900"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="faculty-tab-timeline" class="faculty-tab-content hidden">
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-900">Proposal Created</p>
+                                        <p id="faculty-timeline-created" class="text-sm text-gray-500"></p>
+                                    </div>
+                                </div>
+                                
+                                <div id="faculty-timeline-revision" class="hidden">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-red-800">Revision Requested</p>
+                                            <p id="faculty-timeline-revision-date" class="text-sm text-red-600"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-900">Current Status</p>
+                                        <p id="faculty-timeline-current-status" class="text-sm text-gray-500"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
+                        <div>
+                            <span id="faculty-action-required" class="hidden text-sm font-medium text-red-600 animate-pulse">
+                                Action Required: Please revise your proposal
+                            </span>
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="closeFacultyProposalModal()" class="btn btn-secondary">Close</button>
+                            <button onclick="goToEditProposal()" id="faculty-edit-button" class="btn btn-primary">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" />
+                                </svg>
+                                Edit Proposal
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
