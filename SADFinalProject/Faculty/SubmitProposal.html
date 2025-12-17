@@ -87,6 +87,7 @@
                 <!-- STEP 1 -->
                 <div data-step="1" class="space-y-6">
                     <h2 class="text-xl font-bold text-gray-800 border-b pb-2">I. Project Description</h2>
+                    <input type="hidden" name="contact_email" />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div><label class="block text-sm font-bold text-gray-700">Project Title</label><input
                                 type="text" name="title"
@@ -101,7 +102,7 @@
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
                         </div>
                         <div><label class="block text-sm font-bold text-gray-700">No. of Beneficiaries</label><input
-                                type="text" name="beneficiaries_no"
+                                type="number" name="beneficiaries_no"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
                         </div>
                         <div><label class="block text-sm font-bold text-gray-700">Target Beneficiaries</label><input
@@ -112,10 +113,14 @@
                                 name="location"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
                         </div>
-                        <div><label class="block text-sm font-bold text-gray-700">Duration</label><input type="date"
-                                name="start_date"
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700">Implementation Duration (in
+                                days)</label>
+                            <input type="number" name="duration_days"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm"
-                                required></div>
+                                placeholder="e.g., 90" required>
+                        </div>
+
                         <div><label class="block text-sm font-bold text-gray-700">Budget</label><input type="number"
                                 name="budget_req"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-cnsc-violet sm:text-sm">
@@ -346,11 +351,12 @@
         });
     </script>
 
-   <!-- SCRIPT 2: SUPABASE LOGIC (This is the updated part) -->
+    <!-- SCRIPT 2: SUPABASE LOGIC (This is the updated part) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabaseUrl = 'https://ixupbyyoxubpylffklrf.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4dXBieXlveHVicHlsZmZrbHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMTg1MzcsImV4cCI6MjA4MDU5NDUzN30.DWQdzoB1LfS9tR1Ew9IbKA93Bp-fHeb7A9GohnE1-7A';
+        const supabaseUrl = 'https://fkdqenrxfanpgmtogiig.supabase.co/';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDA1NzksImV4cCI6MjA4MDMxNjU3OX0.NSA57GQcxnCpLnqMVlDpf_lvfggb2H-IGGTBL_XYQ4I';
+
         const sbClient = supabase.createClient(supabaseUrl, supabaseKey);
         const proposalForm = document.getElementById('proposal-form');
 
@@ -368,14 +374,14 @@
                     form.querySelector('[name="title"]').value = partnerData.subject || '';
                     form.querySelector('[name="proponents"]').value = partnerData.organization_name || '';
 
-                    // Pre-fill hidden field with partner's email
-                    form.querySelector('[name="original_partner_email"]').value = partnerData.contact_email || '';
+                    // Pre-fill the NEW hidden field with the partner's email
+                    form.querySelector('\[name="contact_email"\]').value = partnerData.contact_email || '';
 
                     // Pre-fill rationale
-                    let rationaleText = `--- Data from Partner Submission ---\n`;
-                    rationaleText += `Proposed Collaboration: ${partnerData.collaboration_areas || 'N/A'}\n`;
-                    rationaleText += `Expected Outcomes: ${partnerData.partnership_outcomes || 'N/A'}\n\n`;
-                    form.querySelector('[name="rationale"]').value = rationaleText;
+                    // let rationaleText = `--- Data from Partner Submission ---\n`;
+                    // rationaleText += `Proposed Collaboration: ${partnerData.collaboration_areas || 'N/A'}\n`;
+                    // rationaleText += `Expected Outcomes: ${partnerData.partnership_outcomes || 'N/A'}\n\n`;
+                    // form.querySelector('[name="rationale"]').value = rationaleText;
 
                     alert('Form pre-filled with data from partner proposal. Please review and complete.');
 
@@ -385,58 +391,113 @@
             }
         });
 
-        // MODIFIED: HANDLESUBMIT WITH MAILTO WORKFLOW
+        // === FINAL & CORRECTED SUBMISSION LOGIC MATCHING YOUR WORKFLOW ===
         proposalForm.addEventListener('submit', async (event) => {
             event.preventDefault();
+
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting...';
 
             try {
                 const formData = new FormData(proposalForm);
-                
-                // 1. Save Main Proposal Data
+                // We still need the original ID to know which record to update
+                const originalPartnerProposalId = formData.get('partner_proposal_id');
+                const files = formData.getAll('file-upload');
+                const attachmentUrls = [];
+
+                // --- 1. HANDLE FILE UPLOADS ---
+                if (files.length > 0 && files[0].size > 0) {
+                    submitBtn.textContent = 'Uploading files...';
+                    for (const file of files) {
+                        const filePath = `public/${Date.now()}-${file.name}`;
+                        const { error: uploadError } = await sbClient.storage
+                            .from('faculty_proposal_file_attachments')
+                            .upload(filePath, file);
+
+                        if (uploadError) throw uploadError;
+
+                        const { data: urlData } = sbClient.storage
+                            .from('faculty_proposal_file_attachments')
+                            .getPublicUrl(filePath);
+
+                        attachmentUrls.push(urlData.publicUrl);
+                    }
+                }
+
+                submitBtn.textContent = 'Saving proposal...';
+
+                // --- 2. SAVE THE PROPOSAL DATA (WITH THE LINKING KEY REMOVED) ---
                 const mainData = {
                     title: formData.get('title'),
                     project_type: formData.get('project_type'),
                     proponents: formData.get('proponents'),
-                    // ... (add all other mainData fields here)
+                    beneficiaries_count: formData.get('beneficiaries_no'),
+                    beneficiaries_type: formData.get('beneficiaries_type'),
+                    beneficiaries_location: formData.get('location'),
+                    implementation_days: formData.get('implementation_days'),
+                    date_started: formData.get('date_started'),
+                    budget_requirement: formData.get('budget_req'),
+                    rationale: formData.get('rationale'),
+                    attachment_urls: attachmentUrls,
+                    status: 'For Approval'
+                    // The 'partner_proposal_id' key has been REMOVED from this object
                 };
+
                 const { data: proposal, error: proposalError } = await sbClient
                     .from('faculty_extension_proposals').insert(mainData).select().single();
+
                 if (proposalError) throw proposalError;
-                
+
                 const newProposalId = proposal.id;
 
-                // 2. Save Staff and LogFrame data (your existing logic for this is correct)
-                // ...
+                // --- 3. SAVE STAFFING DATA ---
+                submitBtn.textContent = 'Saving staffing...';
+                const staffRows = [];
+                const staffNames = document.querySelectorAll('input[name="staff_name[]"]');
+                const staffResponsibilities = document.querySelectorAll('input[name="staff_responsibilities[]"]');
+                const staffContactPersons = document.querySelectorAll('input[name="staff_contact_person[]"]');
+                const staffContactNumbers = document.querySelectorAll('input[name="staff_contact_no[]"]');
 
-                // 3. Prepare and Trigger Mailto Link
-                const partnerEmail = formData.get('original_partner_email');
-                const adminEmail = 'admin.ccms@cnsc.edu.ph'; // Your internal admin email
+                staffNames.forEach((nameInput, index) => {
+                    if (nameInput.value) { // Only add if there is a name
+                        staffRows.push({
+                            proposal_id: newProposalId,
+                            office_staff: nameInput.value,
+                            responsibilities: staffResponsibilities[index].value,
+                            contact_person: staffContactPersons[index].value,
+                            contact_number: staffContactNumbers[index].value
+                        });
+                    }
+                });
 
-                if (!partnerEmail) {
-                    alert('Proposal saved successfully! (No partner email found for notification).');
-                    window.location.href = 'Faculty.html';
-                    return;
+                if (staffRows.length > 0) {
+                    const { error: staffError } = await sbClient
+                        .from('faculty_proposal_staff')
+                        .insert(staffRows);
+                    if (staffError) throw staffError;
                 }
 
-                const subject = `Update on your CNSC Proposal: ${proposal.title}`;
-                const body = `Dear Partner,\n\n` +
-                             `This is to notify you that the proposal "${proposal.title}" has been formally created in our system based on your submission.\n\n` +
-                             `It will now undergo an internal review process. You will be notified of any further status changes.\n\n` +
-                             `Sincerely,\n` +
-                             `The CNSC Extension Services Team`;
+                // --- 4. UPDATE THE ORIGINAL PARTNER PROPOSAL ---
+                // This part still needs the original ID to work correctly
+                if (originalPartnerProposalId) {
+                    const { error: updateError } = await sbClient
+                        .from('partners_proposals')
+                        .update({ status: 'For Approval' })
+                        .eq('id', originalPartnerProposalId); // Use the ID here
 
-                const mailtoLink = `mailto:${partnerEmail}?cc=${adminEmail}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                    if (updateError) {
+                        console.error('Could not update partner proposal status:', updateError);
+                    }
+                }
 
-                alert('Proposal submitted successfully! Click OK to prepare the notification email to the partner and admin.');
-                
-                window.location.href = mailtoLink;
+                // --- 5. SUCCESS AND REDIRECT ---
+                alert('Proposal submitted successfully and is now "For Approval".');
+                window.location.href = 'Faculty.html';
 
             } catch (error) {
                 console.error('Submission Error:', error);
-                alert(`Error: ${error.message}`);
+                alert(`A critical error occurred: ${error.message}`);
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit Proposal';
             }

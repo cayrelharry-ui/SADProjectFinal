@@ -1496,8 +1496,8 @@
 
     <!-- FULLY INTEGRATED SCRIPT FROM Faculty.html -->
     <script>
-        const supabaseUrl = 'https://ixupbyyoxubpylffklrf.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4dXBieXlveHVicHlsZmZrbHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwMTg1MzcsImV4cCI6MjA4MDU5NDUzN30.DWQdzoB1LfS9tR1Ew9IbKA93Bp-fHeb7A9GohnE1-7A';
+        const supabaseUrl = 'https://fkdqenrxfanpgmtogiig.supabase.co/';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDA1NzksImV4cCI6MjA4MDMxNjU3OX0.NSA57GQcxnCpLnqMVlDpf_lvfggb2H-IGGTBL_XYQ4I';
 
         let sbClient;
         try {
@@ -1715,7 +1715,7 @@
             tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-gray-400 animate-pulse">Loading partner proposals...</td></tr>`;
 
             try {
-                const { data, error } = await sbClient.from('partners_proposals').select('*').order('created_at', { ascending: false });
+                const { data, error } = await sbClient.from('partners_proposals').select('*').in('status', ['New', 'Under Review']).order('created_at', { ascending: false });
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
@@ -1752,20 +1752,20 @@
             }
         }
 
-        // NEW FUNCTION: This creates and triggers the mailto link
+        // MODIFIED FUNCTION: Added console logs for debugging
         function sendManualEmail(encodedData) {
             const proposal = JSON.parse(decodeURIComponent(encodedData));
 
-            // Check if the partner has an email address
+            // --- DEBUG START ---
+            console.log("Attempting to send manual email. Proposal data:", proposal);
+            // --- DEBUG END ---
+
             if (!proposal.contact_email) {
                 alert("This proposal does not have a contact email address on file.");
                 return;
             }
 
-            // You can customize the status message here
             const statusUpdate = proposal.status || 'Reviewed';
-
-            // Prepare the email fields/
             const to = proposal.contact_email;
             const subject = `Update on your CNSC Proposal: ${proposal.subject}`;
             const body = `Dear ${proposal.contact_full_name || 'Partner'},\n\n` +
@@ -1775,12 +1775,16 @@
                 `Sincerely,\n` +
                 `The CNSC Extension Services Team`;
 
-            // Create the mailto link, ensuring the subject and body are properly encoded for URLs
             const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-            // Trigger the link to open the user's email client
+            // --- DEBUG START ---
+            console.log("Generated mailto link:", mailtoLink);
+            alert("Check the console for the generated mailto link. Trying to open email client now..."); // This confirms the function is running.
+            // --- DEBUG END ---
+
             window.location.href = mailtoLink;
         }
+
 
         async function startDrafting(oppId) {
             if (!currentUser) return alert("Please wait for user profile to load.");
