@@ -582,8 +582,8 @@
                                 Training Workshop</h1>
                             <p class="text-sm md:text-base text-gray-200 mb-4 max-w-2xl line-clamp-2">ICT Enrichment
                                 Workshop Towards an Inclusive LGU Talisay Techie Workforce</p>
-                                
-                            <a href="https://forms.gle/YOUR_GOOGLE_FORM_LINK"
+
+                            <a href="https://forms.gle/BGKrkTxvK68uLJ676"
                               target="_blank"
                             rel="noopener noreferrer"
                             class="inline-block px-5 py-2 bg-[#5A2C9D] hover:bg-[#4a2482] text-white font-semibold rounded-full transition duration-300 text-xs md:text-sm">
@@ -685,32 +685,38 @@
             </div>
         </section>
 
-        <!-- 4. QUICK STATS BAR -->
-        <section
-            class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#5A2C9D] to-[#4C2684] text-white shadow-2xl mb-20 transform hover:scale-[1.01] transition duration-500">
-            <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-                <div class="absolute -top-24 -left-24 w-64 h-64 bg-white rounded-full mix-blend-overlay"></div>
-                <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-white rounded-full mix-blend-overlay"></div>
-            </div>
-            <div class="relative z-10 px-6 py-16">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                    <div class="p-2">
-                        <div class="text-6xl font-black mb-2 tracking-tight">120+</div>
-                        <div class="text-purple-200 font-bold uppercase tracking-widest text-sm">Total Projects</div>
-                    </div>
-                    <div class="p-2 md:border-l md:border-r border-purple-400/30">
-                        <div class="text-6xl font-black mb-2 tracking-tight">15k+</div>
-                        <div class="text-purple-200 font-bold uppercase tracking-widest text-sm">Beneficiaries Reached
-                        </div>
-                    </div>
-                    <div class="p-2">
-                        <div class="text-6xl font-black mb-2 tracking-tight">50+</div>
-                        <div class="text-purple-200 font-bold uppercase tracking-widest text-sm">Partner Institutions
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- 4. QUICK STATS BAR -->
+<section
+  class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#5A2C9D] to-[#4C2684] text-white shadow-2xl mb-20">
+
+  <div class="relative z-10 px-6 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+
+      <div class="p-2">
+        <div id="projectCount" class="text-6xl font-black mb-2 tracking-tight">0</div>
+        <div class="text-purple-200 font-bold uppercase tracking-widest text-sm">
+          Total Projects
+        </div>
+      </div>
+
+      <div class="p-2 md:border-l md:border-r border-purple-400/30">
+        <div id="beneficiaryCount" class="text-6xl font-black mb-2 tracking-tight">0</div>
+        <div class="text-purple-200 font-bold uppercase tracking-widest text-sm">
+          Beneficiaries Reached
+        </div>
+      </div>
+
+      <div class="p-2">
+        <div id="partnerCount" class="text-6xl font-black mb-2 tracking-tight">0</div>
+        <div class="text-purple-200 font-bold uppercase tracking-widest text-sm">
+          Partner Institutions
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
         <div class="pb-16">
             <div id="upcoming-events" class="grid grid-cols-1 lg:grid-cols-4 gap-8 scroll-mt-32">
@@ -1425,6 +1431,13 @@
             });
         });
     </script>
+
+    <script>
+  document.getElementById("projectCount").innerText = "50";
+  document.getElementById("beneficiaryCount").innerText = "50";
+  document.getElementById("partnerCount").innerText = "50";
+</script>
+
 
 </body>
 </html>
