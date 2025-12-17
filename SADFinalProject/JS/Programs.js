@@ -1,3 +1,5 @@
+console.log('Programs.js LOADED');
+
 import { supabase } from './db_connection.js';
 
 // Store projects globally for the modal
@@ -129,3 +131,20 @@ function setText(id, text) {
     const el = document.getElementById(id);
     if (el) el.innerText = text || 'N/A';
 }
+
+// ===============================
+// ADD ACTIVITY BUTTON TEST
+// ===============================
+document.addEventListener('DOMContentLoaded', () => {
+    const saveBtn = document.getElementById('act-save');
+
+    if (!saveBtn) {
+        console.warn('Add Activity button not found');
+        return;
+    }
+
+    saveBtn.addEventListener('click', () => {
+        console.log('Add Activity button clicked — Programs.js is active');
+    });
+});
+
