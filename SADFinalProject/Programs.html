@@ -789,6 +789,7 @@
             });
         });
     </script>
+
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
@@ -830,6 +831,72 @@ function createProjectCard(project) {
         </div>
       </div>`;
 }
+
+// ====== Filter Logic ======
+
+// Keep track of active filters
+let activeCategory = 'All Projects';
+let activeStatus = 'All';
+
+// Filter buttons
+const categoryButtons = document.querySelectorAll('.flex.flex-wrap button');
+categoryButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Remove active styles from all buttons
+        categoryButtons.forEach(b => b.classList.remove('bg-[#5A2C9D]', 'text-white', 'shadow-md'));
+        categoryButtons.forEach(b => b.classList.add('bg-white', 'border', 'border-gray-200', 'text-gray-600', 'hover:bg-purple-50', 'hover:text-[#5A2C9D]'));
+        
+        // Add active style to clicked button
+        btn.classList.add('bg-[#5A2C9D]', 'text-white', 'shadow-md');
+        btn.classList.remove('bg-white', 'border', 'border-gray-200', 'text-gray-600');
+
+        activeCategory = btn.textContent.trim();
+        applyFilters();
+    });
+});
+
+// Status dropdown
+const statusSelect = document.querySelector('select.form-select');
+statusSelect.addEventListener('change', () => {
+    activeStatus = statusSelect.value;
+    applyFilters();
+});
+
+// Apply filters function
+// Apply filters function
+function applyFilters() {
+    let filtered = allProjects;
+
+    // Category filter (skip if "All Projects")
+    if (activeCategory !== 'All Projects') {
+        filtered = filtered.filter(p => {
+            return p.category && p.category.toLowerCase() === activeCategory.toLowerCase();
+        });
+    }
+
+    // Status filter (skip if "All")
+    if (activeStatus !== 'All') {
+        filtered = filtered.filter(p => {
+            if (!p.status) return false;
+
+            const projectStatus = p.status.toLowerCase().trim();
+            const filterStatus = activeStatus.toLowerCase().trim();
+
+            // Map filter dropdown names to actual project status values
+            const statusMap = {
+                'ongoing': 'in progress',
+                'completed': 'completed',
+                'proposed': 'proposed'
+            };
+
+            return projectStatus === (statusMap[filterStatus] || filterStatus);
+        });
+    }
+
+    renderProjects(filtered);
+}
+
+
 
 function renderProjects(projects) {
     const grid = document.getElementById('projects-grid');
