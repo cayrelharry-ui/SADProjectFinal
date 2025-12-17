@@ -1563,6 +1563,37 @@
             });
         });
 
+        // --- LOGOUT FUNCTION ---
+App.logout = async function() {
+    if (!confirm('Are you sure you want to sign out?')) {
+        return;
+    }
+    
+    try {
+        // Sign out from Supabase
+        if (sbClient && sbClient.auth) {
+            const { error } = await sbClient.auth.signOut();
+            if (error) throw error;
+        }
+        
+        // Clear all local storage
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Show success message
+        alert('Signed out successfully! Redirecting to login...');
+        
+        // Redirect to login page
+        window.location.href = '../HTML/LogIn.html';
+        
+    } catch (error) {
+        console.error('Logout error:', error);
+        // Still redirect even if there's an error
+        alert('Signing out...');
+        window.location.href = '../HTML/LogIn.html';
+    }
+};
+
         async function fetchUserProfileAndData() {
             await fetchUserProfile();
             fetchDashboardData();
