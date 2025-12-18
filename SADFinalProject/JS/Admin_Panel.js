@@ -1,14 +1,9 @@
 // Admin_Panel.js - COMPLETE VERSION WITH ALL FUNCTIONALITIES
-import { 
-    supabase, 
-    logout as supabaseLogout, 
-    getCurrentUser,
-    getAllUsers,
-    getPendingUsers,
-    approveUser,
-    rejectUser,
-    updateUserStatus
-} from './db_connection.js';
+// NOTE: Uses global Supabase/auth helpers initialized in db_connection.js
+
+const supabase = window.supabaseClient;
+const supabaseAuth = window.supabaseAuth;
+const getCurrentUser = window.getCurrentUser || (() => null);
 
 // Import the upload functions
 import {
@@ -1541,7 +1536,7 @@ async function loadAllUsers() {
     console.log("Loading all users...");
     
     try {
-        const { users, error } = await getAllUsers();
+        const { users, error } = await supabaseAuth.getAllUsers();
         
         if (error) {
             throw new Error('Failed to load users: ' + error.message);
@@ -1603,7 +1598,7 @@ async function loadPendingApprovals() {
     console.log("Loading pending approvals...");
     
     try {
-        const { users, error } = await getPendingUsers();
+        const { users, error } = await supabaseAuth.getPendingUsers();
         
         if (error) {
             throw new Error('Failed to load pending approvals: ' + error.message);
@@ -1778,7 +1773,9 @@ async function logout() {
     if (confirm('Are you sure you want to logout?')) {
         try {
             showStatus('Logging out...', 'info');
-            await supabaseLogout();
+            if (supabaseAuth && typeof supabaseAuth.logout === 'function') {
+                await supabaseAuth.logout();
+            }
             localStorage.clear();
             
             setTimeout(() => {
@@ -1817,7 +1814,7 @@ window.approveUserAccount = async function(userId) {
     if (!confirm('Approve this user account?')) return;
     
     try {
-        const result = await approveUser(userId, window.currentAdminId);
+        const result = await supabaseAuth.approveUser(userId, window.currentAdminId);
         if (result.success) {
             showStatus('User approved!', 'success');
             await loadDashboardData();
@@ -1833,7 +1830,7 @@ window.rejectUserAccount = async function(userId) {
     if (!confirm('Reject this user account?')) return;
     
     try {
-        const result = await rejectUser(userId, window.currentAdminId);
+        const result = await supabaseAuth.rejectUser(userId, window.currentAdminId);
         if (result.success) {
             showStatus('User rejected', 'success');
             await loadDashboardData();
@@ -1849,7 +1846,7 @@ window.activateUser = async function(userId) {
     if (!confirm('Activate this user account?')) return;
     
     try {
-        const result = await updateUserStatus(userId, 'active', window.currentAdminId);
+        const result = await supabaseAuth.updateUserStatus(userId, 'active', window.currentAdminId);
         if (result.success) {
             showStatus('User activated', 'success');
             await loadDashboardData();
@@ -1865,7 +1862,7 @@ window.deactivateUser = async function(userId) {
     if (!confirm('Deactivate this user account?')) return;
     
     try {
-        const result = await updateUserStatus(userId, 'inactive', window.currentAdminId);
+        const result = await supabaseAuth.updateUserStatus(userId, 'inactive', window.currentAdminId);
         if (result.success) {
             showStatus('User deactivated', 'success');
             await loadDashboardData();
