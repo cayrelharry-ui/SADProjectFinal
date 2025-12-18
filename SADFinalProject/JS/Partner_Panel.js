@@ -21,14 +21,26 @@ const PARTNER_CONFIG = window.getPartnerConfig ? window.getPartnerConfig() : {
     CATEGORIES: ['partnership_request', 'moa', 'project']
 };
 
+// Simple flags so we don't refetch from Supabase every time
+// a user navigates between sections. Explicit "Refresh" buttons
+// still force a reload by calling the load* functions directly.
+const SECTION_LOADED = {
+    dashboard: false,
+    requests: false,
+    approvedRequests: false,
+    documents: false
+};
+
 // Initialize Supabase client using the global supabaseClient from db_connection.js
+// NOTE: db_connection.js does not expose `window.supabaseInitialized`, so we only check for supabaseClient.
 let supabase;
-if (window.supabaseClient && window.supabaseInitialized) {
+if (window.supabaseClient) {
     supabase = window.supabaseClient;
     console.log("✅ Using Supabase client from db_connection.js");
 } else if (window.supabase && window.supabase.createClient) {
+    // Fallback: create our own client if, for some reason, db_connection.js has not yet set supabaseClient
     supabase = window.supabase.createClient(PARTNER_CONFIG.SUPABASE_URL, PARTNER_CONFIG.SUPABASE_ANON_KEY);
-    console.log("⚠️ Created new Supabase client");
+    console.log("⚠️ Created new Supabase client (fallback)");
 } else {
     console.error("❌ Supabase not available. Please ensure db_connection.js is loaded first.");
 }
@@ -2242,21 +2254,36 @@ function loadSectionData(sectionName) {
 
     switch (sectionName) {
         case 'dashboard':
-            loadDashboardData(userEmail);
-            loadRecentRequests(userEmail);
+            if (!SECTION_LOADED.dashboard) {
+                loadDashboardData(userEmail);
+                loadRecentRequests(userEmail);
+                SECTION_LOADED.dashboard = true;
+            }
             break;
         case 'requests':
-            loadPartnershipRequests();
+            if (!SECTION_LOADED.requests) {
+                loadPartnershipRequests();
+                SECTION_LOADED.requests = true;
+            }
             break;
         case 'approved-requests':
-            loadApprovedRequests();
+            if (!SECTION_LOADED.approvedRequests) {
+                loadApprovedRequests();
+                SECTION_LOADED.approvedRequests = true;
+            }
             break;
         case 'documents':
-            loadDocumentsSection();
+            if (!SECTION_LOADED.documents) {
+                loadDocumentsSection();
+                SECTION_LOADED.documents = true;
+            }
             break;
         default:
-            loadDashboardData(userEmail);
-            loadRecentRequests(userEmail);
+            if (!SECTION_LOADED.dashboard) {
+                loadDashboardData(userEmail);
+                loadRecentRequests(userEmail);
+                SECTION_LOADED.dashboard = true;
+            }
     }
 }
 
@@ -2387,11 +2414,21 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
-    // Check and set correct bucket name
     console.log("🚀 Initializing Partner Panel...");
-    const bucketName = await checkBucketsAndFix();
-    PARTNER_CONFIG.STORAGE_BUCKET = bucketName || 'Uploads';
-    console.log(`✅ Storage bucket set to: ${PARTNER_CONFIG.STORAGE_BUCKET}`);
+
+    // Check and set correct bucket name ONLY if Supabase storage is available.
+    // This prevents a runtime error from breaking sidebar navigation when Supabase isn't ready.
+    try {
+        if (supabase && supabase.storage && typeof supabase.storage.listBuckets === 'function') {
+            const bucketName = await checkBucketsAndFix();
+            PARTNER_CONFIG.STORAGE_BUCKET = bucketName || 'Uploads';
+            console.log(`✅ Storage bucket set to: ${PARTNER_CONFIG.STORAGE_BUCKET}`);
+        } else {
+            console.warn("⚠️ Supabase storage not available; skipping bucket check. Using default bucket:", PARTNER_CONFIG.STORAGE_BUCKET);
+        }
+    } catch (err) {
+        console.error("❌ Error while checking storage buckets. Falling back to default bucket:", err);
+    }
 
     const userWelcome = document.getElementById('userWelcome');
     if (userWelcome) {
