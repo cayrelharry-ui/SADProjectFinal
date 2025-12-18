@@ -272,3 +272,17 @@
 .table-hover tbody tr:hover {
     background-color: rgba(0, 123, 255, 0.05);
 }
+/* Fix modal z-index to appear above sidebar */
+.modal {
+    z-index: 1200 !important; /* Higher than sidebar's 1100 */
+}
+
+/* Ensure modal backdrop appears above sidebar but below modal */
+.modal-backdrop {
+    z-index: 1150 !important; /* Between sidebar and modal */
+}
+
+/* For proposal details modal specifically */
+#proposalDetailsModal {
+    z-index: 1201 !important;
+}

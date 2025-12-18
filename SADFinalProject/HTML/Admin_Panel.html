@@ -90,6 +90,102 @@
         #dashboard-section .bg-warning .fs-1 { background-color: var(--yellow-50); color: var(--yellow-500) !important; }
         #dashboard-section .bg-info .fs-1 { background-color: var(--blue-50); color: var(--blue-600) !important; }
         #dashboard-section .bg-secondary .fs-1 { background-color: var(--gray-100); color: var(--gray-500) !important; }
+    
+         :root {
+        --cnsc-50: #faf5ff; --cnsc-100: #f3e8ff; --cnsc-200: #e9d5ff; --cnsc-500: #5A2C9D; --cnsc-600: #4C2684;
+        --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb; --gray-300: #d1d5db;
+        --gray-400: #9ca3af; --gray-500: #6b7280; --gray-600: #4b5563; --gray-700: #374151; --gray-900: #111827;
+        --green-50: #f0fdf4; --green-500: #22c55e; --green-600: #16a34a; --green-800: #166534;
+        --yellow-50: #fefce8; --yellow-500: #eab308; --yellow-800: #854d0e;
+        --red-50: #fef2f2; --red-100: #fee2e2; --red-600: #dc2626; --red-700: #b91c1c;
+        --blue-50: #eff6ff; --blue-600: #2563eb; --blue-800: #1e40af;
+    }
+
+    body { font-family: 'Inter', sans-serif; background-color: var(--cnsc-50) !important; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+    /* --- 2. Sidebar Overrides (with fixed positioning) --- */
+    .sidebar.bg-dark {
+        background-color: #ffffff !important; border-right: 1px solid var(--gray-200);
+        position: fixed; top: 0; left: 0; height: 100vh; z-index: 1100;
+        display: flex; flex-direction: column;
+    }
+    .sidebar .position-sticky { display: flex; flex-direction: column; height: 100%; width: 100%; padding: 0; }
+    
+    /* Sidebar Header */
+    .sidebar-header { padding: 1.25rem; border-bottom: 1px solid var(--gray-100); }
+    .sidebar-header img { width: 40px; height: 40px; border-radius: 0.75rem; margin-right: 0.75rem; }
+    .sidebar-header h1 { font-weight: 700; font-size: 0.9rem; color: var(--gray-900); margin: 0; }
+    .sidebar-header p { font-size: 0.75rem; color: var(--gray-500); margin: 0; }
+    
+    /* Navigation Buttons */
+    nav.custom-nav { flex-grow: 1; padding: 0.75rem; overflow-y: auto; }
+    nav.custom-nav p { font-size: 0.7rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase; padding: 0.5rem 0.75rem; letter-spacing: 0.05em; }
+    
+    .sidebar .nav-link {
+        display: flex; align-items: center; width: 100%; text-align: left;
+        color: var(--gray-600); font-weight: 500; border-radius: 0.5rem; border: none; background: none;
+        transition: all 0.2s ease-in-out; padding: 0.65rem 0.75rem;
+    }
+    .sidebar .nav-link:hover { background-color: var(--cnsc-50); color: var(--cnsc-600); }
+    .sidebar .nav-link.active { background-color: var(--cnsc-100) !important; color: var(--cnsc-600) !important; }
+    .sidebar .nav-link i { margin-right: 0.75rem; font-size: 1.1rem; }
+    .sidebar .badge.bg-danger { background-color: var(--red-100) !important; color: var(--red-700) !important; font-weight: 700; }
+
+    /* --- 3. Main Content & Header Overrides --- */
+    main.ms-sm-auto {
+        margin-left: 16.666667%; /* This is ESSENTIAL for the layout, do not remove */
+        height: 100vh;
+        overflow-y: auto;
+        background-color: #ffffff; /* THIS IS THE FIX: Sets the content area background to white */
+    }
+
+    @media (max-width: 992px) { main.ms-sm-auto { margin-left: 25%; } } /* col-md-3 */
+    @media (max-width: 768px) { main.ms-sm-auto { margin-left: 0 !important; } }
+    
+    main > .border-bottom {
+        background-color: rgba(234, 213, 251, 0.85); backdrop-filter: blur(8px);
+        position: sticky; top: 0; z-index: 1020; border-color: var(--gray-200) !important;
+    }
+    .btn { border-radius: 0.5rem; font-weight: 600; }
+
+    /* --- 4. Card & Stat Styling --- */
+    .card { border-radius: 0.75rem; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.03); border-color: var(--gray-200); }
+    #dashboard-section > .card.mb-4 {
+        background: linear-gradient(135deg, var(--cnsc-600), var(--cnsc-500));
+        color: white; border: none; border-radius: 1rem; padding: 1.5rem;
+    }
+    #dashboard-section > .card.mb-4 h5 { font-size: 1.75rem; }
+    #dashboard-section > .card.mb-4 .card-header { display: none; }
+    #dashboard-section > .card.mb-4 .card-body { padding: 0; }
+    #dashboard-section .card.text-white { transition: all 0.2s ease-in-out; }
+    #dashboard-section .card.text-white:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    #dashboard-section .fs-1 { padding: 0.75rem; border-radius: 0.75rem; font-size: 1.75rem !important; }
+    #dashboard-section .bg-success .fs-1 { background-color: var(--green-50); color: var(--green-600) !important; }
+    #dashboard-section .bg-warning .fs-1 { background-color: var(--yellow-50); color: var(--yellow-500) !important; }
+    #dashboard-section .bg-info .fs-1 { background-color: var(--blue-50); color: var(--blue-600) !important; }
+    #dashboard-section .bg-secondary .fs-1 { background-color: var(--gray-100); color: var(--gray-500) !important; }
+
+    /* --- 5. Modal Fixes --- */
+    /* Fix modal z-index to appear above sidebar */
+    .modal {
+        z-index: 1200 !important; /* Higher than sidebar's 1100 */
+    }
+
+    /* Ensure modal backdrop appears above sidebar but below modal */
+    .modal-backdrop {
+        z-index: 1150 !important; /* Between sidebar and modal */
+    }
+
+    /* For proposal details modal specifically */
+    #proposalDetailsModal {
+        z-index: 1201 !important;
+    }
+
+    /* For admin project modal */
+    #adminProjectModal {
+        z-index: 1201 !important;
+    }
     </style>
 </head>
 <body>
@@ -393,7 +489,7 @@
                             </button>
                         </div>
                         <div class="card-body">
-                            <!-- Quick Stats -->
+                            <!-- Quick Stats - REMOVED File-related stats -->
                             <div class="row mb-4">
                                 <div class="col-md-3 col-6 mb-3">
                                     <div class="card stat-card">
@@ -433,7 +529,8 @@
                                 </div>
                             </div>
                             
-                        
+                            <!-- Second Row - Only Active Session remains -->
+                            <div class="row mb-4">
                                 <div class="col-md-3 col-6 mb-3">
                                     <div class="card stat-card">
                                         <div class="card-body text-center">
