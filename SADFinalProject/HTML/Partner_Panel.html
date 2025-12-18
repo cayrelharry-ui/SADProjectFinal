@@ -1060,17 +1060,80 @@
             // Initialize profile section
             initializeProfileSection();
 
-            // Handle logout
+            // Handle logout using the function defined in Partner_Panel.js
             const logoutBtn = document.getElementById('logoutBtn');
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', async function() {
                     try {
-                        const { logout } = await import('../JS/Partner_Dashboard.js');
-                        logout();
+                        if (typeof window.logout === 'function') {
+                            window.logout();
+                        } else {
+                            throw new Error('logout function is not available');
+                        }
                     } catch (error) {
                         console.error('Error during logout:', error);
                         showNotification('Error during logout: ' + error.message, 'error');
                     }
+                });
+            }
+
+            // Ensure sidebar navigation is wired even if Partner_Panel.js initialization fails
+            const navLinks = document.querySelectorAll('.nav-link[data-section]');
+            if (navLinks.length > 0) {
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const section = this.getAttribute('data-section');
+
+                        // Prefer the global showSection from Partner_Panel.js if available
+                        if (typeof window.showSection === 'function') {
+                            window.showSection(section);
+                            return;
+                        }
+
+                        // Fallback: simple section toggling if showSection is not defined
+                        document.querySelectorAll('.section-content').forEach(sec => {
+                            sec.classList.add('d-none');
+                        });
+                        const target = document.getElementById(section + '-section');
+                        if (target) {
+                            target.classList.remove('d-none');
+                        }
+
+                        document.querySelectorAll('.nav-link').forEach(nav => {
+                            nav.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    });
+                });
+            }
+
+            // Ensure "New Request" buttons always open the modal
+            const newRequestTriggers = [
+                document.getElementById('new-request-link'),
+                document.getElementById('new-request-btn')
+            ].filter(Boolean);
+
+            if (newRequestTriggers.length > 0) {
+                newRequestTriggers.forEach(btn => {
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        // Prefer global helper from Partner_Panel.js if available
+                        if (typeof window.showNewRequestModal === 'function') {
+                            window.showNewRequestModal();
+                            return;
+                        }
+
+                        // Fallback: open the modal directly
+                        const modalEl = document.getElementById('newRequestModal');
+                        if (modalEl && typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                            modal.show();
+                        } else {
+                            console.error('Cannot open New Request modal: Bootstrap or modal element not available');
+                        }
+                    });
                 });
             }
 
