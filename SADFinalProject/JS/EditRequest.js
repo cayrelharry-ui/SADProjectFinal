@@ -8,7 +8,7 @@
 // ============================================
 
 // Get configuration from db_connection.js
-const PARTNER_CONFIG = window.getPartnerConfig ? window.getPartnerConfig() : {
+const EDIT_REQ_CONFIG = window.getPartnerConfig ? window.getPartnerConfig() : {
     SUPABASE_URL: 'https://fkdqenrxfanpgmtogiig.supabase.co',
     SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDA1NzksImV4cCI6MjA4MDMxNjU3OX0.NSA57GQcxnCpLnqMVlDpf_lvfggb2H-IGGTBL_XYQ4I',
     STORAGE_BUCKET: 'Uploads',
@@ -18,13 +18,13 @@ const PARTNER_CONFIG = window.getPartnerConfig ? window.getPartnerConfig() : {
 };
 
 // Initialize Supabase client using the global supabaseClient from db_connection.js
-let supabase;
+var supabase;
 if (window.supabaseClient && window.supabaseInitialized) {
     supabase = window.supabaseClient;
     console.log("✅ Using Supabase client from db_connection.js");
-} else if (window.supabase && window.supabase.createClient) {
-    // Fallback: create client directly
-    supabase = window.supabase.createClient(PARTNER_CONFIG.SUPABASE_URL, PARTNER_CONFIG.SUPABASE_ANON_KEY);
+} else if (window.supabase && window.supabase.createClient && EDIT_REQ_CONFIG.SUPABASE_URL && EDIT_REQ_CONFIG.SUPABASE_ANON_KEY) {
+    // Fallback: create client directly if config is available
+    supabase = window.supabase.createClient(EDIT_REQ_CONFIG.SUPABASE_URL, EDIT_REQ_CONFIG.SUPABASE_ANON_KEY);
     console.log("⚠️ Created new Supabase client (db_connection.js not initialized)");
 } else {
     console.error("❌ Supabase not available. Please ensure db_connection.js is loaded first.");
@@ -190,7 +190,7 @@ function showEditModal(request, attachments) {
     const letterDate = request.letter_date ? new Date(request.letter_date).toISOString().split('T')[0] : '';
 
     // Get organization types from config
-    const orgTypes = PARTNER_CONFIG.ORG_TYPES || ['Government', 'NGO', 'Private Company', 'Academic', 'Other'];
+    const orgTypes = EDIT_REQ_CONFIG.ORG_TYPES || ['Government', 'NGO', 'Private Company', 'Academic', 'Other'];
 
     // Modal HTML
     const modalHtml = `
@@ -336,8 +336,8 @@ function showEditModal(request, attachments) {
                                                 <h6 class="text-muted mb-3">Add New Files:</h6>
                                                 <div class="mb-3">
                                                     <input type="file" class="form-control" id="newFiles" multiple
-                                                           accept="${PARTNER_CONFIG.SUPPORTED_FILE_TYPES.join(',')}">
-                                                    <small class="text-muted">Max ${PARTNER_CONFIG.UPLOAD_LIMIT_MB}MB per file. Supported: ${PARTNER_CONFIG.SUPPORTED_FILE_TYPES.join(', ')}</small>
+                                                           accept="${EDIT_REQ_CONFIG.SUPPORTED_FILE_TYPES.join(',')}">
+                                                    <small class="text-muted">Max ${EDIT_REQ_CONFIG.UPLOAD_LIMIT_MB}MB per file. Supported: ${EDIT_REQ_CONFIG.SUPPORTED_FILE_TYPES.join(', ')})</small>
                                                 </div>
                                                 <div id="filePreview" class="mt-3"></div>
                                             </div>
@@ -501,7 +501,7 @@ function handleFilePreview(e) {
     }
 
     // Validate file sizes
-    const maxSize = PARTNER_CONFIG.MAX_FILE_SIZE;
+    const maxSize = EDIT_REQ_CONFIG.MAX_FILE_SIZE;
     const validFiles = [];
     const invalidFiles = [];
 
@@ -519,7 +519,7 @@ function handleFilePreview(e) {
         warningDiv.className = 'alert alert-warning';
         warningDiv.innerHTML = `
             <i class="bi bi-exclamation-triangle"></i>
-            <strong>The following files exceed ${PARTNER_CONFIG.UPLOAD_LIMIT_MB}MB limit and will not be uploaded:</strong>
+            <strong>The following files exceed ${EDIT_REQ_CONFIG.UPLOAD_LIMIT_MB}MB limit and will not be uploaded:</strong>
             <ul class="mb-0">
                 ${invalidFiles.map(name => `<li>${escapeHtml(name)}</li>`).join('')}
             </ul>
@@ -557,7 +557,7 @@ async function uploadFiles(requestId, files) {
     }
 
     // Filter files by size
-    const maxSize = PARTNER_CONFIG.MAX_FILE_SIZE;
+    const maxSize = EDIT_REQ_CONFIG.MAX_FILE_SIZE;
     const validFiles = Array.from(files).filter(file => file.size <= maxSize);
 
     if (validFiles.length === 0) {
@@ -586,7 +586,7 @@ async function uploadFiles(requestId, files) {
 
             // Upload to storage
             const { data: uploadData, error: uploadError } = await supabase.storage
-                .from(PARTNER_CONFIG.STORAGE_BUCKET)
+                .from(EDIT_REQ_CONFIG.STORAGE_BUCKET)
                 .upload(filePath, file);
 
             if (uploadError) {
@@ -596,7 +596,7 @@ async function uploadFiles(requestId, files) {
 
             // Get public URL
             const { data: { publicUrl } } = supabase.storage
-                .from(PARTNER_CONFIG.STORAGE_BUCKET)
+                .from(EDIT_REQ_CONFIG.STORAGE_BUCKET)
                 .getPublicUrl(filePath);
 
             // Insert into uploaded_files table
@@ -604,7 +604,7 @@ async function uploadFiles(requestId, files) {
                 .from('uploaded_files')
                 .insert({
                     original_name: file.name,
-                    storage_path: `${PARTNER_CONFIG.STORAGE_BUCKET}/${filePath}`,
+                    storage_path: `${EDIT_REQ_CONFIG.STORAGE_BUCKET}/${filePath}`,
                     file_type: file.type || 'application/octet-stream',
                     file_size: file.size,
                     public_url: publicUrl,
@@ -617,7 +617,7 @@ async function uploadFiles(requestId, files) {
             if (dbError) {
                 console.error('❌ Database insert error:', dbError);
                 // Try to delete the uploaded file if database insert fails
-                await supabase.storage.from(PARTNER_CONFIG.STORAGE_BUCKET).remove([filePath]);
+                await supabase.storage.from(EDIT_REQ_CONFIG.STORAGE_BUCKET).remove([filePath]);
                 throw new Error(`Failed to save file metadata for ${file.name}`);
             }
 
@@ -699,9 +699,9 @@ async function removeAttachment(fileId, fileName, requestId) {
         }
 
         // Delete from storage
-        const filePath = file.storage_path.replace(`${PARTNER_CONFIG.STORAGE_BUCKET}/`, '');
+        const filePath = file.storage_path.replace(`${EDIT_REQ_CONFIG.STORAGE_BUCKET}/`, '');
         const { error: storageError } = await supabase.storage
-            .from(PARTNER_CONFIG.STORAGE_BUCKET)
+            .from(EDIT_REQ_CONFIG.STORAGE_BUCKET)
             .remove([filePath]);
 
         if (storageError) {

@@ -33,7 +33,7 @@ const SECTION_LOADED = {
 
 // Initialize Supabase client using the global supabaseClient from db_connection.js
 // NOTE: db_connection.js does not expose `window.supabaseInitialized`, so we only check for supabaseClient.
-let supabase;
+var supabase;
 if (window.supabaseClient) {
     supabase = window.supabaseClient;
     console.log("✅ Using Supabase client from db_connection.js");

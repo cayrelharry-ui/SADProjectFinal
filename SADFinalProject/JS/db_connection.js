@@ -592,26 +592,3 @@ window.listAllUsers = listAllUsers;
 window.resetUserPassword = resetUserPassword;
 
 console.log("🔧 DEBUG: Authentication system ready (SHA-256)");
-
-// Exports
-export const supabase = supabaseClient;
-export { 
-    supabaseAuth,
-    signIn, 
-    signUp, 
-    checkAuth, 
-    logout, 
-    updatePassword,
-    getCurrentUser,
-    hashPassword,
-    getAllUsers,
-    getPendingUsers,
-    approveUser,
-    rejectUser,
-    updateUserStatus,
-    updateDatabaseForApprovalWorkflow,
-    testConnection,
-    listAllUsers,
-    resetUserPassword,
-    migrateAllPasswordsToSHA256
-};

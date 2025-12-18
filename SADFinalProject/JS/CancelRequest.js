@@ -8,21 +8,17 @@
 // ============================================
 
 // Get configuration from db_connection.js
-const PARTNER_CONFIG = window.getPartnerConfig ? window.getPartnerConfig() : {
+const CANCEL_CONFIG = window.getPartnerConfig ? window.getPartnerConfig() : {
     STORAGE_BUCKET: 'Uploads'
 };
 
-// Get Supabase client
-let supabase;
-if (window.supabaseClient && window.supabaseInitialized) {
-    supabase = window.supabaseClient;
-} else if (window.supabase && window.supabase.createClient) {
+// Get Supabase client (reuse global client from db_connection.js)
+var supabase = window.supabaseClient || null;
+if (!supabase && window.supabase && window.supabase.createClient && CANCEL_CONFIG.SUPABASE_URL && CANCEL_CONFIG.SUPABASE_ANON_KEY) {
     supabase = window.supabase.createClient(
-        PARTNER_CONFIG.SUPABASE_URL,
-        PARTNER_CONFIG.SUPABASE_ANON_KEY
+        CANCEL_CONFIG.SUPABASE_URL,
+        CANCEL_CONFIG.SUPABASE_ANON_KEY
     );
-} else {
-    console.error("❌ Supabase not available");
 }
 
 // ============================================
@@ -35,7 +31,7 @@ if (window.supabaseClient && window.supabaseInitialized) {
  * @param {string} bucketName - The bucket name (default: from config)
  * @returns {Promise<Object>} Result of the deletion
  */
-async function deleteFileFromStorage(storagePath, bucketName = PARTNER_CONFIG.STORAGE_BUCKET) {
+async function deleteFileFromStorage(storagePath, bucketName = CANCEL_CONFIG.STORAGE_BUCKET) {
     try {
         console.log(`Deleting file from storage: ${storagePath} in bucket: ${bucketName}`);
 
@@ -44,7 +40,7 @@ async function deleteFileFromStorage(storagePath, bucketName = PARTNER_CONFIG.ST
 
         // Check if storage_path contains bucket name
         if (storagePath.includes('/')) {
-            const possibleBuckets = [PARTNER_CONFIG.STORAGE_BUCKET, 'Uploads', 'uploads', 'project-images'];
+            const possibleBuckets = [CANCEL_CONFIG.STORAGE_BUCKET, 'Uploads', 'uploads', 'project-images'];
             for (const bucket of possibleBuckets) {
                 if (storagePath.startsWith(bucket + '/')) {
                     filePath = storagePath.substring(bucket.length + 1);
@@ -62,7 +58,7 @@ async function deleteFileFromStorage(storagePath, bucketName = PARTNER_CONFIG.ST
             console.error('Error deleting file from storage:', error);
 
             const { data: altData, error: altError } = await supabase.storage
-                .from(PARTNER_CONFIG.STORAGE_BUCKET)
+                .from(CANCEL_CONFIG.STORAGE_BUCKET)
                 .remove([storagePath]);
 
             if (altError) {
@@ -124,7 +120,7 @@ async function deleteRequestAttachments(requestId) {
         // Delete each file from storage
         for (const attachment of attachments) {
             try {
-                const result = await deleteFileFromStorage(attachment.storage_path, PARTNER_CONFIG.STORAGE_BUCKET);
+                const result = await deleteFileFromStorage(attachment.storage_path, CANCEL_CONFIG.STORAGE_BUCKET);
                 if (result.success) {
                     deletedCount++;
                 } else {
