@@ -590,5 +590,6 @@ window.hashPassword = hashPassword;
 window.testConnection = testConnection;
 window.listAllUsers = listAllUsers;
 window.resetUserPassword = resetUserPassword;
+window.getCurrentUser = getCurrentUser;
 
 console.log("🔧 DEBUG: Authentication system ready (SHA-256)");
