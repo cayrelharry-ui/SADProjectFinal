@@ -677,14 +677,14 @@ function renderPartnershipHistory(requests) {
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <button class="btn btn-outline-primary" onclick="window.viewRequestDetails(${request.request_id})" title="View Details">
+                                    <button class="btn btn-outline-primary" onclick="window.viewProfileRequestDetails(${request.request_id})" title="View Details">
                                         <i class="bi bi-eye"></i>
                                     </button>
                                     ${request.status === 'pending' ? `
-                                        <button class="btn btn-outline-warning" onclick="window.editRequest(${request.request_id})" title="Edit Request">
+                                        <button class="btn btn-outline-warning" onclick="window.editProfileRequest(${request.request_id})" title="Edit Request">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <button class="btn btn-outline-danger" onclick="window.cancelRequest(${request.request_id})" title="Cancel Request">
+                                        <button class="btn btn-outline-danger" onclick="window.cancelProfileRequest(${request.request_id})" title="Cancel Request">
                                             <i class="bi bi-x-circle"></i>
                                         </button>
                                     ` : ''}
@@ -1352,16 +1352,18 @@ export function showNotification(message, type = 'info') {
     });
 }
 
-// Make functions available globally for HTML onclick handlers
-window.viewRequestDetails = function(requestId) {
-    if (typeof window.viewRequest === 'function') {
-        window.viewRequest(requestId);
+// Make profile-history helpers available globally for HTML onclick handlers
+// They DELEGATE to the main Partner_Panel.js handlers if available,
+// without overwriting them.
+window.viewProfileRequestDetails = function(requestId) {
+    if (typeof window.viewRequestDetails === 'function') {
+        window.viewRequestDetails(requestId);
     } else {
         showNotification(`Viewing request PR-${requestId.toString().padStart(4, '0')}`, 'info');
     }
 };
 
-window.editRequest = function(requestId) {
+window.editProfileRequest = function(requestId) {
     if (typeof window.editRequest === 'function') {
         window.editRequest(requestId);
     } else {
@@ -1369,7 +1371,7 @@ window.editRequest = function(requestId) {
     }
 };
 
-window.cancelRequest = function(requestId) {
+window.cancelProfileRequest = function(requestId) {
     if (typeof window.cancelRequest === 'function') {
         window.cancelRequest(requestId);
     } else {
