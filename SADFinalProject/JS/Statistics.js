@@ -1,5 +1,5 @@
 // Statistics.js - SIMPLIFIED VERSION FOR IMMEDIATE DISPLAY
-import { supabase } from './db_connection.js';
+const supabase = window.supabaseClient;
 import { formatFileSize, getFileIcon } from './UploadFile.js';
 
 // ============================================

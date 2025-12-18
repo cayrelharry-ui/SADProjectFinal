@@ -4,7 +4,9 @@
  * NO auth checks - auth-check.js handles that
  */
 
-import { signIn, signUp } from './db_connection.js';
+const auth = window.supabaseAuth || {};
+const signIn = auth.signIn;
+const signUp = auth.signUp;
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("✅ DOM Loaded - Starting login page script");

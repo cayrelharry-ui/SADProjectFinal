@@ -3,7 +3,7 @@
  * Also manages file metadata in 'uploaded_files' table
  */
 
-import { supabase } from './db_connection.js';
+const supabase = window.supabaseClient;
 
 // Configuration
 const STORAGE_BUCKET = 'Uploads';
