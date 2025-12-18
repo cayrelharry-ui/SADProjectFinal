@@ -253,8 +253,8 @@
         const SUPABASE_URL = 'https://fkdqenrxfanpgmtogiig.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZHFlbnJ4ZmFucGdtdG9naWlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NDA1NzksImV4cCI6MjA4MDMxNjU3OX0.NSA57GQcxnCpLnqMVlDpf_lvfggb2H-IGGTBL_XYQ4I';
 
-        // Initialize Supabase client
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Initialize Supabase client (avoid clobbering global `supabase` from the CDN)
+        const partnerSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         document.addEventListener('DOMContentLoaded', () => {
             // Set default date to today
@@ -422,7 +422,7 @@
                     console.log('Submitting partnership request:', partnershipData);
 
                     // Insert into partnership_requests table
-                    const { data, error } = await supabase
+                    const { data, error } = await partnerSupabase
                         .from('partnership_requests')
                         .insert([partnershipData])
                         .select()
@@ -438,7 +438,7 @@
                             // Remove user_id and try again
                             delete partnershipData.user_id;
 
-                            const { data: retryData, error: retryError } = await supabase
+                            const { data: retryData, error: retryError } = await partnerSupabase
                                 .from('partnership_requests')
                                 .insert([partnershipData])
                                 .select()
@@ -470,7 +470,7 @@
                             const testBlob = new Blob(['test'], { type: 'text/plain' });
                             const testPath = `test_${Date.now()}.txt`;
 
-                            const { error: testError } = await supabase.storage
+                            const { error: testError } = await partnerSupabase.storage
                                 .from('uploads')
                                 .upload(testPath, testBlob);
 
@@ -504,7 +504,7 @@
                                         console.log(`Uploading to: ${filePath}`);
 
                                         // Upload to storage
-                                        const { error: uploadError } = await supabase.storage
+                                        const { error: uploadError } = await partnerSupabase.storage
                                             .from('Uploads')
                                             .upload(filePath, file);
 
@@ -517,7 +517,7 @@
                                         console.log('✓ File uploaded to storage');
 
                                         // Get public URL
-                                        const { data: { publicUrl } } = supabase.storage
+                                        const { data: { publicUrl } } = partnerSupabase.storage
                                             .from('uploads')
                                             .getPublicUrl(filePath);
 
@@ -541,7 +541,7 @@
                                             partnership_request_id: data.request_id
                                         };
 
-                                        const { error: dbError } = await supabase
+                                        const { error: dbError } = await partnerSupabase
                                             .from('uploaded_files')
                                             .insert([fileMetadata]);
 
